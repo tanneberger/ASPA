@@ -30,6 +30,21 @@
      </address>
    </author>
 
+   <author fullname="Randy Bush" initials="R"
+           surname="Bush">
+     <organization>Internet Initiative Japan</organization>
+     <address>
+       <email>randy@psg.com</email>
+     </address>
+   </author>
+
+   <author fullname="Keyur Patel" initials="K"
+           surname="Patel">
+     <organization>Arrcus, Inc.</organization>
+     <address>
+       <email>keyur@arrcus.com</email>
+     </address>
+   </author>
 
    <author fullname="Job Snijders" initials="J"
            surname="Snijders">
@@ -65,27 +80,41 @@
    </note>
  </front>
 
- <middle>
+<middle>
+    <section title="Introduction" anchor="intro">
+        <t>
+            The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security. (See
+            [RFC6480] for more information.)  As part of this system, a mechanism is needed to allow entities to verify that
+            an PAS has been given permission by AS holder to send routes in all directions. A ASPA provides this function.
+        </t>
 
-   <section title="Introduction" anchor="intro">
-     <t>
-       The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security. (See
-       [RFC6480] for more information.)  As part of this system, a mechanism is needed to allow entities to verify that
-       an PAS has been given permission by AS holder to send routes in all directions. A ASPA provides this function.
-     </t>
+        <t>
+            The ASPA makes use of the template for RPKI digitally signed objects [RFC6488], which defines a Crytopgraphic
+            Message Syntax (CMS) [RFC5652] wrapper for the ASPA content as well as a generic validation procedure for RPKI
+            signed objects.  Therefore, to complete the specification of the ROA (see Section 4 of [RFC6488]), this
+            document defines:
+        </t>
 
-     <t>
-       The ASPA makes use of the template for RPKI digitally signed objects [RFC6488], which defines a Crytopgraphic
-       Message Syntax (CMS) [RFC5652] wrapper for the ASPA content as well as a generic validation procedure for RPKI
-       signed objects.  Therefore, to complete the specification of the ROA (see Section 4 of [RFC6488]), this
-       document defines:
-     </t>
+        <t>
+            The ASPA makes use of the template for RPKI digitally signed objects [RFC6488], which defines a Crytopgraphic
+            Message Syntax (CMS) [RFC5652] wrapper for the ASPA content as well as a generic validation procedure for RPKI
+            signed objects.  Therefore, to complete the specification of the ROA (see Section 4 of [RFC6488]), this
+            document defines:
+            <list style="numbers">
+                <t>
+                    The OID that identifies the signed object as being a ASPA. (This OID appears within the eContentType
+                    in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object).
+                </t>
+            </list>
+
+        </t>
 
 
-      1. The OID that identifies the signed object as being a ROA.
-         (This OID appears within the eContentType in the
-         encapContentInfo object as well as the content-type signed
-         attribute in the signerInfo object).
+        <t>
+
+        </t>
+
+
 
       2. The ASN.1 syntax for the ROA eContent.  (This is the payload
          that specifies the AS being authorized to originate routes as

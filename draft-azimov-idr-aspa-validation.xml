@@ -21,7 +21,7 @@
  <front>
 
    <title abbrev="ASPA Validation"> Validation of AS_PATH Using the Resource Certificate Public Key Infrastructure (PKI) and
-                   Austonomous System Provider Authorization (ASPAs) </title>
+                   Austonomous System Provider Authorization (ASPA) </title>
 
    <author fullname="Alexander Azimov" initials="A"
            surname="Azimov">
@@ -31,6 +31,21 @@
      </address>
    </author>
 
+   <author fullname="Randy Bush" initials="R"
+           surname="Bush">
+     <organization>Internet Initiative Japan</organization>
+     <address>
+       <email>randy@psg.com</email>
+     </address>
+   </author>
+
+   <author fullname="Keyur Patel" initials="K"
+           surname="Patel">
+     <organization>Arrcus, Inc.</organization>
+     <address>
+       <email>keyur@arrcus.com</email>
+     </address>
+   </author>
 
    <author fullname="Job Snijders" initials="J"
            surname="Snijders">
@@ -70,10 +85,11 @@
     <section title="Introduction" anchor="intro">
         <t>
             The BGP was designed without any mechanisms that can guarantee the validity of BGP attributes. The
-            outcome of this limitations are BGP Hijacks and BGP Route Leaks [#link]. Extensions to BGP are able to
-            partially solve these problems. For example RPKI can be used to detect and filter leaked static routes,
-            and [link to open policy/eOTC] can be used to detect mistake route leaks type XXX. While these upgrades are
-            quite useful, they still rely on BGP attributes, especially AS_PATH, that can be also violated by attackers.
+            outcome of this limitations are BGP Hijacks and BGP Route Leaks [#link]. BGP extensions are able to
+            partially solve these problems. For example, RPKI can be used to detect and filter leaked static routes,
+            and [link to open policy/eOTC] can be used to detect mistake route leaks type [#link]. While these upgrades
+            are quite useful, they still rely on BGP transit attributes, especially AS_PATH, that can be also violated
+            by attackers.
         </t>
         <t>
             It is believed that BGPSec [#link] can solve problem of AS_PATH validation. But even ignoring
@@ -113,22 +129,24 @@
     </section>
     
     <section title="Malicious Hijacks and Route Lekas" anchor="malicious">
-        #DESCRIPTION
+        <t>
+            #DESCRIPTION
+        </t>
     </section>
 
-    <section title="ASN Pair Validation Procedure" anchor="pair-validation">
+    <section title="Customer-Provider Validation Procedure" anchor="pair-validation">
         <t>
             It is assumed here that a relying party (RP) has access to a local cache of the complete set of valid
-            ASPAs when performing validation of a AS_PATH.  The RP needs to match a AS_PATH to one or more valid ASPAs
+            ASPAs when performing validation of an AS_PATH. The RP needs to match a AS_PATH to one or more valid ASPAs
             in order to determine a validation outcome, which, in turn, can be used to determine the appropriate
             local actions to perform on the route.
         </t>
 
 
-        <t> For a pair (ASN1, ASN2) validity state is defined by the following procedure:
+        <t> For a pair (AS1, AS2) customer-provider validity state is defined by the following procedure:
             <list style="numbers">
                 <t>
-                    Select all valid ASPAs with customer value equal to ASN2. This selection forms the set of "candidate
+                    Select all valid ASPAs with customer value equal to AS2. This selection forms the set of "candidate
                     ASPAs".
                 </t>
                 <t>
@@ -136,7 +154,7 @@
                     (or, synonymously, "not found", as used in [BGP-PFX]).
                 </t>
                 <t>
-                    If there is ASPAs in the list of candidate ASPAs where provider field equals to ASN1, then the
+                    If there is ASPAs in the list of candidate ASPAs where provider field equals to AS1, then the
                     procedure halts with an outcome of "valid".
                 </t>
                 <t>
@@ -149,9 +167,9 @@
     
     <section title="AS_PATH Validation">
         <t>
-            AS_PATH attribute identifies the autonomous systems through which routing information carried in this
-            UPDATE message has passed.  The components of this list can be AS_SETs or AS_SEQ, as defined in
-            [RFC4271]. When route is received from customer or literal peer it SHOULD have in its AS_SEQ
+            AS_PATH attribute identifies the autonomous systems through which routing information in
+            UPDATE message has passed. The components of this list can be AS_SETs or AS_SEQes, as defined in
+            [RFC4271]. When route is received from customer or literal peer SHOULD have in its AS_SEQ
             components only customer-provider pairs. If it has other types of pairs, it does mean that this route was
             leaked or AS_PATH attribute was malformed. In this case such route must be dropped. It's also important
             to highlight that routes that have AS_SET components in AS_PATH can't be fully validated and should be
@@ -160,6 +178,9 @@
 
         <t> If route is received from customer or peer it MUST validate AS_PATH attribute using following criteria:
             <list style="numbers">
+                <t>
+                    If the left ASN in AS_PATH isn't equal to it's neighbor ASN, route MUST be dropped.
+                </t>
                 <t>
                     If AS_PATH has invalid pair of ASNs, such route MUST be dropped;
                 </t>
@@ -174,12 +195,30 @@
                     Otherwise - set LOCAL_PREF to pref_valid.
                 </t>
             </list>
-            These values MUST have next order: pref_set &lt; pref_unknown &lt;= pref_valid.
+            These local preference values MUST have next order: pref_set &lt; pref_unknown &lt;= pref_valid.
         </t>
     </section>
 
+    <section title="Disavowal of Provider Authorizaion">
+        <t>
+            A ASPA is a positive attestation that a ASN holder has authorized its provider to redistribute received
+            routes to its providers and peers. It is possible for a ASN holder to construct an authorization where no
+            valid AS has been granted any such authority.  This is achieved by using a ASPA where the ASPA's subject
+            provider ASN is one that must not be used in any routing context.  Specifically, AS 0 is reserved by the
+            IANA such that it may be used to identify Tier1 networks and IXes.
+        </t>
 
-
+        <t>
+            A ASPA with a subject of provider AS 0 is an attestation by the holder of customer AS that the its routes
+            should not be received from any customer or peer.
+        </t>
+        <t>
+            By convention, an provider AS 0 ASPA should be the only ASPA issued by a given AS holder; although
+            this is not a strict requirement.  An provider 0 ASPA may coexist with ASPAs that have different subject
+            provider AS  values; although in such cases, the presence or lack of presence of the provider AS 0 ASPA does
+            not alter the AS_PATH validity state in any way.
+        </t>
+    </section>
 
    <section anchor="IANA" title="IANA Considerations">
    </section>
@@ -188,7 +227,12 @@
    </section>
 
    <section anchor="Acknowledgments" title="Acknowledgments">
-    </section>
+       <t>
+           Thank all authors of  Validation of Route Origination Using
+      the Resource Certificate Public Key Infrastructure (PKI) and
+                   Route Origin Authorizations (ROAs) for text donation.
+       </t>
+   </section>
 
 </middle>
 
