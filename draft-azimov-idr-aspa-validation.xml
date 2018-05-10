@@ -3,9 +3,15 @@
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC4271 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4271.xml">
-<!ENTITY RFC4486 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4486.xml">
-<!ENTITY RFC5226 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5226.xml">
-<!ENTITY RFC5492 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5492.xml">
+<!ENTITY RFC8205 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8205.xml">
+<!ENTITY RFC6483 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6483.xml">
+<!ENTITY RFC7908 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7908.xml">
+<!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
+<!ENTITY RFC5280 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
+<!ENTITY RFC3779 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3779.xml">
+<!ENTITY I-D.ymbk-idr-bgp-eotr-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-idr-bgp-eotr-policy-02.xml">
+<!ENTITY I-D.ymbk-idr-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-idr-aspa-profile-00.xml">
+<!ENTITY I-D.ietf-idr-bgp-open-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-open-policy-02.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -28,6 +34,14 @@
      <organization>Qrator Labs</organization>
      <address>
        <email>aa@qrator.net</email>
+     </address>
+   </author>
+
+   <author fullname="Eugene Bogomazov" initials="E"
+           surname="Bogomazov">
+     <organization>Qrator Labs</organization>
+     <address>
+       <email>eb@qrator.net</email>
      </address>
    </author>
 
@@ -84,14 +98,15 @@
 
     <section title="Introduction" anchor="intro">
         <t>
-	    The Border Gateway Protocol (BGP) was designed with no mechanisms to guarantee the validity of BGP attributes.  Two
-            results of this limitation are BGP Hijacks and BGP Route Leaks [#link]. BGP extensions are able to
-            partially solve these problems. For example, RPKI can be used to detect and filter accidental mis-originations,
-            and [link to open policy/eOTC] can be used to detect accidental route leaks [#link]. While these upgrades to BGP
-            are quite useful, they still rely on BGP transitive attributes, especially AS_PATH, that can still be manipulated by attackers.
+	        The Border Gateway Protocol (BGP) was designed with no mechanisms to guarantee the validity of BGP attributes.  Two
+            results of this limitation are BGP Hijacks and BGP Route Leaks <xref target="RFC7908"></xref>. BGP extensions
+            are able to partially solve these problems. For example, ROA records <xref target="RFC6483"></xref> can be used
+            to detect and filter accidental mis-originations, and <xref target="I-D.ymbk-idr-bgp-eotr-policy"></xref>
+            can be used to detect accidental route leaks. While these upgrades to BGP are quite useful, they still
+            rely on BGP transitive attributes, especially AS_PATH, that can still be manipulated by attackers.
         </t>
         <t>
-            It is believed that BGPSec [#link] can solve the problem of AS_PATH correctness. But even ignoring the
+            It is believed that BGPSec <xref target="RFC8205"></xref> can solve the problem of AS_PATH correctness. But even ignoring the
             complexity of this BGP extension, it has backward support for 'old' BGP4 that an attacker can abuse to nullify all the work of
             AS_PATH signing.  As a result, to abuse AS_PATH or any other transit attribute, an attacker merely needs to
             use 'old' BGP4.
@@ -107,21 +122,24 @@
 
     <section title="Autonomous System Provider Authorization" anchor="ASPA">
         <t>
-           As described in [RFC6480], the RPKI is based on a hierarchy of resource certificates that are aligned to the Internet Number
-           Resource allocation structure. Resource certificates are X.509 certificates that conform to the PKIX
-           profile [RFC5280], and to the extensions for IP addresses and AS identifiers [RFC3779]. A resource
-           certificate describes an action by an issuer that binds a list of IP address blocks and Autonomous System
-           (AS) numbers to the subject of a certificate, identified by the unique association of the subject's
-           private key with the public key contained in the resource certificate.  The RPKI is structured such that
-           each current resource certificate matches a current resource allocation or assignment.
+            As described in <xref target="RFC6480"></xref>, the RPKI is based on a hierarchy of resource certificates that
+            are aligned to the Internet Number Resource allocation structure. Resource certificates are X.509 certificates 
+            that conform to the PKIX profile <xref target="RFC5280"></xref>, and to the extensions for IP addresses and AS
+            identifiers <xref target="RFC3779"></xref>. A resource certificate describes an action by an issuer that
+            binds a list of IP address blocks and Autonomous System (AS) numbers to the subject of a certificate,
+            identified by the unique association of the subject's private key with the public key contained in the
+            resource certificate. The RPKI is structured such that each current resource certificate matches a
+            current resource allocation or assignment.
         </t>
 
         <t>
-           ASPAs are digitally signed objects that bind a provider AS number to a customer (in terms of BGP announcements not business) AS number, and are signed by
-           the holder of the customer AS. Thus ASPA provides verification that an AS holder has authorized a
-           particular provider AS to propagate its announcements onward, e.g. to  upstream providers or peers.
-           ASPAs are described in [#link]. ASPAs are intended to fit within the requirements for adding security to
-           inter-domain routing and provide a mechanism to detect and filter malicious hijacks and route leaks.
+            ASPAs are digitally signed objects that bind a provider AS number to a customer (in terms of BGP
+            announcements not business) AS number, and are signed by the holder of the customer AS. Thus ASPA
+            provides  verification that an AS holder has authorized a particular provider AS to propagate its
+            announcements onward, e.g. to upstream providers or peers. ASPA profile is described in [#link]
+            ASPA mechanism combined with BGP roles <xref target="I-D.ietf-idr-bgp-open-policy"></xref> can provide
+            fully automated solution to detect and filter
+            malicious hijacks and route leaks.
         </t>
 
     </section>
@@ -148,8 +166,7 @@
                     ASPAs".
                 </t>
                 <t>
-                    If the set of candidate ASPAs is empty, then the procedure stops with an outcome of "unknown"
-                    (analogous to "not found", as used in RPKI-based Origin Validation [BGP-PFX]).
+                    If the set of candidate ASPAs is empty, then the procedure stops with an outcome of "unknown".
                 </t>
                 <t>
                     If there are ASPAs in the list of candidate ASPAs where the provider field is AS1, then the
@@ -167,8 +184,8 @@
         <t>
             The AS_PATH attribute identifies the autonomous systems through which routing information in
             UPDATE message has passed. The components of this list can be AS_SETs or AS_SEQes, as defined in
-            [RFC4271]. When a route is received from a customer or a literal peer, it SHOULD have in its AS_SEQ
-            components only customer-provider pairs. If it has other types of pairs, it means that the route was
+            <xref target="RFC4271"></xref>. When a route is received from a customer or a literal peer, it SHOULD have in
+            its AS_SEQ components only customer-provider pairs. If it has other types of pairs, it means that the route was
             leaked or the AS_PATH attribute was malformed. In this case, the route should be dropped. It's also important
             to highlight that routes that have AS_SET components in the AS_PATH can't be fully validated and should be
             treated with caution.
@@ -224,26 +241,29 @@
 
    <section anchor="Acknowledgments" title="Acknowledgments">
        <t>
-           Thank all authors of  Validation of Route Origination Using
-      the Resource Certificate Public Key Infrastructure (PKI) and
-                   Route Origin Authorizations (ROAs) for text donation.
+           The authors wish to thank authors of <xref target="RFC6483"></xref> since its text was used as and example
+           while writing this document.
        </t>
    </section>
 
 </middle>
+<back>
+    <references title="Normative References">
+        &RFC2119;
+    </references>
 
- <back>
-   <references title="Normative References">
-     &RFC2119;
-     &RFC4271;
-     &RFC4486;
-     &RFC5492;
-   </references>
-
-   <references title="Informative References">
-     &RFC5226;
-  </references>
- </back>
+    <references title="Informative References">
+        &RFC7908;
+        &RFC8205;
+        &RFC6483;
+        &RFC6480;
+        &RFC5280;
+        &RFC4271;
+        &RFC3779;
+        &I-D.ymbk-idr-bgp-eotr-policy;
+        &I-D.ietf-idr-bgp-open-policy;
+</references>
+</back>
 </rfc>
 
 
