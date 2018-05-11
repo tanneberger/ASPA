@@ -159,11 +159,12 @@
         </t>
 
 
-        <t> For each pair of ASs in a received AS_PATH (AS1, AS2), the customer-provider validity state is determined as follows:
+        <t>
+            For a selected pair of ASNs (AS1, AS2), the customer-provider validity state is determined as follows:
             <list style="numbers">
                 <t>
-                    Select all cryptographically valid ASPAs with a customer value of AS2. This selection forms the set of "candidate
-                    ASPAs".
+                    Select all cryptographically valid ASPAs with a customer value of AS2. This selection forms the
+                    set of "candidate ASPAs".
                 </t>
                 <t>
                     If the set of candidate ASPAs is empty, then the procedure stops with an outcome of "unknown".
@@ -186,31 +187,40 @@
             UPDATE message has passed. The components of this list can be AS_SETs or AS_SEQes, as defined in
             <xref target="RFC4271"></xref>. When a route is received from a customer or a literal peer, it SHOULD have in
             its AS_SEQ components only customer-provider pairs. If it has other types of pairs, it means that the route was
-            leaked or the AS_PATH attribute was malformed. In this case, the route should be dropped. It's also important
-            to highlight that routes that have AS_SET components in the AS_PATH can't be fully validated and should be
-            treated with caution.
+            leaked or the AS_PATH attribute was malformed.
         </t>
 
-        <t> If a route is received from a customer or peer, its AS_PATH MUST be validated as follows:
+        <t>
+            If a route is received from a customer or peer, its AS_PATH MUST be validated as follows:
             <list style="numbers">
                 <t>
-                    If the left ASN in AS_PATH isn't equal to it's neighbor ASN, the route SHOULD be dropped.
+                    If the left ASN in AS_PATH isn't equal to it's neighbor ASN then procedure halts with outcome "invalid";
                 </t>
                 <t>
-                    If the AS_PATH has one or more invalid ASN pairs per above, it SHOULD be dropped;
+                    If in one of AS_SEQ segments exists invalid ASN pair (<xref target="pair-validation"></xref>)
+                    then procedure halts with outcome "invalid";
                 </t>
                 <t>
-                    If the AS_PATH has at least one AS_SET, set LOCAL_PREF to pref_set;
+                    If the AS_PATH has at least one AS_SET segment then procedure halts with outcome "as_set";
                 </t>
                 <t>
-                    If the AS_PATH has no AS_SETs but has at least one pair of ASNs for which there is no corresponding ASBA,
-                    set LOCAL_REF to pref_unknown;
+                    If in one of AS_SEQ segments exists invalid ASN pair (<xref target="pair-validation"></xref>)
+                    then procedure halts with outcome "invalid";
                 </t>
                 <t>
-                    Otherwise - set LOCAL_PREF to pref_valid.
+                    Otherwise, the procedure halts with an outcome of "valid".
                 </t>
             </list>
-            These local preference values MUST have the ordering: pref_set &lt; pref_unknown &lt;= pref_valid.
+        </t>
+        <t>
+            If the output of AS_PATH validation procedure is "invalid" the LOCAL_PREF value MUST be set to 0 or route MAY
+            be dropped. If "invalid" route has no alternative routes and it is propagated to other ISPs, it MUST be
+            marked with GRACEFUL_SHUTDOWN community to avoid possible stable oscillations. It's also gives
+            opportunity for customers to detect malformed routes received from upstream providers.
+        </t>
+        <t>
+            if the output of AS_PATH validation procedure is 'as_set' it means that AS_PATH can't be fully validated.
+            Such routes should be treated with caution and MAY be processed the same way as "invalid" routes.
         </t>
     </section>
 
