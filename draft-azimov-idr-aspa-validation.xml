@@ -138,8 +138,7 @@
             provides  verification that an AS holder has authorized a particular provider AS to propagate its
             announcements onward, e.g. to upstream providers or peers. ASPA profile is described in [#link]
             ASPA mechanism combined with BGP roles <xref target="I-D.ietf-idr-bgp-open-policy"></xref> can provide
-            fully automated solution to detect and filter
-            malicious hijacks and route leaks.
+            fully automated solution to detect and filter malicious hijacks and route leaks.
         </t>
 
     </section>
@@ -219,16 +218,21 @@
             opportunity for customers to detect malformed routes received from upstream providers.
         </t>
         <t>
-            if the output of AS_PATH validation procedure is 'as_set' it means that AS_PATH can't be fully validated.
+            If the output of AS_PATH validation procedure is 'as_set' it means that AS_PATH can't be fully validated.
             Such routes should be treated with caution and MAY be processed the same way as "invalid" routes.
+        </t>
+        <t>
+            The above AS_PATH validation procedure can be fully automated using BGP Roles
         </t>
     </section>
 
     <section title="Disavowal of Provider Authorizaion">
         <t>
             A ASPA is a positive attestation that a ASN holder has authorized its provider to redistribute received
-            routes to its providers and peers.  This does not preclude the provider AS from redistribution to its other customers.  By creating an ASPA where the provider AS is 0, the customer indicates that no provider should further announce its routes.  Specifically, AS 0 is reserved by the
-            IANA to identify Tier-1 networks and Internet exchange meshes.
+            routes to its providers and peers.  This does not preclude the provider AS from redistribution to its
+            other customers.  By creating an ASPA where the provider AS is 0, the customer indicates that no provider
+            should further announce its routes.  Specifically, AS 0 is reserved by the IANA to identify Tier-1
+            networks and Internet exchange meshes.
         </t>
 
         <t>
@@ -242,16 +246,37 @@
             not alter the AS_PATH validity state.
         </t>
     </section>
+    
+    <section title="Complex Relations (Siblinngs)">
+        <t>
+            There are ASNs which relations can't be described with simple peer-peer or customer-provider
+            relations. It may happen that both parties are intentionally sending prefixes received from each other to
+            its peers and upstreams.
+        </t>
 
-   <section anchor="IANA" title="IANA Considerations">
-   </section>
+        <t>
+            In this case, two symmetric ASPAs records {(AS1, AS2), (AS2, AS1)} must be created.
+        </t>
+    </section>
 
-   <section anchor="Security" title="Security Considerations">
-   </section>
+    <section anchor="Security" title="Security Considerations">
+        <t>
+            ASPA issuers should be aware of the validation implication in issuing a ASPA - a ASPA implicitly
+            invalidates all routes that passes their upstream providers other than the provider AS listed in the
+            collection of ASPAs. It becomes issuer's duty to keep its set of ASPA up to date.
+        </t>
+
+        <t>
+            While ASPA provides opportunity to check AS_PATH validity for routes received from customers and peers,
+            it doesn't provide support for routes that are received from providers. Nevertheless, it will be still
+            capable to significantly limit propagation of malformed routes.
+        </t>
+
+    </section>
 
    <section anchor="Acknowledgments" title="Acknowledgments">
        <t>
-           The authors wish to thank authors of <xref target="RFC6483"></xref> since its text was used as and example
+           The authors wish to thank authors of <xref target="RFC6483"></xref> since its text was used as an example
            while writing this document.
        </t>
    </section>
