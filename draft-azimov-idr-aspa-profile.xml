@@ -2,10 +2,9 @@
 
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC4271 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4271.xml">
-<!ENTITY RFC4486 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4486.xml">
-<!ENTITY RFC5226 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5226.xml">
-<!ENTITY RFC5492 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5492.xml">
+<!ENTITY RFC5652 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5652.xml">
+<!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
+<!ENTITY RFC6488 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6488.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -27,6 +26,14 @@
      <organization>Qrator Labs</organization>
      <address>
        <email>aa@qrator.net</email>
+     </address>
+   </author>
+
+   <author fullname="Eugene Uskov" initials="E"
+           surname="Uskov">
+     <organization>Qrator Labs</organization>
+     <address>
+       <email>eu@qrator.net</email>
      </address>
    </author>
 
@@ -64,7 +71,7 @@
      <t>
        This document defines a standard profile for Autonomouse System Provider Authorization (ASPAs). An ASPA is a
        digitally signed object that provides a means of verifying that Autonomous System (AS) holder has authorized an
-       Provider Autonomous System (PAS) to be its upstream provider and sent recieved prefixes from AS in all
+       Provider Autonomous System (PAS) to be its upstream provider and send recieved prefixes from AS in all
        directions including providers and peers.
      </t>
    </abstract>
@@ -84,71 +91,113 @@
     <section title="Introduction" anchor="intro">
         <t>
             The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security. (See
-            [RFC6480] for more information.)  As part of this system, a mechanism is needed to allow entities to verify that
-            an PAS has been given permission by AS holder to send routes in all directions. A ASPA provides this function.
+            <xref target="RFC6480"></xref> for more information.)  As part of this system, a mechanism is needed to allow entities to verify that
+            a PAS has been given permission by AS holder to send routes in all directions. A ASPA provides this function.
         </t>
 
         <t>
-            The ASPA makes use of the template for RPKI digitally signed objects [RFC6488], which defines a Crytopgraphic
-            Message Syntax (CMS) [RFC5652] wrapper for the ASPA content as well as a generic validation procedure for RPKI
-            signed objects.  Therefore, to complete the specification of the ROA (see Section 4 of [RFC6488]), this
-            document defines:
-        </t>
-
-        <t>
-            The ASPA makes use of the template for RPKI digitally signed objects [RFC6488], which defines a Crytopgraphic
-            Message Syntax (CMS) [RFC5652] wrapper for the ASPA content as well as a generic validation procedure for RPKI
-            signed objects.  Therefore, to complete the specification of the ROA (see Section 4 of [RFC6488]), this
+            The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488"></xref>, which defines a Crytopgraphic
+            Message Syntax (CMS) <xref target="RFC5652"></xref> wrapper for the ASPA content as well as a generic validation procedure for RPKI
+            signed objects. Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"></xref>), this
             document defines:
             <list style="numbers">
                 <t>
-                    The OID that identifies the signed object as being a ASPA. (This OID appears within the eContentType
+                    The OID that identifies the signed object as being an ASPA. (This OID appears within the eContentType
                     in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object).
                 </t>
+                <t>
+                	The ASN.1 syntax for the ASPA eContent. (This is the payload
+			       	that specifies the customer AS and its PAS.)
+					The ASPA eContent is ASN.1 encoded using the Distinguished
+					Encoding Rules (DER) [X.690].
+				</t>
             </list>
 
+            #TODO: terminology?
         </t>
+	</section>
 
+	<section title="The ASPA Content-Type" anchor="content-type">
+		<t>
+			The content-type for an ASPA is defined as #TODO and has the
+			numerical value of #TODO.
 
-        <t>
+			This OID MUST appear both within the eContentType in the
+			encapContentInfo object as well as the content-type signed attribute
+			in the signerInfo object (see <xref target="RFC6488"></xref>).
+		</t>
+	</section>
 
-        </t>
+	<section title="The ASPA eContent" anchor="content">
+		<t>
+			The content of an ASPA identifies the customer AS as well as the provider AS that is authorized to further propagate announces received from the customer.
 
+			If customer has multiple providers, it issues multiple ASPAs, one per each provider AS. An ASPA is formally defined as:
+		</t>
 
+		<figure>
+			<artwork type="abnf">
+AsProviderAttestation ::= SEQUENCE {
+	version [0] INTEGER DEFAULT 0,
+	customerAsID  ASID,
+	providerAsID  ASID }
 
-      2. The ASN.1 syntax for the ROA eContent.  (This is the payload
-         that specifies the AS being authorized to originate routes as
-         well as the prefixes to which the AS may originate routes.)
-         The ROA eContent is ASN.1 encoded using the Distinguished
-         Encoding Rules (DER) [X.690].
+ASID ::= INTEGER</artwork>
+		</figure>
 
-      3. An additional step required to validate ROAs (in addition to
-         the validation steps specified in [RFC6488]).
-   </section>
+		<t>
+			Note that this content appears as the eContent within the
+			encapContentInfo (see <xref target="RFC6488"></xref>).
+		</t>
 
-   <section anchor="IANA" title="IANA Considerations">
-   </section>
+		<section title="version">
+			<t>
+				The version number of the AsProviderAttestation MUST be 0.
+			</t>
+		</section>
 
-   <section anchor="Security" title="Security Considerations">
-   </section>
+		<section title="customerAsID">
+			<t>
+				The customerAsID field contains the AS number that is authorized to send prefixes to the provider.
+			</t>
+		</section>
 
-   <section anchor="Acknowledgments" title="Acknowledgments">
-    </section>
+		<section title="providerAsID">
+			<t>
+				The providerAsID contains the AS number that is authorized to further propagate announces received from the customer.
+			</t>
+		</section>
+	</section>
+
+	<section title="ASPA Validation" anchor="validation">
+		<t>
+			Before a relying party can use an ASPA to validate a routing
+			announcement, the relying party MUST first validate the ASPA.  To
+			validate an ASPA, the relying party MUST perform all the validation
+			checks specified in <xref target="RFC6488"></xref>.
+		</t>
+	</section>
+
+	<section anchor="IANA" title="IANA Considerations">
+	</section>
+
+	<section anchor="Security" title="Security Considerations">
+	</section>
+
+	<section anchor="Acknowledgments" title="Acknowledgments">
+	</section>
 
 </middle>
 
  <back>
-   <references title="Normative References">
-     &RFC2119;
-     &RFC4271;
-     &RFC4486;
-     &RFC5492;
-   </references>
+    <references title="Normative References">
+        &RFC2119;
+        &RFC5652;
+        &RFC6488;
+    </references>
 
-   <references title="Informative References">
-     &RFC5226;
-  </references>
+	<references title="Informative References">
+		&RFC6480;
+	</references>
  </back>
 </rfc>
-
-
