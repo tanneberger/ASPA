@@ -138,12 +138,14 @@
 
 		<figure>
 			<artwork type="abnf">
-AsProviderAttestation ::= SEQUENCE {
-	version [0] INTEGER DEFAULT 0,
-	customerAsID  ASID,
-	providerAsID  ASID }
+                AsProviderAttestation ::= SEQUENCE {
+                    version [0] INTEGER DEFAULT 0,
+                    customerAsID  ASID,
+                    providerAsID  ASID
+                }
 
-ASID ::= INTEGER</artwork>
+                ASID ::= INTEGER
+            </artwork>
 		</figure>
 
 		<t>
@@ -159,7 +161,8 @@ ASID ::= INTEGER</artwork>
 
 		<section title="customerAsID">
 			<t>
-				The customerAsID field contains the AS number that is authorized to send prefixes to the provider.
+				The customerAsID field contains the AS number that authorizes upstream providers to further send
+                prefixes to upper providers and peers.
 			</t>
 		</section>
 
