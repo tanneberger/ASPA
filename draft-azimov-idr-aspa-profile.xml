@@ -130,7 +130,8 @@
 
 	<section title="The ASPA eContent" anchor="content">
 		<t>
-			The content of an ASPA identifies the customer AS as well as the provider AS that is authorized to further propagate announces received from the customer.
+			The content of an ASPA identifies the customer AS as well as the provider AS that is authorized to
+            further propagate announces received from the customer.
 
 			If customer has multiple providers, it issues multiple ASPAs, one per each provider AS. An ASPA is formally defined as:
 		</t>

@@ -137,15 +137,25 @@
             announcements not business) AS number, and are signed by the holder of the customer AS. Thus ASPA
             provides  verification that an AS holder has authorized a particular provider AS to propagate its
             announcements onward, e.g. to upstream providers or peers. ASPA profile is described in [#link]
-            ASPA mechanism combined with BGP roles <xref target="I-D.ietf-idr-bgp-open-policy"></xref> can provide
-            fully automated solution to detect and filter malicious hijacks and route leaks.
+            ASPA mechanism combined with BGP roles <xref target="I-D.ietf-idr-bgp-open-policy"></xref> and ROA
+            validation procedure can provide <xref target="RFC6483"></xref> fully automated solution to detect and
+            filter hijacks and route leaks, including malicious ones.
         </t>
 
     </section>
     
-    <section title="Malicious Hijacks and Route Leaks" anchor="malicious">
+    <section title="Anomaly Propagation" anchor="propagation">
         <t>
-            #DESCRIPTION
+            Both route leaks and hijacks have same effect on ISP operations - they redirect traffic, resulting in
+            increased latency, packet loss or possible MiTM attacks. But the level of risks significantly depends on
+            the propagation of BGP anomalies. For an example, a hijack that is propagated only to customers may
+            concentrate traffic on a particular ISP, but if anomaly is propagated through peers, upstreams or reaches
+            Tier1 networks, thus distributing globally, the traffic may be redirected al level of whole countries.
+        </t>
+        <t>
+            The opportunity to limit spread of BGP anomalies to upstreams and peers without requiring support from
+            the source of the anomaly (which is critical if source has malicious intent), may significantly improve
+            the security of inter-domain routing and solve the majority of problems.
         </t>
     </section>
 
@@ -184,9 +194,14 @@
         <t>
             The AS_PATH attribute identifies the autonomous systems through which routing information in
             UPDATE message has passed. The components of this list can be AS_SETs or AS_SEQes, as defined in
-            <xref target="RFC4271"></xref>. When a route is received from a customer or a literal peer, it SHOULD have in
-            its AS_SEQ components only customer-provider pairs. If it has other types of pairs, it means that the route was
-            leaked or the AS_PATH attribute was malformed.
+            <xref target="RFC4271"></xref>.
+        </t>
+        <t>
+            The value of each AS_SEQ component can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1),
+            prepend(I-1))...). We can state that when a route is received from a customer or a literal peer,
+            each pair (AS(I-1), AS(i)) MUST have customer-provider or sibling relation. If the are other types of
+            relations, it means that the route was leaked or the AS_PATH attribute was malformed. The goal of above
+            procedure is to check validity of this statement.
         </t>
 
         <t>
@@ -196,15 +211,11 @@
                     If the left ASN in AS_PATH isn't equal to it's neighbor ASN then procedure halts with outcome "invalid";
                 </t>
                 <t>
-                    If in one of AS_SEQ segments exists invalid ASN pair (<xref target="pair-validation"></xref>)
-                    then procedure halts with outcome "invalid";
+                    If in one of AS_SEQ segments exists invalid customer-provider pair (AS(I-1), AS(i))
+                    (<xref target="pair-validation"></xref>) then procedure halts with outcome "invalid";
                 </t>
                 <t>
                     If the AS_PATH has at least one AS_SET segment then procedure halts with outcome "as_set";
-                </t>
-                <t>
-                    If in one of AS_SEQ segments exists invalid ASN pair (<xref target="pair-validation"></xref>)
-                    then procedure halts with outcome "invalid";
                 </t>
                 <t>
                     Otherwise, the procedure halts with an outcome of "valid".
@@ -214,15 +225,16 @@
         <t>
             If the output of AS_PATH validation procedure is "invalid" the LOCAL_PREF value MUST be set to 0 or route MAY
             be dropped. If "invalid" route has no alternative routes and it is propagated to other ISPs, it MUST be
-            marked with GRACEFUL_SHUTDOWN community to avoid possible stable oscillations. It's also gives
-            opportunity for customers to detect malformed routes received from upstream providers.
+            marked with GRACEFUL_SHUTDOWN community to avoid possible stable oscillations, when unchecked route
+            received from provider will become more preferable then invalid route received from customer. It
+            also gives opportunity for customers to detect malformed routes received from upstream providers.
         </t>
         <t>
             If the output of AS_PATH validation procedure is 'as_set' it means that AS_PATH can't be fully validated.
             Such routes should be treated with caution and MAY be processed the same way as "invalid" routes.
         </t>
         <t>
-            The above AS_PATH validation procedure can be fully automated using BGP Roles
+            The above AS_PATH validation procedure can be fully automated using BGP Roles.
         </t>
     </section>
 
@@ -247,15 +259,16 @@
         </t>
     </section>
     
-    <section title="Complex Relations (Siblinngs)">
+    <section title="Siblings (Complex Relations)" anchor="Siblings">
         <t>
             There are ASNs which relations can't be described with simple peer-peer or customer-provider
             relations. It may happen that both parties are intentionally sending prefixes received from each other to
-            its peers and upstreams.
+            its peers and/or upstreams.
         </t>
 
         <t>
-            In this case, two symmetric ASPAs records {(AS1, AS2), (AS2, AS1)} must be created.
+            In this case, two symmetric ASPAs records {(AS1, AS2), (AS2, AS1)} must be created by AS1 and AS2
+            respectively.
         </t>
     </section>
 
@@ -268,8 +281,10 @@
 
         <t>
             While ASPA provides opportunity to check AS_PATH validity for routes received from customers and peers,
-            it doesn't provide support for routes that are received from providers. Nevertheless, it will be still
-            capable to significantly limit propagation of malformed routes.
+            it doesn't provide full support for routes that are received from upstream providers. So, its
+            mechanism guarantees detection of both malicious and accidental route leaks and provides partial support
+            in detection of malicious hijacks: the transit ISPs will still be able to send hijacked prefixes with
+            malformed AS_PATH to their customers.
         </t>
 
     </section>
