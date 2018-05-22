@@ -139,8 +139,7 @@
         <t>
             Both route leaks and hijacks have same effect on ISP operations - they redirect traffic, resulting in increased latency, packet loss or possible MiTM attacks.
             But the level of risks significantly depends on the propagation of BGP anomalies.
-            For an example, a hijack that is propagated only to customers may concentrate traffic on a particular ISP, but if anomaly is propagated through peers, upstreams or reaches
-            Tier1 networks, thus distributing globally, the traffic may be redirected al level of whole countries.
+            For an example, a hijack that is propagated only to customers may concentrate traffic on a particular ISP, but if the anomaly is propagated through peers, upstreams or reaches Tier1 networks, thus distributing globally, the traffic may be redirected al level of whole countries.
         </t>
         <t>
             The opportunity to limit spread of BGP anomalies to upstreams and peers without requiring support from the source of the anomaly (which is critical if source has malicious intent), may significantly improve the security of inter-domain routing and solve the majority of problems.
