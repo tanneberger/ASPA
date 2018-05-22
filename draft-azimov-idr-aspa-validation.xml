@@ -219,13 +219,13 @@
 
     <section title="Disavowal of Provider Authorizaion">
         <t>
-            A ASPA is a positive attestation that a ASN holder has authorized its provider to redistribute received routes to its providers and peers.
+            An ASPA is a positive attestation that an ASN holder has authorized its provider to redistribute received routes to its providers and peers.
             This does not preclude the provider AS from redistribution to its other customers.
             By creating an ASPA where the provider AS is 0, the customer indicates that no provider should further announce its routes.  Specifically, AS 0 is reserved by the IANA to identify Tier-1 networks and Internet exchange meshes.
         </t>
 
         <t>
-            A ASPA with a provider AS of 0 is an statement by the customer AS that the its routes should not be received by any relying party AS from any of its customers or peers.
+            An ASPA with a provider AS of 0 is an statement by the customer AS that the its routes should not be received by any relying party AS from any of its customers or peers.
         </t>
         <t>
             By convention, an ASPA with a provider AS of 0 should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
@@ -246,7 +246,7 @@
 
     <section anchor="Security" title="Security Considerations">
         <t>
-            ASPA issuers should be aware of the validation implication in issuing a ASPA - a ASPA implicitly invalidates all routes that passes their upstream providers other than the provider AS listed in the collection of ASPAs.
+            ASPA issuers should be aware of the validation implication in issuing an ASPA - an ASPA implicitly invalidates all routes that passes their upstream providers other than the provider AS listed in the collection of ASPAs.
             It becomes issuer's duty to keep its set of ASPA up to date.
         </t>
 

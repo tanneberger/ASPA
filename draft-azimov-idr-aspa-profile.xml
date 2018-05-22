@@ -96,7 +96,7 @@
             The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
             (See <xref target="RFC6480"></xref> for more information.)
             As part of this system, a mechanism is needed to allow entities to verify that a PAS has been given permission by AS holder to send routes in all directions.
-            A ASPA provides this function.
+            An ASPA provides this function.
         </t>
 
         <t>
