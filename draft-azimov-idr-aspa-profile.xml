@@ -55,13 +55,13 @@
 
    <author fullname="Job Snijders" initials="J"
            surname="Snijders">
-     <organization>NTT</organization>
+     <organization abbrev="NTT">NTT Communications</organization>
      <address>
        <email>job@ntt.net</email>
      </address>
    </author>
 
-   <date month="March" year="2018"/>
+   <date />
 
    <keyword>BGP</keyword>
    <keyword>Route leak</keyword>
