@@ -76,7 +76,7 @@
         <abstract>
             <t>
                 This document defines a standard profile for Autonomous System Provider Authorization (ASPAs).
-                An ASPA is a digitally signed object that provides a means of verifying that Autonomous System (AS) holder has authorized an Provider Autonomous System (PAS) to be its upstream provider and send recieved prefixes from AS in all directions including providers and peers.
+                An ASPA is a digitally signed object that provides a means of verifying that Autonomous System (AS) holder has authorized an Provider Autonomous System (PAS) to be its upstream provider and send received prefixes from AS in all directions including providers and peers.
             </t>
         </abstract>
 
@@ -97,7 +97,7 @@
             </t>
 
             <t>
-                The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488"></xref>, which defines a Crytopgraphic Message Syntax (CMS) <xref target="RFC5652"></xref> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488"></xref>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"></xref> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
                 Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"></xref>), this document defines:
                 <list style="numbers">
                     <t>
