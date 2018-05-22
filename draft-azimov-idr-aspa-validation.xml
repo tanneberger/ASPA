@@ -107,8 +107,8 @@
             </t>
             <t>
                 It is believed that BGPSec <xref target="RFC8205" /> can solve the problem of AS_PATH correctness.
-                But even ignoring the complexity of this BGP extension, it has backward support for 'old' BGP4 that an attacker can abuse to nullify all the work of AS_PATH signing.
-                As a result, to abuse AS_PATH or any other transit attribute, an attacker merely needs to use 'old' BGP4.
+                But even ignoring the complexity of this BGP extension, it has backward support for 'old' BGP-4 that an attacker can abuse to nullify all the work of AS_PATH signing.
+                As a result, to abuse AS_PATH or any other transit attribute, an attacker merely needs to use 'old' BGP-4.
             </t>
             <t>
                 This document defines the semantics of Autonomous System Provider Authorization (ASPA)  using the Resource Public Key Infrastructure (RPKI) to validate the AS_PATH attribute of routes advertised in BGP.
