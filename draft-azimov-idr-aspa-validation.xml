@@ -61,15 +61,20 @@
      </address>
    </author>
 
-   <author fullname="Job Snijders" initials="J"
-           surname="Snijders">
-     <organization>NTT</organization>
-     <address>
-       <email>job@ntt.net</email>
-     </address>
+   <author fullname="Job Snijders" initials="J." surname="Snijders">
+       <organization abbrev="NTT">NTT Communications</organization>
+       <address>
+           <postal>
+               <street>Theodorus Majofskistraat 100</street>
+               <code>1065 SZ</code>
+               <city>Amsterdam</city>
+               <country>The Netherlands</country>
+           </postal>
+           <email>job@ntt.net</email>
+       </address>
    </author>
 
-   <date month="March" year="2018"/>
+   <date />
 
    <keyword>BGP</keyword>
    <keyword>Route leak</keyword>

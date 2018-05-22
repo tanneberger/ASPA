@@ -53,12 +53,17 @@
      </address>
    </author>
 
-   <author fullname="Job Snijders" initials="J"
-           surname="Snijders">
-     <organization abbrev="NTT">NTT Communications</organization>
-     <address>
-       <email>job@ntt.net</email>
-     </address>
+   <author fullname="Job Snijders" initials="J." surname="Snijders">
+       <organization abbrev="NTT">NTT Communications</organization>
+       <address>
+           <postal>
+               <street>Theodorus Majofskistraat 100</street>
+               <code>1065 SZ</code>
+               <city>Amsterdam</city>
+               <country>The Netherlands</country>
+           </postal>
+           <email>job@ntt.net</email>
+       </address>
    </author>
 
    <date />
