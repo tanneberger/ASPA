@@ -84,7 +84,7 @@
 
         <abstract>
             <t>
-                This document defines the semantics of a Autonomous System Provider Authorzation (ASPA) in terms of the context of an application of the Resource Public Key Infrastructure to validate the AS_PATH attribute of routes advertised in the Border Gateway Protocol.
+                This document defines the semantics of a Autonomous System Provider Authorization (ASPA) in terms of the context of an application of the Resource Public Key Infrastructure to validate the AS_PATH attribute of routes advertised in the Border Gateway Protocol.
             </t>
         </abstract>
 
