@@ -75,8 +75,8 @@
 
         <abstract>
             <t>
-                This document defines a standard profile for Autonomous System Provider Authorization (ASPAs).
-                An ASPA is a digitally signed object that provides a means of verifying that Autonomous System (AS) holder has authorized an Provider Autonomous System (PAS) to be its upstream provider and send received prefixes from AS in all directions including providers and peers.
+                This document defines a standard profile for Autonomous System Provider Authorization in the Resource Public Key Infrastructure.
+                An ASPA is a digitally signed object that provides a means of verifying that a Customer Autonomous System holder has authorized a Provider Autonomous System to be its upstream provider and for the Provider to send prefixes received from the Customer AS in all directions including providers and peers.
             </t>
         </abstract>
 
@@ -92,12 +92,12 @@
             <t>
                 The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
                 (See <xref target="RFC6480" /> for more information.)
-                As part of this system, a mechanism is needed to allow entities to verify that a PAS has been given permission by AS holder to send routes in all directions.
-                An ASPA provides this function.
+                As part of this system, a mechanism is needed to allow entities to verify that a Provider AS (PAS) has permission from a Customer AS (CAS) holder to send routes in all directions.
+                An Autonomous System Provider Authorization (ASPA) object provides this function.
             </t>
 
             <t>
-                The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488" />>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488" />>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
                 Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
                 <list style="numbers">
                     <t>
@@ -106,7 +106,7 @@
                     </t>
                     <t>
                         The ASN.1 syntax for the ASPA eContent.
-                        (This is the payload that specifies the customer AS and its PAS.)
+                        (This is the payload that specifies the Customer AS and its PAS.)
                         The ASPA eContent is ASN.1 encoded using the Distinguished Encoding Rules (DER) [X.690].
                     </t>
                 </list>
@@ -125,8 +125,8 @@
 
         <section title="The ASPA eContent" anchor="content">
             <t>
-                The content of an ASPA identifies the customer AS as well as the provider AS that is authorized to further propagate announces received from the customer.
-                If customer has multiple providers, it issues multiple ASPAs, one per each provider AS.
+                The content of an ASPA identifies the Customer AS (CAS) as well as the Provider AS (PAS) that is authorized to further propagate announces received from the customer.
+                If customer has multiple providers, it issues multiple ASPAs, one for each provider AS.
                 An ASPA is formally defined as:
             </t>
 
