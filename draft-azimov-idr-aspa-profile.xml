@@ -91,14 +91,14 @@
         <section title="Introduction" anchor="intro">
             <t>
                 The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
-                (See <xref target="RFC6480"></xref> for more information.)
+                (See <xref target="RFC6480" /> for more information.)
                 As part of this system, a mechanism is needed to allow entities to verify that a PAS has been given permission by AS holder to send routes in all directions.
                 An ASPA provides this function.
             </t>
 
             <t>
-                The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488"></xref>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"></xref> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
-                Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"></xref>), this document defines:
+                The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488" />>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
                 <list style="numbers">
                     <t>
                         The OID that identifies the signed object as being an ASPA.
@@ -119,7 +119,7 @@
             <t>
                 The content-type for an ASPA is defined as #TODO and has the numerical value of #TODO.
 
-                This OID MUST appear both within the eContentType in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object (see <xref target="RFC6488"></xref>).
+                This OID MUST appear both within the eContentType in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object (see <xref target="RFC6488" />).
             </t>
         </section>
 
@@ -143,7 +143,7 @@
             </figure>
 
             <t>
-                Note that this content appears as the eContent within the encapContentInfo (see <xref target="RFC6488"></xref>).
+                Note that this content appears as the eContent within the encapContentInfo (see <xref target="RFC6488" />).
             </t>
 
             <section title="version">
@@ -168,7 +168,7 @@
         <section title="ASPA Validation" anchor="validation">
             <t>
                 Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA.
-                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488"></xref>.
+                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488" />.
             </t>
         </section>
 
