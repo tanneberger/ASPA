@@ -154,7 +154,7 @@
 
             <section title="customerAsID">
                 <t>
-                    The customerAsID field contains the AS number that authorizes upstream providers to further send prefixes to upper providers and peers.
+                    The customerAsID field contains the AS number of the Autonomous System that authorizes an upstream providers (listed in the providerAsId) to propagate prefixes other ASNs.
                 </t>
             </section>
 
