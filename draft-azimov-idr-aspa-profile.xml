@@ -17,184 +17,184 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std" docName="draft-azimov-idr-aspa-profile" ipr="trust200902">
- <front>
+    <front>
 
-   <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
+        <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
 
-   <author fullname="Alexander Azimov" initials="A"
-           surname="Azimov">
-     <organization>Qrator Labs</organization>
-     <address>
-       <email>aa@qrator.net</email>
-     </address>
-   </author>
+        <author fullname="Alexander Azimov" initials="A"
+            surname="Azimov">
+            <organization>Qrator Labs</organization>
+            <address>
+                <email>aa@qrator.net</email>
+            </address>
+        </author>
 
-   <author fullname="Eugene Uskov" initials="E"
-           surname="Uskov">
-     <organization>Qrator Labs</organization>
-     <address>
-       <email>eu@qrator.net</email>
-     </address>
-   </author>
+        <author fullname="Eugene Uskov" initials="E"
+            surname="Uskov">
+            <organization>Qrator Labs</organization>
+            <address>
+                <email>eu@qrator.net</email>
+            </address>
+        </author>
 
-   <author fullname="Randy Bush" initials="R"
-           surname="Bush">
-     <organization>Internet Initiative Japan</organization>
-     <address>
-       <email>randy@psg.com</email>
-     </address>
-   </author>
+        <author fullname="Randy Bush" initials="R"
+            surname="Bush">
+            <organization>Internet Initiative Japan</organization>
+            <address>
+                <email>randy@psg.com</email>
+            </address>
+        </author>
 
-   <author fullname="Keyur Patel" initials="K"
-           surname="Patel">
-     <organization>Arrcus, Inc.</organization>
-     <address>
-       <email>keyur@arrcus.com</email>
-     </address>
-   </author>
+        <author fullname="Keyur Patel" initials="K"
+            surname="Patel">
+            <organization>Arrcus, Inc.</organization>
+            <address>
+                <email>keyur@arrcus.com</email>
+            </address>
+        </author>
 
-   <author fullname="Job Snijders" initials="J." surname="Snijders">
-       <organization abbrev="NTT">NTT Communications</organization>
-       <address>
-           <postal>
-               <street>Theodorus Majofskistraat 100</street>
-               <code>1065 SZ</code>
-               <city>Amsterdam</city>
-               <country>The Netherlands</country>
-           </postal>
-           <email>job@ntt.net</email>
-       </address>
-   </author>
+        <author fullname="Job Snijders" initials="J." surname="Snijders">
+            <organization abbrev="NTT">NTT Communications</organization>
+            <address>
+                <postal>
+                    <street>Theodorus Majofskistraat 100</street>
+                    <code>1065 SZ</code>
+                    <city>Amsterdam</city>
+                    <country>The Netherlands</country>
+                </postal>
+                <email>job@ntt.net</email>
+            </address>
+        </author>
 
-   <date />
+        <date />
 
-   <keyword>BGP</keyword>
-   <keyword>Route leak</keyword>
-   <keyword>Hijacks</keyword>
+        <keyword>BGP</keyword>
+        <keyword>Route leak</keyword>
+        <keyword>Hijacks</keyword>
 
-   <abstract>
-     <t>
-         This document defines a standard profile for Autonomouse System Provider Authorization (ASPAs).
-         An ASPA is a digitally signed object that provides a means of verifying that Autonomous System (AS) holder has authorized an Provider Autonomous System (PAS) to be its upstream provider and send recieved prefixes from AS in all directions including providers and peers.
-     </t>
-   </abstract>
+        <abstract>
+            <t>
+                This document defines a standard profile for Autonomous System Provider Authorization (ASPAs).
+                An ASPA is a digitally signed object that provides a means of verifying that Autonomous System (AS) holder has authorized an Provider Autonomous System (PAS) to be its upstream provider and send recieved prefixes from AS in all directions including providers and peers.
+            </t>
+        </abstract>
 
-   <note title="Requirements Language">
-     <t>
-       The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" are to be
-       interpreted as described in <xref target="RFC2119">RFC 2119</xref>
-       only when they appear in all upper case.  They may also appear in lower
-       or mixed case as English words, without normative meaning.
-     </t>
-   </note>
- </front>
+        <note title="Requirements Language">
+            <t>
+                The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+                "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" are to be
+                interpreted as described in <xref target="RFC2119">RFC 2119</xref>
+                only when they appear in all upper case.  They may also appear in lower
+                or mixed case as English words, without normative meaning.
+            </t>
+        </note>
+    </front>
 
-<middle>
-    <section title="Introduction" anchor="intro">
-        <t>
-            The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
-            (See <xref target="RFC6480"></xref> for more information.)
-            As part of this system, a mechanism is needed to allow entities to verify that a PAS has been given permission by AS holder to send routes in all directions.
-            An ASPA provides this function.
-        </t>
+    <middle>
+        <section title="Introduction" anchor="intro">
+            <t>
+                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
+                (See <xref target="RFC6480"></xref> for more information.)
+                As part of this system, a mechanism is needed to allow entities to verify that a PAS has been given permission by AS holder to send routes in all directions.
+                An ASPA provides this function.
+            </t>
 
-        <t>
-            The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488"></xref>, which defines a Crytopgraphic Message Syntax (CMS) <xref target="RFC5652"></xref> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
-            Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"></xref>), this document defines:
-            <list style="numbers">
+            <t>
+                The ASPA makes use of the template for RPKI digitally signed objects <xref target="RFC6488"></xref>, which defines a Crytopgraphic Message Syntax (CMS) <xref target="RFC5652"></xref> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"></xref>), this document defines:
+                <list style="numbers">
+                    <t>
+                        The OID that identifies the signed object as being an ASPA.
+                        (This OID appears within the eContentType in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object).
+                    </t>
+                    <t>
+                        The ASN.1 syntax for the ASPA eContent.
+                        (This is the payload that specifies the customer AS and its PAS.)
+                        The ASPA eContent is ASN.1 encoded using the Distinguished Encoding Rules (DER) [X.690].
+                    </t>
+                </list>
+
+                #TODO: terminology?
+            </t>
+        </section>
+
+        <section title="The ASPA Content-Type" anchor="content-type">
+            <t>
+                The content-type for an ASPA is defined as #TODO and has the numerical value of #TODO.
+
+                This OID MUST appear both within the eContentType in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object (see <xref target="RFC6488"></xref>).
+            </t>
+        </section>
+
+        <section title="The ASPA eContent" anchor="content">
+            <t>
+                The content of an ASPA identifies the customer AS as well as the provider AS that is authorized to further propagate announces received from the customer.
+                If customer has multiple providers, it issues multiple ASPAs, one per each provider AS.
+                An ASPA is formally defined as:
+            </t>
+
+            <figure>
+                <artwork type="abnf">
+                    AsProviderAttestation ::= SEQUENCE {
+                        version [0] INTEGER DEFAULT 0,
+                        customerAsID  ASID,
+                        providerAsID  ASID
+                    }
+
+                    ASID ::= INTEGER
+                </artwork>
+            </figure>
+
+            <t>
+                Note that this content appears as the eContent within the encapContentInfo (see <xref target="RFC6488"></xref>).
+            </t>
+
+            <section title="version">
                 <t>
-                    The OID that identifies the signed object as being an ASPA.
-                    (This OID appears within the eContentType in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object).
+                    The version number of the AsProviderAttestation MUST be 0.
                 </t>
+            </section>
+
+            <section title="customerAsID">
                 <t>
-                    The ASN.1 syntax for the ASPA eContent.
-                    (This is the payload that specifies the customer AS and its PAS.)
-                    The ASPA eContent is ASN.1 encoded using the Distinguished Encoding Rules (DER) [X.690].
-				</t>
-            </list>
+                    The customerAsID field contains the AS number that authorizes upstream providers to further send prefixes to upper providers and peers.
+                </t>
+            </section>
 
-            #TODO: terminology?
-        </t>
-	</section>
+            <section title="providerAsID">
+                <t>
+                    The providerAsID contains the AS number that is authorized to further propagate announces received from the customer.
+                </t>
+            </section>
+        </section>
 
-	<section title="The ASPA Content-Type" anchor="content-type">
-		<t>
-			The content-type for an ASPA is defined as #TODO and has the numerical value of #TODO.
+        <section title="ASPA Validation" anchor="validation">
+            <t>
+                Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA.
+                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488"></xref>.
+            </t>
+        </section>
 
-			This OID MUST appear both within the eContentType in the encapContentInfo object as well as the content-type signed attribute in the signerInfo object (see <xref target="RFC6488"></xref>).
-		</t>
-	</section>
+        <section anchor="IANA" title="IANA Considerations">
+        </section>
 
-	<section title="The ASPA eContent" anchor="content">
-		<t>
-			The content of an ASPA identifies the customer AS as well as the provider AS that is authorized to further propagate announces received from the customer.
-            If customer has multiple providers, it issues multiple ASPAs, one per each provider AS.
-            An ASPA is formally defined as:
-		</t>
+        <section anchor="Security" title="Security Considerations">
+        </section>
 
-		<figure>
-			<artwork type="abnf">
-                AsProviderAttestation ::= SEQUENCE {
-                    version [0] INTEGER DEFAULT 0,
-                    customerAsID  ASID,
-                    providerAsID  ASID
-                }
+        <section anchor="Acknowledgments" title="Acknowledgments">
+        </section>
 
-                ASID ::= INTEGER
-            </artwork>
-		</figure>
+    </middle>
 
-		<t>
-			Note that this content appears as the eContent within the encapContentInfo (see <xref target="RFC6488"></xref>).
-		</t>
+    <back>
+        <references title="Normative References">
+            &RFC2119;
+            &RFC5652;
+            &RFC6488;
+        </references>
 
-		<section title="version">
-			<t>
-				The version number of the AsProviderAttestation MUST be 0.
-			</t>
-		</section>
-
-		<section title="customerAsID">
-			<t>
-				The customerAsID field contains the AS number that authorizes upstream providers to further send prefixes to upper providers and peers.
-			</t>
-		</section>
-
-		<section title="providerAsID">
-			<t>
-				The providerAsID contains the AS number that is authorized to further propagate announces received from the customer.
-			</t>
-		</section>
-	</section>
-
-	<section title="ASPA Validation" anchor="validation">
-		<t>
-            Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA.
-            To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488"></xref>.
-		</t>
-	</section>
-
-	<section anchor="IANA" title="IANA Considerations">
-	</section>
-
-	<section anchor="Security" title="Security Considerations">
-	</section>
-
-	<section anchor="Acknowledgments" title="Acknowledgments">
-	</section>
-
-</middle>
-
- <back>
-    <references title="Normative References">
-        &RFC2119;
-        &RFC5652;
-        &RFC6488;
-    </references>
-
-	<references title="Informative References">
-		&RFC6480;
-	</references>
- </back>
+        <references title="Informative References">
+            &RFC6480;
+        </references>
+    </back>
 </rfc>
