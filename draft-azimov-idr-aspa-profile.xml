@@ -132,13 +132,13 @@
 
             <figure>
                 <artwork type="abnf">
-                    AsProviderAttestation ::= SEQUENCE {
-                        version [0] INTEGER DEFAULT 0,
-                        customerAsID  ASID,
-                        providerAsID  ASID
-                    }
+    AsProviderAttestation ::= SEQUENCE {
+        version [0] INTEGER DEFAULT 0,
+        customerAsID  ASID,
+        providerAsID  ASID
+    }
 
-                    ASID ::= INTEGER
+    ASID ::= INTEGER
                 </artwork>
             </figure>
 
