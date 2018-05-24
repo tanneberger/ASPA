@@ -2,6 +2,7 @@
 
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC3779 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3779.xml">
 <!ENTITY RFC8174 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC5652 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5652.xml">
 <!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
@@ -97,7 +98,7 @@
             </t>
 
             <t>
-                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488" />>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488" />, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
                 Therefore, to complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
                 <list style="numbers">
                     <t>
@@ -108,6 +109,9 @@
                         The ASN.1 syntax for the ASPA eContent.
                         (This is the payload that specifies the Customer AS and its PAS.)
                         The ASPA eContent is ASN.1 encoded using the Distinguished Encoding Rules (DER) [X.690].
+                    </t>
+                    <t>
+                        An additional step required to validate ASPAs (in addition to the validation steps specified in <xref target="RFC6488" />).
                     </t>
                 </list>
 
@@ -168,7 +172,14 @@
         <section title="ASPA Validation" anchor="validation">
             <t>
                 Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA.
-                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488" />.
+                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488" /> as well as the following additional
+   ASPA-specific validation step.
+                <list style="symbols">
+                    <t>
+                        The autonomous system identifier delegation extension <xref target="RFC3779" /> is present in the
+                        end-entity (EE) certificate (contained within the ASPA), and the customer AS number in the ASPA is contained within the set of AS numbers specified by the EE certificate's autonomous system identifier delegation extension.
+                    </t>
+                </list>
             </t>
         </section>
 
@@ -186,6 +197,7 @@
     <back>
         <references title="Normative References">
             &RFC2119;
+            &RFC3779;
             &RFC8174;
             &RFC5652;
             &RFC6488;
