@@ -28,7 +28,7 @@
     <front>
 
         <title abbrev="AS_PATH Verification">
-            Verification of AS_PATH Using the Resource Certificate Public Key Infrastructure and Austonomous System Provider Authorization
+            Verification of AS_PATH Using the Resource Certificate Public Key Infrastructure and Autonomous System Provider Authorization
         </title>
 
         <author fullname="Alexander Azimov" initials="A"
@@ -108,14 +108,11 @@
             <t>
                 BGPSec <xref target="RFC8205" /> was designed to solve the problem of AS_PATH correctness.
                 But ignoring the complexity of this extension, it has backward support for 'old' BGP-4 that an attacker can use in a downgrade attack to nullify all the work of AS_PATH signing.
-                As a result, to abuse the AS_PATH or any other transit attribute, an attacker merely needs to
-                downgrade to 'old' BGP-4.
+                As a result, to abuse the AS_PATH or any other transit attribute, an attacker merely needs to downgrade to 'old' BGP-4.
             </t>
             <t>
-                This document defines the semantics of Autonomous System Provider Authorization (ASPA) using the
-                Resource Public Key Infrastructure (RPKI) to validate the AS_PATH attribute of routes advertised in BGP.
-                It specifies AS_PATH verification procedures to allow a BGP listener to detect and mitigate malicious
-                hijacks and route leaks.
+                This document defines the semantics of Autonomous System Provider Authorization (ASPA) using the Resource Public Key Infrastructure (RPKI) to validate the AS_PATH attribute of routes advertised in BGP.
+                It specifies AS_PATH verification procedures to allow a BGP listener to detect and mitigate malicious hijacks and route leaks.
             </t>
 
         </section>
@@ -149,23 +146,21 @@
 
         <section title="Customer-Provider Verification Procedure" anchor="pair-verification">
             <t>
-                A relying party (RP) must have access to a local cache of the complete set of cryptographically valid
-                ASPAs when performing customer-provider verification procedure.
+                A relying party (RP) must have access to a local cache of the complete set of cryptographically valid ASPAs when performing customer-provider verification procedure.
             </t>
 
             <t>
-                For an ordered pair of ASNs in an AS_PATH (AS1, AS2), the customer-provider verification procedure is
-                determined as follows:
+                For an ordered pair of ASNs (AS1, AS2), the customer-provider verification procedure is determined as follows:
                 <list style="numbers">
                     <t>
-                        Select all cryptographically valid ASPAs with a customer value of AS2.
+                        Select all cryptographically valid ASPAs with a customer value of AS1.
                         This selection forms the set of "candidate ASPAs."
                     </t>
                     <t>
                         If the set of candidate ASPAs is empty, then the procedure exits with an outcome of "unknown."
                     </t>
                     <t>
-                        If there is at least one candidate ASPA where the provider field is AS1, then the procedure exits with an outcome of "valid."
+                        If there is at least one candidate ASPA where the provider field is AS2, then the procedure exits with an outcome of "valid."
                     </t>
                     <t>
                         Otherwise, the procedure exits with an outcome of "invalid."
@@ -182,22 +177,19 @@
             </t>
             <t>
                 The value of each AS_SEQ component can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
-                We can state that when a route is received from a customer or a literal peer, each pair (AS(I-1),
-                AS(i)) MUST have customer-provider or sibling relation. If there are other types of relations, it
-                means that the route was leaked or the AS_PATH attribute was malformed.
+                We can state that when a route is received from a customer or a literal peer, each pair (AS(I-1), AS(i)) MUST have customer-provider or sibling relation.
+                If there are other types of relations, it means that the route was leaked or the AS_PATH attribute was malformed.
                 The goal of above procedure is to check correctness of this statement.
             </t>
 
             <t>
-                If a route is received from a customer or peer, its AS_PATH MUST be validated as follows:
+                If a route is received from a customer or peer, its AS_PATH MUST be verified as follows:
                 <list style="numbers">
                     <t>
-                        If the closest ASN in the AS_PATH is not the receiver's neighbor ASN then procedure halts
-                        with outcome "invalid";
+                        If the closest ASN in the AS_PATH is not the receiver's neighbor ASN then procedure halts with outcome "invalid";
                     </t>
                     <t>
-                        If in one of AS_SEQ segments there is an "invalid" customer-provider pair (AS(I-1), AS(i))
-                        (<xref target="pair-verification" />) then the procedure halts with outcome "invalid";
+                        If in one of AS_SEQ segments there is an "invalid" customer-provider pair (AS(I-1), AS(i)) (<xref target="pair-verification" />) then the procedure halts with outcome "invalid";
                     </t>
                     <t>
                         If the AS_PATH has at least one AS_SET segment then procedure halts with outcome "as_set";
@@ -213,11 +205,11 @@
                 This also allows customers to detect malformed routes received from upstream providers.
             </t>
             <t>
-                If the output of AS_PATH verification procedure is 'as_set' it means that AS_PATH can't be fully validated.
+                If the output of AS_PATH verification procedure is 'as_set' it means that AS_PATH can't be fully verified.
                 Such routes should be treated with caution and MAY be processed the same way as "invalid" routes.
             </t>
             <t>
-                The above AS_PATH verification procedure can be fully automated using BGP Roles.  [ DESCRIBE HOW ]
+                The above AS_PATH verification procedure checks routes received from customers and peers. The information about peering relations can be automatically retrieved from BGP roles settings, thus improving reliability and providing the possibility for full automation.
             </t>
         </section>
 
@@ -233,13 +225,13 @@
             </t>
             <t>
                 By convention, an ASPA with a provider AS of 0 should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
-                A provider 0 ASPA may coexist with ASPAs that have different provider AS values; though in such cases, the presence or absence of the provider AS 0 ASPA does not alter the AS_PATH validity state.  [ NEEDS CLARIFICATION ]
+                A provider 0 ASPA may coexist with ASPAs that have different provider AS values; though in such cases, the presence or absence of the provider AS 0 ASPA does not alter the AS_PATH verification procedure.
             </t>
         </section>
 
         <section title="Siblings (Complex Relations)" anchor="Siblings">
             <t>
-                There are AS relationships which can not be described as strictly simple peer-peer or customer-provider; e.g. when both parties are intentionally sending prefixes received from each other to their peers and/or upstreams.
+                There are peering relationships which can not be described as strictly simple peer-peer or customer-provider; e.g. when both parties are intentionally sending prefixes received from each other to their peers and/or upstreams.
             </t>
 
             <t>
@@ -249,13 +241,12 @@
 
         <section anchor="Security" title="Security Considerations">
             <t>
-                ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly
-                invalidates all routes passed to upstream providers other than the provider ASs listed in the collection of ASPAs.
+                ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly invalidates all routes passed to upstream providers other than the provider ASs listed in the collection of ASPAs.
                 It is the Customer AS's duty to maintain a correct set of ASPAs.
             </t>
 
             <t>
-                While the ASPA provides a check of AS_PATH validity for routes received from customers and peers, it doesn't provide full support for routes that are received from upstream providers.
+                While the ASPA provides a check of AS_PATH for routes received from customers and peers, it doesn't provide full support for routes that are received from upstream providers.
                 So, this mechanism guarantees detection of both malicious and accidental route leaks and provides partial support for detection of malicious hijacks: upstream transit ISPs will still be able to send hijacked prefixes with malformed AS_PATHs to their customers.
             </t>
 

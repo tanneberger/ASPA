@@ -114,8 +114,6 @@
                         An additional step required to validate ASPAs (in addition to the validation steps specified in <xref target="RFC6488" />).
                     </t>
                 </list>
-
-                #TODO: terminology?
             </t>
         </section>
 
