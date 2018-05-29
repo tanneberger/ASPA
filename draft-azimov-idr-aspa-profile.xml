@@ -7,6 +7,7 @@
 <!ENTITY RFC5652 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5652.xml">
 <!ENTITY RFC6268 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6268.xml">
 <!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
+<!ENTITY RFC6485 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6485.xml">
 <!ENTITY RFC6488 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6488.xml">
 ]>
 
@@ -91,11 +92,15 @@
 
         <abstract>
             <t>
-                This document defines a standard profile for Autonomous System Provider Authorization (ASPA)
-                in the Resource Public Key Infrastructure (RPKI).  An ASPA is a digitally signed object that
-                provides a means of verifying that a Customer Autonomous System (AS) holder has authorized
-                a Provider Autonomous System to be its upstream provider and for the Provider to send
-                prefixes received from the Customer AS in all directions including providers and peers.
+                This document defines a standard profile for Autonomous
+                System Provider Authorization in the Resource Public Key
+                Infrastructure.  An Autonomous System Provider
+                Authorization is a digitally signed object that provides
+                a means of verifying that a Customer Autonomous System
+                holder has authorized a Provider Autonomous System to be
+                its upstream provider and for the Provider to send
+                prefixes received from the Customer Autonomous System in
+                all directions including providers and peers.
             </t>
         </abstract>
 
@@ -124,8 +129,19 @@
             </t>
 
             <t>
-                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488" />, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
-                To complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
+                The ASPA uses the template for RPKI digitally signed
+                objects <xref target="RFC6488" />, which defines a
+                Cryptographic Message Syntax (CMS) <xref
+                target="RFC5652" /> wrapper for the ASPA content as well
+                as a generic validation procedure for RPKI signed
+                objects.  As ASPAs need to be validated with RPKI
+                certificates issued by the current infrastructure, we
+                assume the mandatory-to-implement algorithms in <xref
+                target="RFC6485" />.</t>
+
+		<t>To complete the specification of the ASPA (see
+		Section 4 of <xref target="RFC6488"/>), this document
+		defines:
                 <list style="numbers">
                     <t>
                         The object identifier (OID) that identifies the ASPA signed object.
@@ -152,9 +168,12 @@
 
         <section title="The ASPA eContent" anchor="content">
             <t>
-                The content of an ASPA identifies the Customer AS (CAS) as well as the Provider AS (PAS) that is authorized to further propagate announces received from the customer.
-                If customer has multiple providers, it issues multiple ASPAs, one for each provider AS.
-                An ASPA is formally defined as:
+                The content of an ASPA identifies the Customer AS (CAS)
+                as well as the Provider AS (PAS) that is authorized to
+                further propagate announcements received from the
+                customer.  If customer has multiple providers, it issues
+                multiple ASPAs, one for each provider AS.  An ASPA is
+                formally defined as:
             </t>
 
             <figure>
@@ -312,6 +331,7 @@
             &RFC8174;
             &RFC5652;
             &RFC6268;
+            &RFC6485;
             &RFC6488;
 
             <reference anchor="X680" >
