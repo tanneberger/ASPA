@@ -137,7 +137,7 @@
                 objects.  As ASPAs need to be validated with RPKI
                 certificates issued by the current infrastructure, we
                 assume the mandatory-to-implement algorithms in <xref
-                target="RFC6485" />.</t>
+                target="RFC6485" />, or its successor.</t>
 
 		<t>To complete the specification of the ASPA (see
 		Section 4 of <xref target="RFC6488"/>), this document
