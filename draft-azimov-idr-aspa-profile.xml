@@ -185,10 +185,13 @@
 
     ASProviderAttestation ::= SEQUENCE {
         version [0] ASPAVersion DEFAULT v0,
+        AFI  AddressFamilyIdentifier,
         customerASID  ASID,
         providerASID  ASID }
 
     ASPAVersion ::= INTEGER  { v0(0) }
+
+    AddressFamilyIdentifier ::= INTEGER
 
     ASID ::= INTEGER
                 </artwork>
@@ -204,15 +207,21 @@
                 </t>
             </section>
 
+            <section title="AFI">
+                <t>
+                    The AFI field contains Address Family Identifier for which the relation between customer and provider ASes is authorized. Presently defined values for the Address Family Identifier field are specified in the IANA's Address Family Numbers registry <xref target="IANA-AF" />.
+                </t>
+            </section>
+
             <section title="customerASID">
                 <t>
-                    The customerASID field contains the AS number of the Autonomous System that authorizes an upstream provider (listed in the providerASId) to propagate prefixes other ASes.
+                    The customerASID field contains the AS number of the Autonomous System that authorizes an upstream provider (listed in the providerASId) to propagate prefixes in the specified address family other ASes.
                 </t>
             </section>
 
             <section title="providerASID">
                 <t>
-                    The providerASID contains the AS number that is authorized to further propagate announcements received from the customer.
+                    The providerASID contains the AS number that is authorized to further propagate announcements in the specified address family received from the customer.
                 </t>
             </section>
         </section>
@@ -265,10 +274,13 @@
 
     ASProviderAttestation ::= SEQUENCE {
         version [0] ASPAVersion DEFAULT v0,
+        AFI  AddressFamilyIdentifier,
         customerASID  ASID,
         providerASID  ASID }
 
     ASPAVersion ::= INTEGER  { v0(0) }
+
+    AddressFamilyIdentifier ::= INTEGER
 
     ASID ::= INTEGER
 
@@ -354,6 +366,17 @@
                     <date year="2015"/>
                </front>
                <seriesInfo name="ITU-T" value="Recommendation X.690"/>
+            </reference>
+
+            <reference anchor="IANA-AF" target="http://www.iana.org/numbers.html">
+                <front>
+                    <title>Address Family Numbers</title>
+                    <author>
+                        <organization>IANA</organization>
+                    </author>
+                    <date />
+                </front>
+               <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
             </reference>
 
         </references>
