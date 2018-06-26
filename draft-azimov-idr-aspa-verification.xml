@@ -196,10 +196,13 @@
                         If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
                     </t>
                     <t>
+                        If in one of AS_PATH segments there is at least one AS_TRANS (AS23456) then procedure halts with the outcome "unverifiable";
+                    </t>
+                    <t>
                         If in one of AS_SEQ segments there is an customer-provider pair (AS(I-1), AS(i)) for which customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
                     </t>
                     <t>
-                        If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "as_set";
+                        If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
                     </t>
                     <t>
                         Otherwise, the procedure halts with an outcome of "valid".
@@ -212,7 +215,7 @@
                 This also allows customers to detect malformed routes received from upstream providers.
             </t>
             <t>
-                If the output of the AS_PATH verification procedure is 'as_set' it means that AS_PATH can't be fully verified.
+                If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully verified.
                 Such routes should be treated with caution and MAY be processed the same way as "invalid" routes.
             </t>
             <t>
