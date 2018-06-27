@@ -196,10 +196,10 @@
                         If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
                     </t>
                     <t>
-                        If in one of AS_PATH segments there is at least one AS_TRANS (AS23456) then procedure halts with the outcome "unverifiable";
+                        If in one of AS_SEQ segments there is an customer-provider pair (AS(I-1), AS(I)), where both AS(I-1), AS(I) are not equal to AS_TRANS and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
                     </t>
                     <t>
-                        If in one of AS_SEQ segments there is an customer-provider pair (AS(I-1), AS(i)) for which customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
+                        If in one of AS_PATH segments there is at least one AS_TRANS (AS23456) then procedure halts with the outcome "unverifiable";
                     </t>
                     <t>
                         If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
