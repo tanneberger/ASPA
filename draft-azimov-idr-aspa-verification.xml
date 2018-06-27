@@ -184,6 +184,7 @@
             </t>
             <t>
                 The value of each AS_SEQ component can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
+                In this case, the sequence {AS(I), AS(I-1),...} represents different ASNs, that packet should pass towards the destination.
                 We can state that when a route is received from a customer or a literal peer, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
                 If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
                 The goal of the above procedure is to check the correctness of this statement.
@@ -196,7 +197,7 @@
                         If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
                     </t>
                     <t>
-                        If in one of AS_SEQ segments there is an customer-provider pair (AS(I-1), AS(I)), where both AS(I-1), AS(I) are not equal to AS_TRANS and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
+                        If in one of AS_SEQ segments there is a pair (AS(I-1), AS(I)), where both AS(I-1), AS(I) are not equal to AS_TRANS and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
                     </t>
                     <t>
                         If in one of AS_PATH segments there is at least one AS_TRANS (AS23456) then procedure halts with the outcome "unverifiable";
