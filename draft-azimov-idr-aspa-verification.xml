@@ -238,7 +238,6 @@
                 By convention, an ASPA with a provider AS of 0 should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
                 A provider 0 ASPA may coexist with ASPAs that have different provider AS values; though in such cases, the presence or absence of the provider AS 0 ASPA does not alter the AS_PATH verification procedure.
             </t>
-	    <t>THE ABOVE CONTRADICT WHAT YOU ARE SAYING IN EMAIL.</t>
         </section>
 
         <section title="Siblings (Complex Relations)" anchor="Siblings">
