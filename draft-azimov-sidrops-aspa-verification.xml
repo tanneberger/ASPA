@@ -11,7 +11,7 @@
 <!ENTITY RFC5280 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
 <!ENTITY RFC3779 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3779.xml">
 <!ENTITY I-D.ymbk-idr-bgp-eotr-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-idr-bgp-eotr-policy-02.xml">
-<!ENTITY I-D.ymbk-idr-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-idr-aspa-profile-00.xml">
+<!ENTITY I-D.azimov-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-azimov-sidrops-aspa-profile-00.xml">
 <!ENTITY I-D.ietf-idr-bgp-open-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-open-policy-02.xml">
 ]>
 
