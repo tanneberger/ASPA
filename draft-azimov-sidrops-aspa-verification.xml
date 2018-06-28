@@ -24,7 +24,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-azimov-idr-aspa-verification" ipr="trust200902">
+<rfc category="std" docName="draft-azimov-sidrops-aspa-verification-00" ipr="trust200902">
     <front>
 
         <title abbrev="AS_PATH Verification">
