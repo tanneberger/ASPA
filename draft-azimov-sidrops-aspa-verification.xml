@@ -13,7 +13,9 @@
 <!ENTITY I-D.ymbk-idr-bgp-eotr-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-idr-bgp-eotr-policy-02.xml">
 <!ENTITY I-D.azimov-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-azimov-sidrops-aspa-profile-00.xml">
 <!ENTITY I-D.ietf-idr-bgp-open-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-open-policy-02.xml">
+<!ENTITY I-D.white-sobgp-architecture SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-white-sobgp-architecture-02.xml">
 ]>
+
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <?rfc strict="yes" ?>
@@ -106,13 +108,23 @@
                 While these upgrades to BGP are quite useful, they still rely on transitive BGP attributes, i.e. AS_PATH, that can be manipulated by attackers.
             </t>
             <t>
-                BGPSec <xref target="RFC8205" /> was designed to solve the problem of AS_PATH correctness.
-                But ignoring the complexity of this extension, it has backward support for 'old' BGP-4 that an attacker can use in a downgrade attack to nullify all the work of AS_PATH signing.
-                As a result, to abuse the AS_PATH or any other transit attribute, an attacker merely needs to downgrade to 'old' BGP-4.
+                BGPSec <xref target="RFC8205" /> was designed to solve the problem of AS_PATH validation.
+                Unfortunately, strict cryptographic validation brought unaffordable computational overhead for BGP routers.
+                BGPSec also proved to be vulnerable to downgrade attacks that can nullify all the work of AS_PATH signing.
+                As a result, to abuse the AS_PATH or any other signed transit attribute, an attacker merely needs to downgrade to 'old' BGP-4.
             </t>
             <t>
-                This document defines the semantics of Autonomous System Provider Authorization (ASPA) using the Resource Public Key Infrastructure (RPKI) to verify the AS_PATH attribute of routes advertised in BGP.
-                It specifies AS_PATH verification procedures to allow a BGP listener to detect and mitigate malicious hijacks and route leaks.
+                An alternative approach was introduced with soBGP <xref target="I-D.white-sobgp-architecture"/>.
+                Instead of strong cryptographic AS_PATH validation, it was suggested to create an AS_PATH security function based on a shared database of ASN adjacencies.
+                While such an approach has reasonable computational cost, the two side adjacencies don't provide a way to automate anomaly detection until a high adoption rate - the attacker will definitely use the chance to set up the one-way adjacency.
+                It was suggested to share data about adjacencies using additional BGP messages, which significantly increases adoption complexity.
+                In addition, the general goal to verify all AS_PATHs was hardly achievable taking into account the indirect adjacency at internet exchange points.
+            </t>
+            <t>
+                Instead of the general goal of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
+                To achieve this goal a new AS_PATH verification procedure is defined which is capable to automatically detect invalid (malformed) AS_PATH for routes that are received from customers and peers.
+                This procedure uses a shared database of customer-to-provider links that is built using new RPKI object - Autonomous System Provider Authorization (ASPA).
+                Described technique provides benefits for the participants already at early adoption state.
             </t>
 
         </section>
@@ -286,6 +298,7 @@
             &RFC3779;
             &I-D.ymbk-idr-bgp-eotr-policy;
             &I-D.ietf-idr-bgp-open-policy;
+            &I-D.white-sobgp-architecture;
         </references>
     </back>
 </rfc>
