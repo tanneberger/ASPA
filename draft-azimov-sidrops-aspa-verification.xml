@@ -14,6 +14,7 @@
 <!ENTITY I-D.azimov-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-azimov-sidrops-aspa-profile-00.xml">
 <!ENTITY I-D.ietf-idr-bgp-open-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-open-policy-02.xml">
 <!ENTITY I-D.white-sobgp-architecture SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-white-sobgp-architecture-02.xml">
+<!ENTITY I-D.draft-kumari-deprecate-as-set-confed-set SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-kumari-deprecate-as-set-confed-set-12.xml">
 ]>
 
 
@@ -116,7 +117,7 @@
             <t>
                 An alternative approach was introduced with soBGP <xref target="I-D.white-sobgp-architecture"/>.
                 Instead of strong cryptographic AS_PATH validation, it was suggested to create an AS_PATH security function based on a shared database of ASN adjacencies.
-                While such an approach has reasonable computational cost, the two side adjacencies don't provide a way to automate anomaly detection until a high adoption rate - the attacker will definitely use the chance to set up the one-way adjacency.
+                While such an approach has reasonable computational cost, the two side adjacencies don't provide a way to automate anomaly detection until high adoption rate - the attacker will definitely use the chance to set up the one-way adjacency.
                 It was suggested to share data about adjacencies using additional BGP messages, which significantly increases adoption complexity.
                 In addition, the general goal to verify all AS_PATHs was hardly achievable taking into account the indirect adjacency at internet exchange points.
             </t>
@@ -124,23 +125,7 @@
                 Instead of the general goal of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
                 To achieve this goal a new AS_PATH verification procedure is defined which is capable to automatically detect invalid (malformed) AS_PATH for routes that are received from customers and peers.
                 This procedure uses a shared database of customer-to-provider links that is built using new RPKI object - Autonomous System Provider Authorization (ASPA).
-                Described technique provides benefits for the participants already at early adoption state.
-            </t>
-
-        </section>
-
-        <section title="Autonomous System Provider Authorization" anchor="ASPA">
-            <t>
-                As described in <xref target="RFC6480" />, the RPKI is based on a hierarchy of resource certificates that are aligned to the Internet Number Resource allocation structure.
-                Resource certificates are X.509 certificates that conform to the PKIX profile <xref target="RFC5280" />, and to the extensions for IP addresses and AS identifiers <xref target="RFC3779" />.
-                A resource certificate is a binding by an issuer of IP address blocks and Autonomous System (AS) numbers to the subject of a certificate, identified by the unique association of the subject's private key with the public key contained in the resource certificate.
-                The RPKI is structured so that each current resource certificate matches a current resource allocation or assignment.
-            </t>
-
-            <t>
-                ASPAs are digitally signed objects that bind a in a selected AFI Provider AS number to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
-                An ASPA  attests that a Customer AS holder (CAS) has authorized a particular Provider AS (PAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
-                The ASPA record profile is described in [#link]. The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
+                Described technique provides benefits for the participants already at state of early adoption.
             </t>
 
         </section>
@@ -154,6 +139,22 @@
             <t>
                 The ability to constrain propagation of BGP anomalies to upstreams and peers, without requiring support from the source of the anomaly (which is critical if source has malicious intent), should significantly improve the security of inter-domain routing and solve the majority of problems.
             </t>
+        </section>
+
+        <section title="Autonomous System Provider Authorization" anchor="ASPA">
+            <t>
+                As described in <xref target="RFC6480" />, the RPKI is based on a hierarchy of resource certificates that are aligned to the Internet Number Resource allocation structure.
+                Resource certificates are X.509 certificates that conform to the PKIX profile <xref target="RFC5280" />, and to the extensions for IP addresses and AS identifiers <xref target="RFC3779" />.
+                A resource certificate is a binding by an issuer of IP address blocks and Autonomous System (AS) numbers to the subject of a certificate, identified by the unique association of the subject's private key with the public key contained in the resource certificate.
+                The RPKI is structured so that each current resource certificate matches a current resource allocation or assignment.
+            </t>
+
+            <t>
+                ASPAs are digitally signed objects that bind a in a selected AFI Provider AS number to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
+                An ASPA  attests that a Customer AS holder (CAS) has authorized a particular Provider AS (PAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
+                The ASPA record profile is described in <xref target="I-D.azimov-sidrops-aspa-profile"/>.
+            </t>
+
         </section>
 
         <section title="Customer-Provider Verification Procedure" anchor="pair-verification">
@@ -203,16 +204,13 @@
             </t>
 
             <t>
-                If a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
+                For 32bit compatible BGP speakers, if a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
                 <list style="numbers">
                     <t>
                         If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
                     </t>
                     <t>
-                        If in one of AS_SEQ segments there is a pair (AS(I-1), AS(I)), where both AS(I-1), AS(I) are not equal to AS_TRANS and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
-                    </t>
-                    <t>
-                        If in one of AS_PATH segments there is at least one AS_TRANS (AS23456) then procedure halts with the outcome "unverifiable";
+                        If in one of AS_SEQ segments there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
                     </t>
                     <t>
                         If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
@@ -223,16 +221,22 @@
                 </list>
             </t>
             <t>
+                For BGP speakers that are not 32bit compatible, the procedure is slightly different.
+                In point 2 if at least one AS(I-1), AS(I) is equal to AS_TRANS(23456), the pair must be passed without check with customer-provider verification procedure.
+            </t>
+            <t>
                 If the output of the AS_PATH verification procedure is "invalid" the LOCAL_PREF SHOULD be set to 0 or the route MAY be dropped.
                 If an "invalid" route has no alternative route(s) and it is propagated to other ASes despite the above, it MUST be marked with the GRACEFUL_SHUTDOWN community to avoid possible stable oscillations, when an unchecked route received from a provider becomes preferred over an invalid route received from a customer.
                 This also allows customers to detect malformed routes received from upstream providers.
             </t>
             <t>
                 If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully verified.
-                Such routes should be treated with caution and MAY be processed the same way as "invalid" routes.
+                Such routes should be treated with caution and SHOULD be processed the same way as "invalid" routes.
+                This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
             </t>
             <t>
-                The above AS_PATH verification procedure checks routes received from customers and peers. The information about peering relations can be automatically retrieved from BGP roles settings, thus improving reliability and providing the possibility for full automation.
+                The above AS_PATH verification procedure is capable to check routes received from customers and peers.
+                The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
             </t>
         </section>
 
@@ -299,6 +303,8 @@
             &I-D.ymbk-idr-bgp-eotr-policy;
             &I-D.ietf-idr-bgp-open-policy;
             &I-D.white-sobgp-architecture;
+            &I-D.azimov-sidrops-aspa-profile;
+            &I-D.draft-kumari-deprecate-as-set-confed-set;
         </references>
     </back>
 </rfc>
