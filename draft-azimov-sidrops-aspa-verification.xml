@@ -117,15 +117,25 @@
             <t>
                 An alternative approach was introduced with soBGP <xref target="I-D.white-sobgp-architecture"/>.
                 Instead of strong cryptographic AS_PATH validation, it was suggested to create an AS_PATH security function based on a shared database of ASN adjacencies.
-                While such an approach has reasonable computational cost, the two side adjacencies don't provide a way to automate anomaly detection until high adoption rate - the attacker will definitely use the chance to set up the one-way adjacency.
-                It was suggested to share data about adjacencies using additional BGP messages, which significantly increases adoption complexity.
-                In addition, the general goal to verify all AS_PATHs was hardly achievable taking into account the indirect adjacency at internet exchange points.
+                While such an approach has reasonable computational
+		cost, the two side adjacencies don't provide a way to
+		automate anomaly detection without high adoption rate -
+		an attacker can easily up a one-way adjacency.
+                SO-BGP suggested sharing data about adjacencies using
+		additional BGP messages, which is recursively complex thus significantly increasing adoption complexity.
+                In addition, the general goal to verify all AS_PATHs was
+		not achievable given the indirect adjacencies at internet exchange points.
             </t>
             <t>
                 Instead of the general goal of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
-                To achieve this goal a new AS_PATH verification procedure is defined which is capable to automatically detect invalid (malformed) AS_PATH for routes that are received from customers and peers.
-                This procedure uses a shared database of customer-to-provider links that is built using new RPKI object - Autonomous System Provider Authorization (ASPA).
-                Described technique provides benefits for the participants already at state of early adoption.
+                To achieve this goal a new AS_PATH verification
+		procedure is defined which is able to automatically
+		detect invalid (malformed) AS_PATHs in announcements that are received from customers and peers.
+                This procedure uses a shared signed database of
+		customer-to-provider relationships that is built using a
+		new RPKI object - Autonomous System Provider Authorization (ASPA).
+                This technique provides benefits for the participants
+		even in a state of early adoption.
             </t>
 
         </section>
@@ -150,7 +160,7 @@
             </t>
 
             <t>
-                ASPAs are digitally signed objects that bind a in a selected AFI Provider AS number to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
+                ASPAs are digitally signed objects that bind a selected AFI Provider AS number to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
                 An ASPA  attests that a Customer AS holder (CAS) has authorized a particular Provider AS (PAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
                 The ASPA record profile is described in <xref target="I-D.azimov-sidrops-aspa-profile"/>.
             </t>
@@ -159,8 +169,8 @@
 
         <section title="Customer-Provider Verification Procedure" anchor="pair-verification">
             <t>
-                This section describes an abstract procedure that checks that pair of ASNs (AS1, AS2) is included in the set of signed ASPAs. The semantics of its usage is defined in next section.
-                The procedure takes (AS1, AS2, ROUTE_AFI) as input parameters and may return three types of results: "valid", "invalid" and "unknown".
+                This section describes an abstract procedure that checks that pair of ASNs (AS1, AS2) is included in the set of signed ASPAs. The semantics of its usa are defined in next section.
+                The procedure takes (AS1, AS2, ROUTE_AFI) as input parameters and  returns three types of results: "valid", "invalid" and "unknown".
             </t>
             <t>
                 A relying party (RP) must have access to a local cache of the complete set of cryptographically valid ASPAs when performing customer-provider verification procedure.
@@ -198,13 +208,13 @@
             <t>
                 The value of each AS_SEQ component can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
                 In this case, the sequence {AS(I), AS(I-1),...} represents different ASNs, that packet should pass towards the destination.
-                We can state that when a route is received from a customer or a literal peer, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
+                When a route is received from a customer or a literal peer, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
                 If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
                 The goal of the above procedure is to check the correctness of this statement.
             </t>
 
             <t>
-                For 32bit compatible BGP speakers, if a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
+                For 32-bit AS number compatible BGP speakers, if a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
                 <list style="numbers">
                     <t>
                         If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
@@ -221,8 +231,10 @@
                 </list>
             </t>
             <t>
-                For BGP speakers that are not 32bit compatible, the procedure is slightly different.
-                In point 2 if at least one AS(I-1), AS(I) is equal to AS_TRANS(23456), the pair must be passed without check with customer-provider verification procedure.
+                For BGP speakers that are not 32-bit AS compatible, the procedure is slightly different.
+                In point 2 if at least one AS(I-1), AS(I) is equal to
+		AS_TRANS(23456), the pair must be passed as
+		"unverifiable," without using the customer-provider verification procedure.
             </t>
             <t>
                 If the output of the AS_PATH verification procedure is "invalid" the LOCAL_PREF SHOULD be set to 0 or the route MAY be dropped.
@@ -235,7 +247,7 @@
                 This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
             </t>
             <t>
-                The above AS_PATH verification procedure is capable to check routes received from customers and peers.
+                The above AS_PATH verification procedure is able to check routes received from customers and peers.
                 The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
             </t>
         </section>
@@ -248,7 +260,7 @@
             </t>
 
             <t>
-                An ASPA with a provider AS of 0 is an statement by the customer AS that the its routes should not be received by any relying party AS from any of its customers or peers.
+                An ASPA with a provider AS of 0 is a statement by the customer AS that the its routes should not be received by any relying party AS from any of its customers or peers.
             </t>
             <t>
                 By convention, an ASPA with a provider AS of 0 should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
@@ -273,7 +285,7 @@
             </t>
 
             <t>
-                While the ASPA provides a check of AS_PATH for routes received from customers and peers, it doesn't provide full support for routes that are received from upstream providers.
+                While the ASPA provides a check of an AS_PATH for routes received from customers and peers, it doesn't provide full support for routes that are received from upstream providers.
                 So, this mechanism guarantees detection of both malicious and accidental route leaks and provides partial support for detection of malicious hijacks: upstream transit ISPs will still be able to send hijacked prefixes with malformed AS_PATHs to their customers.
             </t>
 
