@@ -27,7 +27,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-azimov-sidrops-aspa-verification-00" ipr="trust200902">
+<rfc category="std" docName="draft-azimov-sidrops-aspa-verification-01" ipr="trust200902">
     <front>
 
         <title abbrev="AS_PATH Verification">
@@ -231,10 +231,8 @@
                 </list>
             </t>
             <t>
-                For BGP speakers that are not 32-bit AS compatible, the procedure is slightly different.
-                In point 2 if at least one AS(I-1), AS(I) is equal to
-		AS_TRANS(23456), the pair must be passed as
-		"unverifiable," without using the customer-provider verification procedure.
+                For BGP speakers that are not 32-bit AS compatible, the above procedure is slightly different.
+                In point 2 if at least one AS(I-1), AS(I) is equal to AS_TRANS(23456), the corresponding pair must be passed without check using the customer-provider verification procedure.
             </t>
             <t>
                 If the output of the AS_PATH verification procedure is "invalid" the LOCAL_PREF SHOULD be set to 0 or the route MAY be dropped.
