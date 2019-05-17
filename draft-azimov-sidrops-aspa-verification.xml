@@ -27,7 +27,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-azimov-sidrops-aspa-verification-01" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-00" ipr="trust200902">
     <front>
 
         <title abbrev="AS_PATH Verification">
@@ -36,9 +36,9 @@
 
         <author fullname="Alexander Azimov" initials="A"
             surname="Azimov">
-            <organization>Qrator Labs</organization>
+            <organization>Yandex</organization>
             <address>
-                <email>aa@qrator.net</email>
+                <email>a.e.azimov@gmail.com</email>
             </address>
         </author>
 
