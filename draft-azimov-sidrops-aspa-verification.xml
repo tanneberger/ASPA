@@ -10,9 +10,9 @@
         <!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
         <!ENTITY RFC5280 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
         <!ENTITY RFC3779 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3779.xml">
-        <!ENTITY I-D.ymbk-idr-bgp-eotr-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-idr-bgp-eotr-policy-02.xml">
-        <!ENTITY I-D.azimov-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-azimov-sidrops-aspa-profile-00.xml">
-        <!ENTITY I-D.ietf-idr-bgp-open-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-open-policy-02.xml">
+        <!ENTITY I-D.ietf-grow-route-leak-detection-mitigation SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-grow-route-leak-detection-mitigation-00.xml">
+        <!ENTITY I-D.ietf-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-sidrops-aspa-profile-00.xml">
+        <!ENTITY I-D.ietf-idr-bgp-open-policy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgp-open-policy-05.xml">
         <!ENTITY I-D.white-sobgp-architecture SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-white-sobgp-architecture-02.xml">
         <!ENTITY I-D.draft-kumari-deprecate-as-set-confed-set SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-kumari-deprecate-as-set-confed-set-12.xml">
         ]>
@@ -27,7 +27,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-00" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-01" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -105,7 +105,7 @@
         The Border Gateway Protocol (BGP) was designed with no mechanisms to validate BGP attributes.
         Two consequences are BGP Hijacks and BGP Route Leaks <xref target="RFC7908" />.
         BGP extensions are able to partially solve these problems.
-        For example, ROA-based Origin Validation <xref target="RFC6483" /> can be used to detect and filter accidental mis-originations, and <xref target="I-D.ymbk-idr-bgp-eotr-policy" /> can be used to detect accidental route leaks.
+        For example, ROA-based Origin Validation <xref target="RFC6483" /> can be used to detect and filter accidental mis-originations, and <xref target="I-D.ietf-grow-route-leak-detection-mitigation" /> can be used to detect accidental route leaks.
         While these upgrades to BGP are quite useful, they still rely on transitive BGP attributes, i.e. AS_PATH, that can be manipulated by attackers.
       </t>
       <t>
@@ -162,14 +162,15 @@
       <t>
         ASPAs are digitally signed objects that bind a selected AFI Provider AS number to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
         An ASPA  attests that a Customer AS holder (CAS) has authorized a particular Provider AS (PAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
-        The ASPA record profile is described in <xref target="I-D.azimov-sidrops-aspa-profile"/>.
+        The ASPA record profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
       </t>
 
     </section>
 
     <section title="Customer-Provider Verification Procedure" anchor="pair-verification">
       <t>
-        This section describes an abstract procedure that checks that pair of ASNs (AS1, AS2) is included in the set of signed ASPAs. The semantics of its usa are defined in next section.
+        This section describes an abstract procedure that checks that pair of ASNs (AS1, AS2) is included in the set of signed ASPAs.
+        The semantics of its usage is defined in next section.
         The procedure takes (AS1, AS2, ROUTE_AFI) as input parameters and  returns three types of results: "valid", "invalid" and "unknown".
       </t>
       <t>
@@ -206,21 +207,22 @@
         AS_PATH may contain two types of components: ordered AS_SEQes and unordered AS_SETs, as defined in <xref target="RFC4271" />.
       </t>
       <t>
-        The value of each AS_SEQ component can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
+        The value of each concatenated value of AS_SEQ components can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
         In this case, the sequence {AS(I), AS(I-1),...} represents different ASNs, that packet should pass towards the destination.
-        When a route is received from a customer or a literal peer, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
+        When a route is received from a customer, literal peer or by RS at IX, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
         If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
         The goal of the above procedure is to check the correctness of this statement.
       </t>
 
       <t>
-        For 32-bit AS number compatible BGP speakers, if a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
+        The above procedure is applicable only for 32-bit AS number compatible BGP speakers.
+        If a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
         <list style="numbers">
           <t>
             If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
           </t>
           <t>
-            If in one of AS_SEQ segments there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
+            If there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
           </t>
           <t>
             If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
@@ -231,13 +233,7 @@
         </list>
       </t>
       <t>
-        For BGP speakers that are not 32-bit AS compatible, the above procedure is slightly different.
-        In point 2 if at least one AS(I-1), AS(I) is equal to AS_TRANS(23456), the corresponding pair must be passed without check using the customer-provider verification procedure.
-      </t>
-      <t>
-        If the output of the AS_PATH verification procedure is "invalid" the LOCAL_PREF SHOULD be set to 0 or the route MAY be dropped.
-        If an "invalid" route has no alternative route(s) and it is propagated to other ASes despite the above, it MUST be marked with the GRACEFUL_SHUTDOWN community to avoid possible stable oscillations, when an unchecked route received from a provider becomes preferred over an invalid route received from a customer.
-        This also allows customers to detect malformed routes received from upstream providers.
+        If the output of the AS_PATH verification procedure is "invalid" the route MUST be rejected.
       </t>
       <t>
         If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully verified.
@@ -283,7 +279,7 @@
       </t>
 
       <t>
-        While the ASPA provides a check of an AS_PATH for routes received from customers and peers, it doesn't provide full support for routes that are received from upstream providers.
+        While the ASPA provides a check of an AS_PATH for routes received from customers and peers, it doesn't provide support to check routes that are received from upstream providers.
         So, this mechanism guarantees detection of both malicious and accidental route leaks and provides partial support for detection of malicious hijacks: upstream transit ISPs will still be able to send hijacked prefixes with malformed AS_PATHs to their customers.
       </t>
 
@@ -310,10 +306,10 @@
       &RFC5280;
       &RFC4271;
       &RFC3779;
-      &I-D.ymbk-idr-bgp-eotr-policy;
+      &I-D.ietf-grow-route-leak-detection-mitigation;
       &I-D.ietf-idr-bgp-open-policy;
       &I-D.white-sobgp-architecture;
-      &I-D.azimov-sidrops-aspa-profile;
+      &I-D.ietf-sidrops-aspa-profile;
       &I-D.draft-kumari-deprecate-as-set-confed-set;
     </references>
   </back>
