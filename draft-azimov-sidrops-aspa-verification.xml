@@ -236,7 +236,7 @@
         If the output of the AS_PATH verification procedure is "invalid" the route MUST be rejected.
       </t>
       <t>
-        If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully verified.
+        If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully checked.
         Such routes should be treated with caution and SHOULD be processed the same way as "invalid" routes.
         This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
       </t>
@@ -274,15 +274,23 @@
 
     <section anchor="Security" title="Security Considerations">
       <t>
+        The proposed mechanism is compatible only with BGP implementations that can process 32-bit ASNs in the ASPATH.
+        This limitation should not have a real effect on operations - such legacy BGP routers a rare and it's highly unlikely that they do support integration with RPKI.
+      </t>
+
+      <t>
         ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly invalidates all routes passed to upstream providers other than the provider ASs listed in the collection of ASPAs.
         It is the Customer AS's duty to maintain a correct set of ASPAs.
       </t>
 
       <t>
         While the ASPA provides a check of an AS_PATH for routes received from customers and peers, it doesn't provide support to check routes that are received from upstream providers.
-        So, this mechanism guarantees detection of both malicious and accidental route leaks and provides partial support for detection of malicious hijacks: upstream transit ISPs will still be able to send hijacked prefixes with malformed AS_PATHs to their customers.
+        So, this mechanism guarantees detection of both malicious and accidental route leaks and provides partial support for detection of malicious hijacks: upstream transit ISPs will still be able to send hijacked prefixes of their customers or send hijacked prefixes with malformed AS_PATHs to their customers.
       </t>
 
+      <t>
+        While it may happen in theory, it's doesn't look realistic: normally customer and provider have a signed agreement and such policy violation should have legal consequences or customer can just drop relation with such provider and remove corresponding ASPA record.
+      </t>
     </section>
 
     <section anchor="Acknowledgments" title="Acknowledgments">
