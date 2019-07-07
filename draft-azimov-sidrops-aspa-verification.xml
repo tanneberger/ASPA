@@ -209,41 +209,80 @@
       <t>
         The value of each concatenated value of AS_SEQ components can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
         In this case, the sequence {AS(I), AS(I-1),...} represents different ASNs, that packet should pass towards the destination.
-        When a route is received from a customer, literal peer or by RS at IX, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
-        If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
-        The goal of the above procedure is to check the correctness of this statement.
-      </t>
+			</t>
+			<t>
+				The bellow procedure is applicable only for 32-bit AS number compatible BGP speakers.
+			</t>
 
-      <t>
-        The above procedure is applicable only for 32-bit AS number compatible BGP speakers.
-        If a route from ROUTE_AFI address family is received from a customer or peer, its AS_PATH MUST be verified as follows:
-        <list style="numbers">
-          <t>
-            If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
-          </t>
-          <t>
-            If there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
-          </t>
-          <t>
-            If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
-          </t>
-          <t>
-            Otherwise, the procedure halts with an outcome of "valid".
-          </t>
-        </list>
-      </t>
-      <t>
-        If the output of the AS_PATH verification procedure is "invalid" the route MUST be rejected.
-      </t>
-      <t>
-        If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully checked.
-        Such routes should be treated with caution and SHOULD be processed the same way as "invalid" routes.
-        This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
-      </t>
-      <t>
-        The above AS_PATH verification procedure is able to check routes received from customers and peers.
-        The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
-      </t>
+			<section title="Upstream Paths">
+				<t>
+					When a route is received from a customer, literal peer or by RS at IX, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
+					If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
+					The goal of the described bellow procedure is to check the correctness of this statement.
+				</t>
+
+				<t>
+					If a route from ROUTE_AFI address family is received from a customer, peer ot RS-client, its AS_PATH MUST be verified as follows:
+					<list style="numbers">
+						<t>
+							If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
+						</t>
+						<t>
+							If there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "invalid" then the procedure also halts with the outcome "invalid";
+						</t>
+						<t>
+							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
+						</t>
+						<t>
+							Otherwise, the procedure halts with an outcome of "valid".
+						</t>
+					</list>
+				</t>
+			</section>
+
+			<section title="Downstream Paths">
+				<t>
+					When route is received from provider or RS it may have both Upstream and Downstream paths.
+					The first pair (AS(I-1), AS(I)) that has "invalid" outcome of customer-provider verification procedure indicates the end of Upstream path.
+					All subsequent reverse pairs (AS(J), AS(J-1)) MUST belong to customer-provider or sibling relationship, thus can be also verified with ASPA objects.
+					If there are other types of relationships, it means that the route was leaked.
+				</t>
+				<t>
+					Additional caution should be done while processing prefixes that are received from transparent IXes since they don't add their ASN in the ASPATH.
+				</t>
+				<t>
+					If a route from ROUTE_AFI address family is received from a customer or RS, its AS_PATH MUST be verified as follows:
+					<list style="numbers">
+						<t>
+							If route is received from provider and the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
+						</t>
+						<t>
+	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) where J > I, and customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for both (AS(I-1), AS(I), ROUTE_AFI) and (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "invalid";
+						</t>
+						<t>
+							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
+						</t>
+						<t>
+							Otherwise, the procedure halts with an outcome of "valid".
+						</t>
+					</list>
+				</t>
+
+			</section>
+			<section title="Mitigation">
+				<t>
+					If the output of the AS_PATH verification procedure is "invalid" the route MUST be rejected.
+				</t>
+				<t>
+					If the output of the AS_PATH verification procedure is 'unverifiable' it means that AS_PATH can't be fully checked.
+					Such routes should be treated with caution and SHOULD be processed the same way as "invalid" routes.
+					This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
+				</t>
+				<t>
+					The above AS_PATH verification procedure is able to check routes received from customers and peers.
+					The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
+				</t>
+			</section>
     </section>
 
     <section title="Disavowal of Provider Authorizaion">
@@ -284,18 +323,19 @@
       </t>
 
       <t>
-        While the ASPA provides a check of an AS_PATH for routes received from customers and peers, it doesn't provide support to check routes that are received from upstream providers.
-        So, this mechanism guarantees detection of both malicious and accidental route leaks and provides partial support for detection of malicious hijacks: upstream transit ISPs will still be able to send hijacked prefixes of their customers or send hijacked prefixes with malformed AS_PATHs to their customers.
+        While the ASPA is capable to detect both mistake and malicious activity for routes received from customers, RS-clients or peers, it provides only detection of mistakes for routes that are received from upstream providers and RS(s).
       </t>
 
       <t>
-        While it may happen in theory, it's doesn't look realistic: normally customer and provider have a signed agreement and such policy violation should have legal consequences or customer can just drop relation with such provider and remove corresponding ASPA record.
+				Since upstream provider becomes a trusted point, it will be able to send hijacked prefixes of its customers or send hijacked prefixes with malformed AS_PATHs back.
+        While it may happen in theory, it's doesn't seem to be a real scenario: normally customer and provider have a signed agreement and such policy violation should have legal consequences or customer can just drop relation with such provider and remove corresponding ASPA record.
       </t>
     </section>
 
     <section anchor="Acknowledgments" title="Acknowledgments">
       <t>
         The authors wish to thank authors of <xref target="RFC6483" /> since its text was used as an example while writing this document.
+				The also authors wish to thank Iljitsch van Beijnum for giving a hint about Downstream paths.
       </t>
     </section>
 
