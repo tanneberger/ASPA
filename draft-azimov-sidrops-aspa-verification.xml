@@ -52,7 +52,7 @@
 
     <author fullname="Randy Bush" initials="R"
             surname="Bush">
-      <organization>Internet Initiative Japan</organization>
+      <organization>Internet Initiative Japan &amp; Arrcus</organization>
       <address>
         <email>randy@psg.com</email>
       </address>
@@ -102,7 +102,7 @@
 
     <section title="Introduction" anchor="intro">
       <t>
-        The Border Gateway Protocol (BGP) was designed with no mechanisms to validate BGP attributes.
+        The Border Gateway Protocol (BGP) was designed without mechanisms to validate BGP attributes.
         Two consequences are BGP Hijacks and BGP Route Leaks <xref target="RFC7908" />.
         BGP extensions are able to partially solve these problems.
         For example, ROA-based Origin Validation <xref target="RFC6483" /> can be used to detect and filter accidental mis-originations, and <xref target="I-D.ietf-grow-route-leak-detection-mitigation" /> can be used to detect accidental route leaks.
@@ -110,32 +110,32 @@
       </t>
       <t>
         BGPSec <xref target="RFC8205" /> was designed to solve the problem of AS_PATH validation.
-        Unfortunately, strict cryptographic validation brought unaffordable computational overhead for BGP routers.
-        BGPSec also proved to be vulnerable to downgrade attacks that can nullify all the work of AS_PATH signing.
+        Unfortunately, strict cryptographic validation brought expensive computational overhead for BGP routers.
+        BGPSec also proved vulnerable to downgrade attacks that nullify the benefits of AS_PATH signing.
         As a result, to abuse the AS_PATH or any other signed transit attribute, an attacker merely needs to downgrade to 'old' BGP-4.
       </t>
       <t>
         An alternative approach was introduced with soBGP <xref target="I-D.white-sobgp-architecture"/>.
-        Instead of strong cryptographic AS_PATH validation, it was suggested to create an AS_PATH security function based on a shared database of ASN adjacencies.
+        Instead of strong cryptographic AS_PATH validation, it created an AS_PATH security function based on a shared database of ASN adjacencies.
         While such an approach has reasonable computational
         cost, the two side adjacencies don't provide a way to
         automate anomaly detection without high adoption rate -
-        an attacker can easily up a one-way adjacency.
-        SO-BGP suggested sharing data about adjacencies using
-        additional BGP messages, which is recursively complex thus significantly increasing adoption complexity.
+        an attacker can easily create a one-way adjacency.
+        SO-BGP transported data about adjacencies in new
+        additional BGP messages, which was recursively complex thus significantly increasing adoption complexity and risk.
         In addition, the general goal to verify all AS_PATHs was
         not achievable given the indirect adjacencies at internet exchange points.
       </t>
       <t>
-        Instead of the general goal of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
-        To achieve this goal a new AS_PATH verification
+        Instead of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
+        To achieve this a new AS_PATH verification
         procedure is defined which is able to automatically
         detect invalid (malformed) AS_PATHs in announcements that are received from customers and peers.
         This procedure uses a shared signed database of
-        customer-to-provider relationships that is built using a
+        customer-to-provider relationships using a
         new RPKI object - Autonomous System Provider Authorization (ASPA).
-        This technique provides benefits for the participants
-        even in a state of early adoption.
+        This technique provides benefits for participants
+        even during early and incremental adoption.
       </t>
 
     </section>
@@ -143,7 +143,7 @@
     <section title="Anomaly Propagation" anchor="propagation">
       <t>
         Both route leaks and hijacks have similar effects on ISP operations - they redirect traffic, resulting in increased latency, packet loss, or possible MiTM attacks.
-        But the level of risk depends significantly on the propagation of these BGP anomalies.
+        But the level of risk depends significantly on the propagation of the anomalies.
         For example, a hijack that is propagated only to customers may concentrate traffic in a particular ISP's customer cone; while if the anomaly is propagated through peers, upstreams, or reaches Tier-1 networks, thus distributing globally, traffic may be redirected at the level of entire countries and/or global providers.
       </t>
       <t>
