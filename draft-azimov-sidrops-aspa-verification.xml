@@ -225,6 +225,9 @@
 						<t>
 							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
 						</t>
+            <t>
+							If there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "unknown" then the procedure also halts with the outcome "unknown";
+            </t>
 						<t>
 							Otherwise, the procedure halts with an outcome of "valid".
 						</t>
@@ -243,17 +246,20 @@
 					Additional caution should be done while processing prefixes that are received from transparent IXes since they don't add their ASN in the ASPATH.
 				</t>
 				<t>
-					If a route from ROUTE_AFI address family is received from a customer or RS, its AS_PATH MUST be verified as follows:
+					If a route from ROUTE_AFI address family is received from a provider or RS, its AS_PATH MUST be verified as follows:
 					<list style="numbers">
 						<t>
 							If route is received from provider and the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
 						</t>
 						<t>
-	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) where J > I, and customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for both (AS(I-1), AS(I), ROUTE_AFI) and (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "invalid";
+	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) with J > I, and customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for both (AS(I-1), AS(I), ROUTE_AFI) and (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "invalid";
 						</t>
 						<t>
 							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
 						</t>
+            <t>
+							If there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "unknown" then the procedure also halts with the outcome "unknown";
+            </t>
 						<t>
 							Otherwise, the procedure halts with an outcome of "valid".
 						</t>
