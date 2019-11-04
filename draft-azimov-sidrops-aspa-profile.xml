@@ -93,11 +93,11 @@
             <t>
                 This document defines a standard profile for Autonomous
                 System Provider Authorization in the Resource Public Key
-                Infrastructure.  An Autonomous System Provider
+                Infrastructure. An Autonomous System Provider
                 Authorization is a digitally signed object that provides
                 a means of verifying that a Customer Autonomous System
-                holder has authorized a Provider Autonomous System to be
-                its upstream provider and for the Provider to send
+                holder has authorized members of Provider set to be
+                its upstream providers and for the Providers to send
                 prefixes received from the Customer Autonomous System in
                 all directions including providers and peers.
             </t>
@@ -117,14 +117,10 @@
     <middle>
         <section title="Introduction" anchor="intro">
             <t>
-                The primary purpose of the Resource Public Key
-                Infrastructure (RPKI) is to improve routing security.
-                (See <xref target="RFC6480" /> for more information.) As
-                part of this infrastructure, a mechanism is needed to verify
-                that a Provider AS (PAS) has permission from a Customer AS (CAS)
-                holder to send routes in all directions.  The digitally signed
-                Autonomous System Provider Authorization (ASPA) object provides
-                this verification mechanism.
+                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
+                (See <xref target="RFC6480" /> for more information.)
+                As part of this infrastructure, a mechanism is needed to verify that a AS has permission from a Customer AS (CAS) holder to send routes in all directions.
+                The digitally signed Autonomous System Provider Authorization (ASPA) object provides this verification mechanism.
             </t>
 
             <t>
@@ -136,7 +132,8 @@
                 objects.  As ASPAs need to be validated with RPKI
                 certificates issued by the current infrastructure, we
                 assume the mandatory-to-implement algorithms in <xref
-                target="RFC6485" />, or its successor.</t>
+                target="RFC6485" />, or its successor.
+            </t>
 
 		<t>To complete the specification of the ASPA (see
 		Section 4 of <xref target="RFC6488"/>), this document
@@ -167,12 +164,9 @@
 
         <section title="The ASPA eContent" anchor="content">
             <t>
-                The content of an ASPA identifies the Customer AS (CAS)
-                as well as the Provider AS (PAS) that is authorized to
-                further propagate announcements received from the
-                customer.  If customer has multiple providers, it issues
-                multiple ASPAs, one for each provider AS.  An ASPA is
-                formally defined as:
+                The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized to further propagate announcements received from the customer.
+                If customer has multiple providers they SHOULD be registered in a single ASPA object.
+                An ASPA is formally defined as:
             </t>
 
             <figure>
@@ -186,7 +180,7 @@
         version [0] ASPAVersion DEFAULT v0,
         AFI  AddressFamilyIdentifier,
         customerASID  ASID,
-        providerASID  ASID }
+        providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID }
 
     ASPAVersion ::= INTEGER  { v0(0) }
 
@@ -214,13 +208,13 @@
 
             <section title="customerASID">
                 <t>
-                    The customerASID field contains the AS number of the Autonomous System that authorizes an upstream provider (listed in the providerASId) to propagate prefixes in the specified address family other ASes.
+                    The customerASID field contains the AS number of the Autonomous System that authorizes an upstream providers (listed in the providerASSET) to propagate prefixes in the specified address family other ASes.
                 </t>
             </section>
 
-            <section title="providerASID">
+            <section title="providerASSET">
                 <t>
-                    The providerASID contains the AS number that is authorized to further propagate announcements in the specified address family received from the customer.
+                    The providerASSET contains the sequence (set) of AS numbers that are authorized to further propagate announcements in the specified address family received from the customer.
                 </t>
             </section>
         </section>
@@ -275,7 +269,7 @@
         version [0] ASPAVersion DEFAULT v0,
         AFI  AddressFamilyIdentifier,
         customerASID  ASID,
-        providerASID  ASID }
+        providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID }
 
     ASPAVersion ::= INTEGER  { v0(0) }
 

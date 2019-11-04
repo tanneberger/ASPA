@@ -152,8 +152,8 @@
       </t>
 
       <t>
-        ASPAs are digitally signed objects that bind a selected AFI Provider AS number to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
-        An ASPA  attests that a Customer AS holder (CAS) has authorized a particular Provider AS (PAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
+        ASPAs are digitally signed objects that bind in a selected AFI Set of Provider AS numbers to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
+        An ASPA  attests that a Customer AS holder (CAS) has authorized Set of Provider ASes (SPAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
         The ASPA record profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
       </t>
 
@@ -173,13 +173,13 @@
         <list style="numbers">
           <t>
             Retrieve all cryptographically valid ASPAs in a selected AFI with a customer value of AS1.
-            This selection forms the set of "candidate ASPAs."
+            The union of SPAS fields forms the set of "candidate Providers."
           </t>
           <t>
-            If the set of candidate ASPAs is empty, then the procedure exits with an outcome of "unknown."
+            If the set of candidate Providers is empty, then the procedure exits with an outcome of "unknown."
           </t>
           <t>
-            If there is at least one candidate ASPA where the provider field is AS2, then the procedure exits with an outcome of "valid."
+            If AS2 is included in the set of candidate Providers, then the procedure exits with an outcome of "valid."
           </t>
           <t>
             Otherwise, the procedure exits with an outcome of "invalid."
@@ -188,7 +188,7 @@
 
       </t>
       <t>
-        Since an AS1 may have different set providers in different AFI, it should also have different set of corresponding ASPAs.
+        Since an AS1 may have different set providers in different AFI, it should also have different PCAS in corresponding ASPAs.
         In this case, the output of this procedure with input (AS1, AS2, ROUTE_AFI) may have different output for different ROUTE_AFI values.
       </t>
     </section>
@@ -237,10 +237,10 @@
 
 			<section title="Downstream Paths">
 				<t>
-					When route is received from provider or RS it may have both Upstream and Downstream paths.
+					When route is received from provider or RS it may have both Upstream and Downstream paths, where Downstream follows Upstream path.
+          If the path differs from this rule, e.g. the Downstream path is followed by Upstream path it means that the route was leaked or the AS_PATH attribute was malformed.
 					The first pair (AS(I-1), AS(I)) that has "invalid" outcome of customer-provider verification procedure indicates the end of Upstream path.
-					All subsequent reverse pairs (AS(J), AS(J-1)) MUST belong to customer-provider or sibling relationship, thus can be also verified with ASPA objects.
-					If there are other types of relationships, it means that the route was leaked.
+					All subsequent reverse pairs (AS(I), AS(I-1)) MUST belong to customer-provider or sibling relationship, thus can be also verified with ASPA objects.
 				</t>
 				<t>
 					Additional caution should be done while processing prefixes that are received from transparent IXes since they don't add their ASN in the ASPATH.
@@ -258,7 +258,10 @@
 							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
 						</t>
             <t>
-							If there is a pair (AS(I-1), AS(I)), and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (AS(I-1), AS(I), ROUTE_AFI) returns "unknown" then the procedure also halts with the outcome "unknown";
+	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) with J > I, and customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for (AS(I-1), AS(I), ROUTE_AFI) and "unknown" for (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "unknown";
+            </t>
+            <t>
+	            If customer-provider verification procedure (<xref target="pair-verification"/>) doesn't return "invalid" for any (AS(I-1), AS(I)), but at least for one (AS(I-1), AS(I)) returns "unknown", then the procedure also halts with the outcome "unknown";
             </t>
 						<t>
 							Otherwise, the procedure halts with an outcome of "valid".
@@ -285,17 +288,20 @@
 
     <section title="Disavowal of Provider Authorizaion">
       <t>
-        An ASPA is a positive attestation that an AS holder has authorized its provider to redistribute received routes to the provider's providers and peers.
-        This does not preclude the provider AS from redistribution to its other customers.
-        By creating an ASPA where the provider AS is 0, the customer indicates that no provider should further announce its routes.  Specifically, AS 0 is reserved to identify provider-free networks, Internet exchange meshes, etc.
+        An ASPA is a positive attestation that an AS holder has authorized its providers to redistribute received routes to the provider's providers and peers.
+        This does not preclude the provider ASes from redistribution to its other customers.
+        By creating an ASPA with providers set of {0}, the customer indicates that no provider should further announce its routes.
+        Specifically, AS 0 is reserved to identify provider-free networks, Internet exchange meshes, etc.
       </t>
 
       <t>
-        An ASPA with a provider AS of 0 is a statement by the customer AS that the its routes should not be received by any relying party AS from any of its customers or peers.
+        An ASPA with a providers set of {0} is a statement by the customer AS that its routes should not be received by any relying party AS from any of its customers or peers.
       </t>
+
       <t>
-        By convention, an ASPA with a provider AS of 0 should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
-        A provider 0 ASPA may coexist with ASPAs that have different provider AS values; though in such cases, the presence or absence of the provider AS 0 ASPA does not alter the AS_PATH verification procedure.
+        By convention, an ASPA with providers set of {0} should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
+
+        A provider AS 0 may coexist with other provider ASes in the same ASPA (or other ASPA records); though in such cases, the presence or absence of the provider AS 0 in ASPA does not alter the AS_PATH verification procedure.
       </t>
     </section>
 
@@ -305,7 +311,7 @@
       </t>
 
       <t>
-        In this case, two symmetric ASPAs records {(AS1, AS2), (AS2, AS1)} must be created by AS1 and AS2 respectively.
+        In this case, two corresponding ASPA records (AS1, {AS2, ...}), (AS2, {AS1, ...}) must be created by AS1 and AS2 respectively.
       </t>
     </section>
 
@@ -317,7 +323,12 @@
 
       <t>
         ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly invalidates all routes passed to upstream providers other than the provider ASs listed in the collection of ASPAs.
-        It is the Customer AS's duty to maintain a correct set of ASPAs.
+        It is the Customer AS's duty to maintain a correct set of providers in ASPA.
+      </t>
+
+      <t>
+        While it's not restricted, but it's highly recommended maintaining for selected Customer AS a single ASPA object that covers all its providers.
+        Such policy should prevent race conditions during ASPA updates that might affect prefix propagation.
       </t>
 
       <t>
