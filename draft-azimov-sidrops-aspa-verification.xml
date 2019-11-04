@@ -152,7 +152,7 @@
       </t>
 
       <t>
-        ASPAs are digitally signed objects that bind in a selected AFI Set of Provider AS numbers to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
+        ASPAs are digitally signed objects that bind, for a selected AFI, a Set of Provider AS numbers to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
         An ASPA  attests that a Customer AS holder (CAS) has authorized Set of Provider ASes (SPAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
         The ASPA record profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
       </t>
@@ -161,9 +161,9 @@
 
     <section title="Customer-Provider Verification Procedure" anchor="pair-verification">
       <t>
-        This section describes an abstract procedure that checks that pair of ASNs (AS1, AS2) is included in the set of signed ASPAs.
-        The semantics of its usage is defined in next section.
-        The procedure takes (AS1, AS2, ROUTE_AFI) as input parameters and  returns three types of results: "valid", "invalid" and "unknown".
+        This section describes an abstract procedure that checks that a pair of ASNs (AS1, AS2) is included in the set of signed ASPAs.
+        The semantics of its use is defined in next section.
+        The procedure takes (AS1, AS2, ROUTE_AFI) as input parameters and returns one of three results: "valid", "invalid" and "unknown".
       </t>
       <t>
         A relying party (RP) must have access to a local cache of the complete set of cryptographically valid ASPAs when performing customer-provider verification procedure.
@@ -173,13 +173,13 @@
         <list style="numbers">
           <t>
             Retrieve all cryptographically valid ASPAs in a selected AFI with a customer value of AS1.
-            The union of SPAS fields forms the set of "candidate Providers."
+            The union of SPAS forms the set of "Candidate Providers."
           </t>
           <t>
-            If the set of candidate Providers is empty, then the procedure exits with an outcome of "unknown."
+            If the set of Candidate Providers is empty, then the procedure exits with an outcome of "unknown."
           </t>
           <t>
-            If AS2 is included in the set of candidate Providers, then the procedure exits with an outcome of "valid."
+            If AS2 is included in the set of Candidate Providers, then the procedure exits with an outcome of "valid."
           </t>
           <t>
             Otherwise, the procedure exits with an outcome of "invalid."
@@ -199,7 +199,7 @@
         AS_PATH may contain two types of components: ordered AS_SEQes and unordered AS_SETs, as defined in <xref target="RFC4271" />.
       </t>
       <t>
-        The value of each concatenated value of AS_SEQ components can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}.
+        The value of each concatenated value of AS_SEQ components can be described as set of pairs {(AS(I), prepend(I)), (AS(I-1), prepend(I-1))...}, where AS(0) stands for originating AS.
         In this case, the sequence {AS(I), AS(I-1),...} represents different ASNs, that packet should pass towards the destination.
 			</t>
 			<t>
@@ -289,7 +289,7 @@
        |                                 |          +---v-----+
        |(AS(I-1),AS(I))=Unknown          |          |         |
        |                                 |          | Invalid |
-       |           (AS(I-1),AS(I)=Unknown|          |         |
+       |           (AS(I),AS(I-1)=Unknown|          |         |
        |                                 |          +---+-----+
   +----v----+                       +----v----+         ^
   |         |                       |         |         |
