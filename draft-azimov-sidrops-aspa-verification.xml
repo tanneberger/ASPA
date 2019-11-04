@@ -27,7 +27,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-01" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-02" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -214,7 +214,35 @@
 				</t>
 
 				<t>
-					If a route from ROUTE_AFI address family is received from a customer, peer ot RS-client, its AS_PATH MUST be verified as follows:
+          The following diagram and procedure describes the procedure that MUST be applied on routes with ROUTE_AFI received from a customer, peer or RS-client:
+          <figure>
+            <artwork>
+(AS(I-1),AS(I))=Valid
+    +-----+
+    |     |
+    v     |
+  +---------+
+  |         |  (AS(I),AS(I-1))=Invalid
+  |  Valid  +----------------------------+
+  |         |                            |
+  +---------+                            |
+       |                            +----v----+
+       |                            |         |
+       |(AS(I-1),AS(i))=Unknown     | Invalid |
+       |                            |         |
+       |                            +---------+
+  +----v----+                            ^
+  |         |                            |
+  | Unknown +----------------------------+
+  |         |  (AS(I),(AS(I-1))=Invalid
+  +---------+
+    ^     |
+    |     |
+    +-----+
+(AS(I-1),AS(I))!=Invalid
+
+            </artwork>
+          </figure>
 					<list style="numbers">
 						<t>
 							If the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
@@ -246,7 +274,35 @@
 					Additional caution should be done while processing prefixes that are received from transparent IXes since they don't add their ASN in the ASPATH.
 				</t>
 				<t>
-					If a route from ROUTE_AFI address family is received from a provider or RS, its AS_PATH MUST be verified as follows:
+          The following diagram and procedure describes the procedure that MUST be applied on routes with ROUTE_AFI received from a provider or RS:
+          <figure>
+            <artwork>
+(AS(I-1),AS(I))=Valid            (AS(I),AS(I-1))=Valid
+    +-----+                           +-----+
+    |     |                           |     |
+    v     |                           v     |
+  +-+-----+-+                       +-+-----+-+
+  |         |(AS(I-1),AS(I))=Invalid|         |(AS(I),AS(I-1))=Invalid
+  |  Valid  +----------------------->  Valid  +---------+
+  |         |                       |         |         |
+  +----+----+                       +----+----+         |
+       |                                 |          +---v-----+
+       |                                 |          |         |
+       +---+(AS(I-1),AS(i))=Unknown+-----+          | Invalid |
+       |                                 |          |         |
+       |                                 |          +---+-----+
+  +----v----+                       +----v----+         ^
+  |         |                       |         |         |
+  | Unknown +-----------------------> Unknown +---------+
+  |         |(AS(I-1),AS(I))=Invalid|         |(AS(I),AS(I-1))=Invalid
+  +-+-----+-+                       +-+-----+-+
+    ^     |                           ^     |
+    |     |                           |     |
+    +-----+                           +-----+
+(AS(I-1),AS(I))!=Invalid         (AS(i),AS(I-1))!=Invalid
+
+            </artwork>
+          </figure>
 					<list style="numbers">
 						<t>
 							If route is received from provider and the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";

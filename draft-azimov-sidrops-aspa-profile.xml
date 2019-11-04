@@ -19,7 +19,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-00" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-01" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
