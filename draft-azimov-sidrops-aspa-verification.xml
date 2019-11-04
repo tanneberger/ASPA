@@ -50,6 +50,14 @@
       </address>
     </author>
 
+    <author fullname="Randy Bush" initials="R"
+        surname="Bush">
+        <organization>Internet Initiative Japan &amp; Arrcus</organization>
+        <address>
+            <email>randy@psg.com</email>
+        </address>
+    </author>
+
     <author fullname="Keyur Patel" initials="K"
             surname="Patel">
       <organization>Arrcus, Inc.</organization>
@@ -208,9 +216,9 @@
 
 			<section title="Upstream Paths">
 				<t>
-					When a route is received from a customer, literal peer or by RS at IX, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
+					When a route is received from a customer, a literal peer, or by a RS at an IX, each pair (AS(I-1), AS(I)) MUST belong to customer-provider or sibling relationship.
 					If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
-					The goal of the described bellow procedure is to check the correctness of this statement.
+					The goal of the procedure described bellow is to check the correctness of this statement.
 				</t>
 
 				<t>
@@ -219,25 +227,25 @@
             <artwork>
 (AS(I-1),AS(I))=Valid
     +-----+
-    |     |
+    | I++ |
     v     |
-  +---------+
+  +-+-----+-+
   |         |  (AS(I-1),AS(I))=Invalid
   |  Valid  +----------------------------+
   |         |                            |
-  +---------+                            |
+  +----+----+                            |
        |                            +----v----+
        |                            |         |
-       |(AS(I-1),AS(I))=Unknown     | Invalid |
+    I++|(AS(I-1),AS(I))=Unknown     | Invalid |
        |                            |         |
-       |                            +---------+
+       |                            +----+----+
   +----v----+                            ^
   |         |                            |
   | Unknown +----------------------------+
   |         |  (AS(I-1),(AS(I))=Invalid
-  +---------+
+  +-+-----+-+
     ^     |
-    |     |
+    | I++ |
     +-----+
 (AS(I-1),AS(I))!=Invalid
 
@@ -265,39 +273,39 @@
 
 			<section title="Downstream Paths">
 				<t>
-					When route is received from provider or RS it may have both Upstream and Downstream paths, where Downstream follows Upstream path.
+					When route is received from provider or RS it may have both Upstream and Downstream paths, where a Downstream follows an Upstream path.
           If the path differs from this rule, e.g. the Downstream path is followed by Upstream path it means that the route was leaked or the AS_PATH attribute was malformed.
-					The first pair (AS(I-1), AS(I)) that has "invalid" outcome of customer-provider verification procedure indicates the end of Upstream path.
-					All subsequent reverse pairs (AS(I), AS(I-1)) MUST belong to customer-provider or sibling relationship, thus can be also verified with ASPA objects.
+					The first pair (AS(I-1), AS(I)) that has an "invalid" outcome of the customer-provider verification procedure indicates the end of the Upstream path.
+					All subsequent reverse pairs (AS(I), AS(I-1)) MUST belong to a customer-provider or sibling relationship, thus can be also verified using ASPA objects.
 				</t>
 				<t>
-					Additional caution should be done while processing prefixes that are received from transparent IXes since they don't add their ASN in the ASPATH.
+					Additional caution should be exercised when processing prefixes that are received from transparent IXes, as they don't add their ASN in the ASPATH.
 				</t>
 				<t>
-          The following diagram and procedure describes the procedure that MUST be applied on routes with ROUTE_AFI received from a provider or RS:
+          The following diagram and procedure describe the procedure that MUST be applied on routes with ROUTE_AFI received from a provider or a RS:
           <figure>
             <artwork>
 (AS(I-1),AS(I))=Valid            (AS(I),AS(I-1))=Valid
     +-----+                           +-----+
-    |     |                           |     |
+    | I++ |                           | I++ |
     v     |                           v     |
   +-+-----+-+                       +-+-----+-+
   |         |(AS(I-1),AS(I))=Invalid|         |(AS(I),AS(I-1))=Invalid
   |  Valid  +----------------------->  Valid  +---------+
-  |         |                       |         |         |
+  |         |         I++           |         |         |
   +----+----+                       +----+----+         |
        |                                 |          +---v-----+
-       |(AS(I-1),AS(I))=Unknown          |          |         |
+    I++|(AS(I-1),AS(I))=Unknown          |          |         |
        |                                 |          | Invalid |
-       |           (AS(I),AS(I-1)=Unknown|          |         |
+       |           (AS(I-1),AS(I)=Unknown|I++       |         |
        |                                 |          +---+-----+
   +----v----+                       +----v----+         ^
-  |         |                       |         |         |
+  |         |         I++           |         |         |
   | Unknown +-----------------------> Unknown +---------+
   |         |(AS(I-1),AS(I))=Invalid|         |(AS(I),AS(I-1))=Invalid
   +-+-----+-+                       +-+-----+-+
     ^     |                           ^     |
-    |     |                           |     |
+    | I++ |                           | I++ |
     +-----+                           +-----+
 (AS(I-1),AS(I))!=Invalid         (AS(I),AS(I-1))!=Invalid
 
@@ -305,19 +313,19 @@
           </figure>
 					<list style="numbers">
 						<t>
-							If route is received from provider and the closest AS in the AS_PATH is not the receiver's neighbor ASN then procedure halts with the outcome "invalid";
+							If a route is received from a provider and the closest AS in the AS_PATH is not the receiver's neighbor ASN, then the procedure halts with the outcome "invalid";
 						</t>
 						<t>
-	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) with J > I, and customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for both (AS(I-1), AS(I), ROUTE_AFI) and (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "invalid";
+	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) with J > I, and the customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for both (AS(I-1), AS(I), ROUTE_AFI) and (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "invalid";
 						</t>
 						<t>
 							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "unverifiable";
 						</t>
             <t>
-	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) with J > I, and customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for (AS(I-1), AS(I), ROUTE_AFI) and "unknown" for (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "unknown";
+	            If there are two pairs (AS(I-1), AS(I)), (AS(J-1), AS(J)) with J > I, and the customer-provider verification procedure (<xref target="pair-verification"/>) returns "invalid" for (AS(I-1), AS(I), ROUTE_AFI) and "unknown" for (AS(J), AS(J-1), ROUTE_AFI), then the procedure also halts with the outcome "unknown";
             </t>
             <t>
-	            If customer-provider verification procedure (<xref target="pair-verification"/>) doesn't return "invalid" for any (AS(I-1), AS(I)), but at least for one (AS(I-1), AS(I)) returns "unknown", then the procedure also halts with the outcome "unknown";
+	            If the customer-provider verification procedure (<xref target="pair-verification"/>) doesn't return "invalid" for any (AS(I-1), AS(I)), but at least for one (AS(I-1), AS(I)) returns "unknown", then the procedure also halts with the outcome "unknown";
             </t>
 						<t>
 							Otherwise, the procedure halts with an outcome of "valid".
@@ -355,7 +363,7 @@
       </t>
 
       <t>
-        By convention, an ASPA with providers set of {0} should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
+        By convention, an ASPA with a provider set of {0} should be the only ASPA issued by a given AS holder; although this is not a strict requirement.
 
         A provider AS 0 may coexist with other provider ASes in the same ASPA (or other ASPA records); though in such cases, the presence or absence of the provider AS 0 in ASPA does not alter the AS_PATH verification procedure.
       </t>
@@ -374,12 +382,12 @@
     <section anchor="Security" title="Security Considerations">
       <t>
         The proposed mechanism is compatible only with BGP implementations that can process 32-bit ASNs in the ASPATH.
-        This limitation should not have a real effect on operations - such legacy BGP routers a rare and it's highly unlikely that they do support integration with RPKI.
+        This limitation should not have a real effect on operations - such legacy BGP routers a rare and it's highly unlikely that they support integration with the RPKI.
       </t>
 
       <t>
         ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly invalidates all routes passed to upstream providers other than the provider ASs listed in the collection of ASPAs.
-        It is the Customer AS's duty to maintain a correct set of providers in ASPA.
+        It is the Customer AS's duty to maintain a correct set of providers in ASPA record(s).
       </t>
 
       <t>
@@ -388,12 +396,12 @@
       </t>
 
       <t>
-        While the ASPA is capable to detect both mistake and malicious activity for routes received from customers, RS-clients or peers, it provides only detection of mistakes for routes that are received from upstream providers and RS(s).
+        While the ASPA is able to detect both mistakes and malicious activity for routes received from customers, RS-clients, or peers, it provides only detection of mistakes for routes that are received from upstream providers and RS(s).
       </t>
 
       <t>
-				Since upstream provider becomes a trusted point, it will be able to send hijacked prefixes of its customers or send hijacked prefixes with malformed AS_PATHs back.
-        While it may happen in theory, it's doesn't seem to be a real scenario: normally customer and provider have a signed agreement and such policy violation should have legal consequences or customer can just drop relation with such provider and remove corresponding ASPA record.
+				Since an upstream provider becomes a trusted point, it will be able to send hijacked prefixes of its customers or send hijacked prefixes with malformed AS_PATHs back.
+        While it may happen in theory, it's doesn't seem to be a real scenario: normally customer and provider have a signed agreement and such policy violation should have legal consequences or customer can just drop relation with such a provider and remove the corresponding ASPA record.
       </t>
     </section>
 
