@@ -222,19 +222,19 @@
     |     |
     v     |
   +---------+
-  |         |  (AS(I),AS(I-1))=Invalid
+  |         |  (AS(I-1),AS(I))=Invalid
   |  Valid  +----------------------------+
   |         |                            |
   +---------+                            |
        |                            +----v----+
        |                            |         |
-       |(AS(I-1),AS(i))=Unknown     | Invalid |
+       |(AS(I-1),AS(I))=Unknown     | Invalid |
        |                            |         |
        |                            +---------+
   +----v----+                            ^
   |         |                            |
   | Unknown +----------------------------+
-  |         |  (AS(I),(AS(I-1))=Invalid
+  |         |  (AS(I-1),(AS(I))=Invalid
   +---------+
     ^     |
     |     |
@@ -287,9 +287,9 @@
   |         |                       |         |         |
   +----+----+                       +----+----+         |
        |                                 |          +---v-----+
-       |                                 |          |         |
-       +---+(AS(I-1),AS(i))=Unknown+-----+          | Invalid |
-       |                                 |          |         |
+       |(AS(I-1),AS(I))=Unknown          |          |         |
+       |                                 |          | Invalid |
+       |           (AS(I-1),AS(I)=Unknown|          |         |
        |                                 |          +---+-----+
   +----v----+                       +----v----+         ^
   |         |                       |         |         |
@@ -299,7 +299,7 @@
     ^     |                           ^     |
     |     |                           |     |
     +-----+                           +-----+
-(AS(I-1),AS(I))!=Invalid         (AS(i),AS(I-1))!=Invalid
+(AS(I-1),AS(I))!=Invalid         (AS(I),AS(I-1))!=Invalid
 
             </artwork>
           </figure>
