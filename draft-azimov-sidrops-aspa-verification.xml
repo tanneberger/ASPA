@@ -27,7 +27,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-02" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-04" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -160,9 +160,10 @@
       </t>
 
       <t>
-        ASPAs are digitally signed objects that bind, for a selected AFI, a Set of Provider AS numbers to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
+        ASPA is digitally signed object that bind, for a selected AFI, a Set of Provider AS numbers to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
         An ASPA  attests that a Customer AS holder (CAS) has authorized Set of Provider ASes (SPAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
         The ASPA record profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
+        For a selected Customer AS MAY exist only single ASPA object.
       </t>
 
     </section>
@@ -180,14 +181,11 @@
       <t>
         <list style="numbers">
           <t>
-            Retrieve all cryptographically valid ASPAs in a selected AFI with a customer value of AS1.
-            The union of SPAS forms the set of "Candidate Providers."
+            Retrieve cryptographically valid ASPA in a selected AFI with a customer value of AS1.
+            If there is no valid ASPA record for AS1 the procedure exits with an outcome of "unknown."
           </t>
           <t>
-            If the set of Candidate Providers is empty, then the procedure exits with an outcome of "unknown."
-          </t>
-          <t>
-            If AS2 is included in the set of Candidate Providers, then the procedure exits with an outcome of "valid."
+            If AS2 is included in the SPAS, then the procedure exits with an outcome of "valid."
           </t>
           <t>
             Otherwise, the procedure exits with an outcome of "invalid."
@@ -386,7 +384,7 @@
       </t>
 
       <t>
-        ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly invalidates all routes passed to upstream providers other than the provider ASs listed in the collection of ASPAs.
+        ASPA issuers should be aware of the verification implication in issuing an ASPA - an ASPA implicitly invalidates all routes passed to upstream providers other than the provider ASs listed in the ASPA record.
         It is the Customer AS's duty to maintain a correct set of providers in ASPA record(s).
       </t>
 

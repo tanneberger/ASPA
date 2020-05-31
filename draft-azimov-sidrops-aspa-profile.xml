@@ -19,7 +19,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-01" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-02" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
@@ -34,9 +34,9 @@
 
         <author fullname="Eugene Uskov" initials="E"
             surname="Uskov">
-            <organization>Qrator Labs</organization>
+            <organization>JetLend</organization>
             <address>
-                <email>eu@qrator.net</email>
+                <email>eu@jetlend.ru</email>
             </address>
         </author>
 
@@ -165,7 +165,8 @@
         <section title="The ASPA eContent" anchor="content">
             <t>
                 The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized to further propagate announcements received from the customer.
-                If customer has multiple providers they SHOULD be registered in a single ASPA object.
+                If customer has multiple providers they MUST be registered in a single ASPA object.
+                This rule is important to avoid possible race conditions during updates.
                 An ASPA is formally defined as:
             </t>
 
@@ -184,7 +185,7 @@
 
     ASPAVersion ::= INTEGER  { v0(0) }
 
-    AddressFamilyIdentifier ::= INTEGER
+    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2..3))
 
     ASID ::= INTEGER
                 </artwork>
