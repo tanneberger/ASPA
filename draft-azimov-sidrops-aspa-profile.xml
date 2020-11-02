@@ -19,7 +19,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-03" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-04" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
@@ -323,6 +323,12 @@
         </section>
 
         <section anchor="Security" title="Security Considerations">
+            <t>
+                While it's not restricted, but it's highly recommended maintaining for selected Customer AS a single ASPA object that covers all its providers.
+                Such policy should prevent race conditions during ASPA updates that might affect prefix propagation.
+                The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
+                In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries.
+            </t>
         </section>
 
         <section anchor="Acknowledgments" title="Acknowledgments">
