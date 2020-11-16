@@ -258,10 +258,10 @@
           </figure>
 					<list style="numbers">
 						<t>
-							If the the AS_PATH has zero length then procedure halts with the outcome "Invalid";
+							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
 						</t>
 						<t>
-							If the first segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS then procedure halts with the outcome "Invalid";
+							If the last segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS then procedure halts with the outcome "Invalid";
 						</t>
 						<t>
 							If there exists I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider verification procedure (<xref target="pair-verification"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns "Invalid" then the procedure also halts with the outcome "Invalid";
@@ -334,10 +334,10 @@
           </figure>
 					<list style="numbers">
 						<t>
-							If the the AS_PATH has zero length then procedure halts with the outcome "Invalid";
+							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
 						</t>
 						<t>
-							If a route is received from a provider and the first segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS, then the procedure halts with the outcome "Invalid";
+							If a route is received from a provider and the last segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS, then the procedure halts with the outcome "Invalid";
 						</t>
             <t>
               Let's define I_MIN as the minimal index for which Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, its values aren't equal and the verification procedure for (Seg(I-1).value, Seg(I).value, AFI) returns "Invalid".
