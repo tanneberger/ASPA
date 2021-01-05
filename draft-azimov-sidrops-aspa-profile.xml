@@ -238,9 +238,9 @@
         <section title="ASN.1 Module for the ASPA Content Type" anchor="module">
             <figure>
                 <artwork type="asn1">
-    RPKI-ASPA-2018
-        { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-           pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2018(TBD2) }
+    RPKI-ASPA-2020
+      { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+         pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2020(TBD2) }
     DEFINITIONS IMPLICIT TAGS ::=
     BEGIN
     IMPORTS
@@ -267,14 +267,14 @@
         { TYPE ASProviderAttestation IDENTIFIED BY id-ct-ASPA }
 
     ASProviderAttestation ::= SEQUENCE {
-        version [0] ASPAVersion DEFAULT v0,
-        AFI  AddressFamilyIdentifier,
-        customerASID  ASID,
-        providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID }
+      version [0] ASPAVersion DEFAULT v0,
+      aFI  AddressFamilyIdentifier,
+      customerASID  ASID,
+      providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID OPTIONAL }
 
     ASPAVersion ::= INTEGER  { v0(0) }
 
-    AddressFamilyIdentifier ::= INTEGER
+    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2..3))
 
     ASID ::= INTEGER
 
@@ -292,7 +292,7 @@
                 <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
-    TBD2      | id-mod-rpki-aspa-2018         | [ThisRFC]
+    TBD2      | id-mod-rpki-aspa-2020         | [ThisRFC]
                    </artwork>
             </figure>
 
