@@ -17,7 +17,6 @@
         <!ENTITY I-D.draft-kumari-deprecate-as-set-confed-set SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-kumari-deprecate-as-set-confed-set-12.xml">
         ]>
 
-
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <?rfc strict="yes" ?>
 <?rfc toc="yes"?>
@@ -137,7 +136,25 @@
         This technique provides benefits for participants
         even during early and incremental adoption.
       </t>
-
+      <section title="Comparison to Peerlock">
+        <t>
+          ASPA draws inspiration from <xref target="Peerlock"/>.
+          Peerlock is a <xref target="Flexsealing">BGP Flexsealing</xref>
+          protection mechanism commonly deployed by global-scale Internet carriers
+          to protect other large-scale carriers.
+        </t>
+        <t>
+          Peerlock unfortunately depends on a laborous manual process in which operators
+          coordinate the distribution of unstructured Provider Authorizations through
+          out-of-band means in a many-to-many fashion.
+          On the other hand, ASPA's use of <xref target="RFC5280">PKIX</xref> allows for
+          automated, scalable, and ubiquitous deployment, making the protection mechanism
+          available to a wider range of Internet Number Resource holders.
+        </t>
+        <t>
+          ASPA is intended to be a complete solution and replacement for existing Peerlock deployments.
+        </t>
+      </section>
     </section>
 
     <section title="Anomaly Propagation" anchor="propagation">
@@ -461,8 +478,30 @@
       &I-D.white-sobgp-architecture;
       &I-D.ietf-sidrops-aspa-profile;
       &I-D.draft-kumari-deprecate-as-set-confed-set;
+      <reference anchor="Peerlock" target="https://www.nanog.org/sites/default/files/Snijders_Everyday_Practical_Bgp.pdf">
+        <front>
+          <title>Peerlock</title>
+          <author fullname="Job Snijders" initials="J." surname="Snijders">
+            <organization abbrev="NTT">NTT Communications</organization>
+          </author>
+          <date month="June" year="2016"/>
+        </front>
+      </reference>
+      <reference anchor="Flexsealing" target="https://arxiv.org/pdf/2006.06576.pdf">
+        <front>
+          <title>Flexsealing BGP Against Route Leaks: Peerlock Active Measurement and Analysis</title>
+          <author fullname="Tyler McDaniel" initials="T." surname="McDaniel">
+            <organization>University of Tennesse</organization>
+          </author>
+          <author fullname="Jared M. Smith" initials="J." surname="Smith">
+            <organization>University of Tennesse</organization>
+          </author>
+          <author fullname="Max Schuchard" initials="M." surname="Schuchard">
+            <organization>University of Tennesse</organization>
+          </author>
+          <date month="November" year="2020"/>
+        </front>
+      </reference>
     </references>
   </back>
 </rfc>
-
-
