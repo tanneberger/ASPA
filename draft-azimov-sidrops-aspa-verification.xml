@@ -104,7 +104,7 @@
         The Border Gateway Protocol (BGP) was designed without mechanisms to validate BGP attributes.
         Two consequences are BGP Hijacks and BGP Route Leaks <xref target="RFC7908" />.
         BGP extensions are able to partially solve these problems.
-        For example, ROA-based Origin Validation <xref target="RFC6483" /> can be used to detect and filter accidental mis-originations, and <xref target="I-D.ietf-grow-route-leak-detection-mitigation" /> can be used to detect accidental route leaks.
+        For example, ROA-based Origin Validation <xref target="RFC6483" /> can be used to detect and filter accidental mis-originations, and <xref target="I-D.ietf-idr-bgp-open-policy"/> or <xref target="I-D.ietf-grow-route-leak-detection-mitigation"/> can be used to detect accidental route leaks.
         While these upgrades to BGP are quite useful, they still rely on transitive BGP attributes, i.e. AS_PATH, that can be manipulated by attackers.
       </t>
       <t>
@@ -116,45 +116,16 @@
       <t>
         An alternative approach was introduced with soBGP <xref target="I-D.white-sobgp-architecture"/>.
         Instead of strong cryptographic AS_PATH validation, it created an AS_PATH security function based on a shared database of AS adjacencies.
-        While such an approach has reasonable computational
-        cost, the two side adjacencies don't provide a way to
-        automate anomaly detection without high adoption rate -
-        an attacker can easily create a one-way adjacency.
-        SO-BGP transported data about adjacencies in new
-        additional BGP messages, which was recursively complex thus significantly increasing adoption complexity and risk.
-        In addition, the general goal to verify all AS_PATHs was
-        not achievable given the indirect adjacencies at internet exchange points.
+        While such an approach has reasonable computational cost, the two side adjacencies don't provide a way to automate anomaly detection without high adoption rate - an attacker can easily create a one-way adjacency.
+        SO-BGP transported data about adjacencies in new additional BGP messages, which was recursively complex thus significantly increasing adoption complexity and risk.
+        In addition, the general goal to verify all AS_PATHs was not achievable given the indirect adjacencies at internet exchange points.
       </t>
       <t>
         Instead of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
-        To achieve this a new AS_PATH verification
-        procedure is defined which is able to automatically
-        detect invalid (malformed) AS_PATHs in announcements that are received from customers and peers.
-        This procedure uses a shared signed database of
-        customer-to-provider relationships using a
-        new RPKI object - Autonomous System Provider Authorization (ASPA).
-        This technique provides benefits for participants
-        even during early and incremental adoption.
+        To achieve this new AS_PATH verification procedures are defined to automatically detect invalid (malformed) AS_PATHs in announcements that are received from customers, peers, providers, RS and RS-clients.
+        This procedures uses a shared signed database of customer-to-provider relationships using a new RPKI object - Autonomous System Provider Authorization (ASPA).
+        This technique provides benefits for participants even during early and incremental adoption.
       </t>
-      <section title="Comparison to Peerlock">
-        <t>
-          ASPA draws inspiration from <xref target="Peerlock"/>.
-          Peerlock is a <xref target="Flexsealing">BGP Flexsealing</xref>
-          protection mechanism commonly deployed by global-scale Internet carriers
-          to protect other large-scale carriers.
-        </t>
-        <t>
-          Peerlock unfortunately depends on a laborous manual process in which operators
-          coordinate the distribution of unstructured Provider Authorizations through
-          out-of-band means in a many-to-many fashion.
-          On the other hand, ASPA's use of <xref target="RFC5280">PKIX</xref> allows for
-          automated, scalable, and ubiquitous deployment, making the protection mechanism
-          available to a wider range of Internet Number Resource holders.
-        </t>
-        <t>
-          ASPA is intended to be a complete solution and replacement for existing Peerlock deployments.
-        </t>
-      </section>
     </section>
 
     <section title="Anomaly Propagation" anchor="propagation">
@@ -180,7 +151,7 @@
         ASPA is digitally signed object that bind, for a selected AFI, a Set of Provider AS numbers to a Customer AS number (in terms of BGP announcements not business), and are signed by the holder of the Customer AS.
         An ASPA  attests that a Customer AS holder (CAS) has authorized Set of Provider ASes (SPAS) to propagate the Customer's IPv4/IPv6 announcements onward, e.g. to the Provider's upstream providers or peers.
         The ASPA record profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
-        For a selected Customer AS SHOULD exist only single ASPA object.
+        For a selected Customer AS SHOULD exist only single ASPA object at any time.
         In this document we will use ASPA(AS1, AFI, [AS2, ...]) as notation to represent ASPA object for AS1 in the selected AFI.
       </t>
 
@@ -233,7 +204,7 @@
 				The below procedures are applicable only for 32-bit AS number compatible BGP speakers.
 			</t>
 
-			<section title="Upstream Paths">
+			<section title="Upstream Paths" anchor="Upflow">
 				<t>
 					When a route is received from a customer, a literal peer, or by a RS at an IX, each consecutive AS_SEQUENCE pair MUST be equal (prepend policy) or belong to customer-provider or mutual transit relationship (<xref target="Complex"/>).
 					If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
@@ -244,7 +215,7 @@
           The following Python function and algorithm describes the procedure that MUST be applied on routes with AFI received from a customer, peer or RS-client:
           <figure>
             <artwork>
-    def check_upflow_path(self, aspath, neighbor_as, afi):
+    def check_upflow_path(aspath, neighbor_as, afi):
         if len(aspath) == 0:
             return Invalid
 
@@ -296,26 +267,22 @@
 				</t>
 			</section>
 
-			<section title="Downstream Paths">
+			<section title="Downstream Paths" anchor="Downflow">
 				<t>
-					When route is received from provider or RS it may have both Upstream and Downstream fragments, where a Downstream follows an Upstream fragment.
+					When route is received from provider it may have both Upstream and Downstream fragments, where a Downstream follows an Upstream fragment.
           If the path differs from this rule, e.g. the Downstream fragment is followed by Upstream fragment it means that the route was leaked or the AS_PATH attribute was malformed.
 					The first unequal pair of AS_SEQUENCE segments that has an "Invalid" outcome of the customer-provider verification procedure indicates the end of the Upstream fragment.
 					All subsequent reverse pairs of AS_SEQUENCE segments MUST be equal (prepend policy) or belong to a customer-provider or mutual transit relationship <xref target="Complex"/>, thus can be also verified using ASPA objects.
 				</t>
 				<t>
-					Additional caution should be exercised when processing prefixes that are received from transparent IXes, as they don't add their AS in the AS_PATH.
-          At the same time, we can't rely on IX 'transparency' in general since there are IXes that do add their AS and there are control communities that give a way to explicitly add IX AS in the path.
-				</t>
-				<t>
-          The following Python function and procedure describe the procedure that MUST be applied on routes with AFI received from a provider or a RS:
+          The following Python function and procedure describe the procedure that MUST be applied on routes with AFI received from a provider:
           <figure>
             <artwork>
-    def check_downflow_path(self, aspath, neighbor_as, afi, from_ix):
+    def check_downflow_path(aspath, neighbor_as, afi):
         if len(aspath) == 0:
             return Invalid
 
-        if aspath[-1].type == AS_SEQUENCE and not from_ix and aspath[-1].value != neighbor_as:
+        if aspath[-1].type == AS_SEQUENCE and aspath[-1].value != neighbor_as:
             return Invalid
         else:
             semi_state = Valid
@@ -377,8 +344,47 @@
 						</t>
 					</list>
 				</t>
-
 			</section>
+
+			<section title="Paths from IX">
+				<t>
+          The routes received from IXes have much in common with routes received from providers.
+          A valid route from IX contains Upflow fragment and MAY contain Downflow fragment that contains IXP AS.
+          The ambiguity is created by transparent IXes that by default don't add their AS in the AS_PATH.
+          In this case, a route will have only Upflow segment, though even 'transparent' IXes may support control communities that give a way to explicitly add IX AS in the path.
+				</t>
+        <t>
+          Routes from RS MAY be processed the same way as routes from Providers, but in the case of full IX 'transparency', it will limit the opportunity of IXP members to detect and filter route leaks.
+          This document suggests using the presence of IX AS as a token to distinguish if Upflow or Downflow path verification procedure should be applied.
+        </t>
+				<t>
+          The following Python function and procedure describe the procedure that SHOULD be applied on routes with AFI received from a RS:
+          <figure>
+            <artwork>
+    def check_ix_path(aspath, neighbor_as, afi):
+        if len(aspath) == 0:
+            return Invalid
+
+        if aspath[-1].value != neighbor_as:
+            return check_upflow_path(aspath, neighbor_as, afi)
+        else:
+            return check_downflow_path(aspath, neighbor_as, afi)
+            </artwork>
+          </figure>
+					<list style="numbers">
+						<t>
+							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
+						</t>
+						<t>
+							If a route is received from a RS and the last segment in the AS_PATH isn't equal to receiver's neighbor AS, the outcome equals to the outcome of upflow verification procedure applied to AS_PATH <xref target="Upflow"/>;
+						</t>
+            <t>
+							If a route is received from a RS and the last segment in the AS_PATH is equal to receiver's neighbor AS, the outcome equals to the outcome of downflow verification procedure applied to AS_PATH <xref target="Downflow"/>;
+            </t>
+					</list>
+				</t>
+			</section>
+
 			<section title="Mitigation">
 				<t>
 					If the output of the AS_PATH verification procedure is "Invalid" the route MUST be rejected.
@@ -423,9 +429,26 @@
       </t>
     </section>
 
+    <section title="Comparison to Peerlock">
+      <t>
+        ASPA has much in common with <xref target="Peerlock"/>.
+        Peerlock is a <xref target="Flexsealing">BGP Flexsealing</xref> protection mechanism commonly deployed by global-scale Internet carriers to protect other large-scale carriers.
+      </t>
+      <t>
+        Peerlock, unfortunately, depends on a laborious manual process in which operators coordinate the distribution of unstructured Provider Authorizations through out-of-band means in a many-to-many fashion.
+        On the other hand, ASPA's use of <xref target="RFC5280">PKIX</xref> allows for automated, scalable, and ubiquitous deployment, making the protection mechanism available to a wider range of Internet Number Resource holders.
+      </t>
+      <t>
+        ASPA mechanics implemented in code instead of Peerlock AS_PATH regular expressions also provides a way to detect anomalies coming from transit providers and internet exchange route servers.
+      </t>
+      <t>
+        ASPA is intended to be a complete solution and replacement for existing Peerlock deployments.
+      </t>
+    </section>
+
     <section anchor="Security" title="Security Considerations">
       <t>
-        The proposed mechanism is compatible only with BGP implementations that can process 32-bit ASNs in the ASPATH.
+        The proposed mechanism is compatible only with BGP implementations that can process 32-bit ASNs in the AS_PATH.
         This limitation should not have a real effect on operations - such legacy BGP routers are rare and it's highly unlikely that they support integration with the RPKI.
       </t>
 

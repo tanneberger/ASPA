@@ -179,13 +179,13 @@
 
     ASProviderAttestation ::= SEQUENCE {
         version [0] ASPAVersion DEFAULT v0,
-        AFI  AddressFamilyIdentifier,
+        aFI  AddressFamilyIdentifier,
         customerASID  ASID,
         providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID }
 
     ASPAVersion ::= INTEGER  { v0(0) }
 
-    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2..3))
+    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2))
 
     ASID ::= INTEGER
                 </artwork>
@@ -274,7 +274,7 @@
 
     ASPAVersion ::= INTEGER  { v0(0) }
 
-    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2..3))
+    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2))
 
     ASID ::= INTEGER
 
