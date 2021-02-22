@@ -26,7 +26,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-06" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-07" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -275,7 +275,7 @@
 					All subsequent reverse pairs of AS_SEQUENCE segments MUST be equal (prepend policy) or belong to a customer-provider or mutual transit relationship <xref target="Complex"/>, thus can be also verified using ASPA objects.
 				</t>
 				<t>
-          The following Python function and procedure describe the procedure that MUST be applied on routes with AFI received from a provider:
+          The following Python function and algorithm describe the procedure that MUST be applied on routes with AFI received from a provider:
           <figure>
             <artwork>
     def check_downflow_path(aspath, neighbor_as, afi):
@@ -346,19 +346,19 @@
 				</t>
 			</section>
 
-			<section title="Paths from IX">
+			<section title="Paths from Route Server">
 				<t>
-          The routes received from IXes have much in common with routes received from providers.
-          A valid route from IX contains Upflow fragment and MAY contain Downflow fragment that contains IXP AS.
+          A route received from a RS at IX has much in common with route received from a provider.
+          A valid route from RS contains Upflow fragment and MAY contain Downflow fragment that contains IX AS.
           The ambiguity is created by transparent IXes that by default don't add their AS in the AS_PATH.
           In this case, a route will have only Upflow segment, though even 'transparent' IXes may support control communities that give a way to explicitly add IX AS in the path.
 				</t>
         <t>
-          Routes from RS MAY be processed the same way as routes from Providers, but in the case of full IX 'transparency', it will limit the opportunity of IXP members to detect and filter route leaks.
+          Routes from RS MAY be processed the same way as routes from Providers, but in the case of full IX 'transparency', it will limit the opportunity of IX members to detect and filter route leaks.
           This document suggests using the presence of IX AS as a token to distinguish if Upflow or Downflow path verification procedure should be applied.
         </t>
 				<t>
-          The following Python function and procedure describe the procedure that SHOULD be applied on routes with AFI received from a RS:
+          The following Python function and algorithm describe the procedure that SHOULD be applied on routes with AFI received from a RS:
           <figure>
             <artwork>
     def check_ix_path(aspath, neighbor_as, afi):
@@ -366,7 +366,7 @@
             return Invalid
 
         if aspath[-1].value != neighbor_as:
-            return check_upflow_path(aspath, neighbor_as, afi)
+            return check_upflow_path(aspath, aspath[-1].value, afi)
         else:
             return check_downflow_path(aspath, neighbor_as, afi)
             </artwork>
@@ -376,10 +376,10 @@
 							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
 						</t>
 						<t>
-							If a route is received from a RS and the last segment in the AS_PATH isn't equal to receiver's neighbor AS, the outcome equals to the outcome of upflow verification procedure applied to AS_PATH <xref target="Upflow"/>;
+							If a route is received from a RS and the last segment in the AS_PATH isn't equal to receiver's neighbor AS, the result equals to the outcome of upflow verification procedure applied to AS_PATH with neighbor_as replaced with the value of the last AS_PATH segment <xref target="Upflow"/>;
 						</t>
             <t>
-							If a route is received from a RS and the last segment in the AS_PATH is equal to receiver's neighbor AS, the outcome equals to the outcome of downflow verification procedure applied to AS_PATH <xref target="Downflow"/>;
+							If a route is received from a RS and the last segment in the AS_PATH is equal to receiver's neighbor AS, the result equals to the outcome of downflow verification procedure applied to AS_PATH <xref target="Downflow"/>;
             </t>
 					</list>
 				</t>
