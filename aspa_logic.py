@@ -43,9 +43,7 @@ class ASPA:
             elif segment.type == AS_SEQUENCE:
                 if not as1:
                     as1 = segment.value
-                elif as1 == segment.value:
-                    continue
-                else:
+                elif as1 != segment.value:
                     pair_check = self.verify_pair(as1, segment.value, afi)
                     if pair_check == Invalid:
                         return Invalid
@@ -54,42 +52,59 @@ class ASPA:
                     as1 = segment.value
         return semi_state
 
-    def check_downflow_path(self, aspath, neighbor_as, afi, from_ix):
+    def check_downflow_path(self, aspath, neighbor_as, afi):
+        def get_indexes(aspath, afi):
+            unknown_index = 0
+            unverifiable_flag = False
+
+            as1 = 0
+            index = 0
+            for segment in aspath:
+                if segment.type != AS_SEQUENCE:
+                    as1 = 0
+                    unverifiable_flag = True
+                elif segment.type == AS_SEQUENCE:
+                    if not as1:
+                        as1 = segment.value
+                    elif as1 != segment.value:
+                        pair_check = self.verify_pair(as1, segment.value, afi)
+                        if pair_check == Invalid:
+                            return index, unknown_index if unknown_index else index, unverifiable_flag
+                        elif pair_check == Unknown and not unknown_index:
+                            unknown_index = index
+
+                        as1 = segment.value
+
+                index += 1
+
+            return index, unknown_index if unknown_index else index, unverifiable_flag
+
         if len(aspath) == 0:
             return Invalid
 
-        if aspath[-1].type == AS_SEQUENCE and not from_ix and aspath[-1].value != neighbor_as:
+        if aspath[-1].type == AS_SEQUENCE and aspath[-1].value != neighbor_as:
             return Invalid
+
+        forward_invalid_index, forward_unknown_index, forward_unverifiable = get_indexes(aspath, afi)
+        backward_invalid_index, backward_unknown_index, backward_unverifiable = get_indexes(list(reversed(aspath)), afi)
+
+        aspath_len = len(aspath)
+        if forward_invalid_index + backward_invalid_index < aspath_len:
+            return Invalid
+        if forward_unverifiable or backward_unverifiable:
+            return Unverifiable
+        if forward_unknown_index + backward_unknown_index < aspath_len:
+            return Unknown
+        return Valid
+
+    def check_ix_path(self, aspath, neighbor_as, afi):
+        if len(aspath) == 0:
+            return Invalid
+        if len(aspath) == 0:
+            return Invalid
+
+        if aspath[-1].value != neighbor_as:
+            return self.check_upflow_path(aspath, aspath[-1].value, afi)
         else:
-            semi_state = Valid
-
-        as1 = 0
-        upflow_fragment = True
-        for segment in aspath:
-            if segment.type != AS_SEQUENCE:
-                as1 = 0
-                semi_state = Unverifiable
-            elif segment.type == AS_SEQUENCE:
-                if not as1:
-                    as1 = segment.value
-                elif as1 == segment.value:
-                    continue
-                else:
-                    if upflow_fragment:
-                        pair_check = self.verify_pair(as1, segment.value, afi)
-                        if pair_check == Invalid:
-                            upflow_fragment = False
-                        elif pair_check == Unknown and semi_state == Valid:
-                            semi_state = Unknown
-                    else:
-                        pair_check = self.verify_pair(segment.value, as1, afi)
-                        if pair_check == Invalid:
-                            return Invalid
-                        elif pair_check == Unknown and semi_state == Valid:
-                            semi_state = pair_check
-                    as1 = segment.value
-
-        return semi_state
-
-
+            return self.check_downflow_path(aspath, neighbor_as, afi)
 
