@@ -7,6 +7,7 @@
 <!ENTITY RFC5652 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5652.xml">
 <!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
 <!ENTITY RFC6485 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6485.xml">
+<!ENTITY RFC6481 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6481.xml">
 <!ENTITY RFC6488 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6488.xml">
 ]>
 
@@ -309,17 +310,31 @@
             </figure>
 
             <t>
-                Please add the ASPA to the RPKI Signed Object registry 
+                Please add Autonomous System Provider Authorization to the RPKI Signed Object registry
                 (https://www.iana.org/assignments/rpki/rpki.xhtml#signed-objects)
                 as follows:
             </t>        
             <figure>
                 <artwork type="text">
-    Name      | OID                           | Specification
-    -----------------------------------------------------------
-    ASPA      | 1.2.840.113549.1.9.16.1.TBD   | [ThisRFC]
+    Name                                     | OID                         | Specification
+    --------------------------------------------------------------------------------------
+    Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.TBD | [ThisRFC]
                    </artwork>
             </figure>
+        <t>
+               Please add an item for the Autonomous System Provider Authorization
+               file extension to the "RPKI Repository Name Scheme"
+               registry created by <xref target="RFC6481"/> as follows:
+        </t>
+        <artwork>
+<![CDATA[
+   Filename
+   Extension  RPKI Object                               Reference
+   --------------------------------------------------------------------------------------
+      .asa    Autonomous System Provider Authorization  [draft-ietf-sidrops-aspa-profile]
+]]>
+        </artwork>
+
         </section>
 
         <section anchor="Security" title="Security Considerations">
@@ -343,6 +358,7 @@
             &RFC8174;
             &RFC5652;
             &RFC6485;
+            &RFC6481;
             &RFC6488;
 
             <reference anchor="X680" >
