@@ -15,7 +15,9 @@ class ASPATests(unittest.TestCase):
                 13238: {6762, 174, 9002, 6939, 208722, 1299, 3356},
                 43247: {13238},
                 12389: {1273, 1299, 3257, 3356, 3491, 5511},
-                8342: {12389, 8359}
+                8342: {12389, 8359},
+                3:{4},
+                4:{3},
             },
             IPv6: {
             }
@@ -81,6 +83,11 @@ class ASPATests(unittest.TestCase):
         # two unknown pairs
         aspath = [Segment(13238, AS_SEQUENCE), Segment(9002, AS_SEQUENCE), Segment(1, AS_SEQUENCE), Segment(3356, AS_SEQUENCE)]
         self.assertEqual(self.aspa_manager.check_upflow_path(aspath, 3356, IPv4), Unknown)
+
+        # two unknown pairs
+        aspath = [Segment(8342, AS_SEQUENCE), Segment(8359, AS_SEQUENCE), Segment(3, AS_SEQUENCE), Segment(4, AS_SEQUENCE)]
+        self.assertEqual(self.aspa_manager.check_upflow_path(aspath, 4, IPv4), Unknown)
+
 
     def test_downstream_path_valid(self):
         # single T1 in the path
