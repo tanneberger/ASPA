@@ -96,7 +96,7 @@
                 System Provider Authorization in the Resource Public Key
                 Infrastructure. An Autonomous System Provider
                 Authorization is a digitally signed object that provides
-                a means of verifying that a Customer Autonomous System
+                a means of validating that a Customer Autonomous System
                 holder has authorized members of Provider set to be
                 its upstream providers and for the Providers to send
                 prefixes received from the Customer Autonomous System in
@@ -120,8 +120,8 @@
             <t>
                 The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
                 (See <xref target="RFC6480" /> for more information.)
-                As part of this infrastructure, a mechanism is needed to verify that a AS has permission from a Customer AS (CAS) holder to send routes in all directions.
-                The digitally signed Autonomous System Provider Authorization (ASPA) object provides this verification mechanism.
+                As part of this infrastructure, a mechanism is needed to validate that a AS has permission from a Customer AS (CAS) holder to send routes in all directions.
+                The digitally signed Autonomous System Provider Authorization (ASPA) object provides this validation mechanism.
             </t>
 
             <t>
