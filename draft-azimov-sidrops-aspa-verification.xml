@@ -26,7 +26,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-07" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-08" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -186,7 +186,7 @@
 
       </t>
       <t>
-        Since an AS1 may have different set of providers in different AFI, it should also have different PCAS in corresponding ASPAs.
+        Since an AS1 may have different set of providers in different AFI, it should also have different SPAS in corresponding ASPAs.
         In this case, the output of this procedure with input (AS1, AS2, AFI) may have different output for different AFI values.
       </t>
     </section>
