@@ -172,6 +172,12 @@ class ASPATests(unittest.TestCase):
                   Segment(174, AS_SEQUENCE), Segment(13238, AS_SEQUENCE), Segment(1, AS_SEQUENCE)]
         self.assertEqual(self.aspa_manager.check_downflow_path(aspath, 1, IPv4), Unknown)
 
+        # IX in the middle result in Unknown
+        aspath = [Segment(12389, AS_SEQUENCE), Segment(3356, AS_SEQUENCE), Segment(6695, AS_SEQUENCE),
+                  Segment(174, AS_SEQUENCE), Segment(13238, AS_SEQUENCE)]
+        self.assertEqual(self.aspa_manager.check_downflow_path(aspath, 1, IPv4), Unknown)
+
+
     def test_downstream_path_unverifiable(self):
         # Unknown in the beginning
         aspath = [Segment(1, AS_SET), Segment(12389, AS_SEQUENCE), Segment(3356, AS_SEQUENCE),
