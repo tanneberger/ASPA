@@ -20,7 +20,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-06" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-07" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
@@ -92,15 +92,9 @@
 
         <abstract>
             <t>
-                This document defines a standard profile for Autonomous
-                System Provider Authorization in the Resource Public Key
-                Infrastructure. An Autonomous System Provider
-                Authorization is a digitally signed object that provides
-                a means of validating that a Customer Autonomous System
-                holder has authorized members of Provider set to be
-                its upstream providers and for the Providers to send
-                prefixes received from the Customer Autonomous System in
-                all directions including providers and peers.
+                This document defines a standard profile for Autonomous System Provider Authorization in the Resource Public Key Infrastructure.
+                An Autonomous System Provider Authorization is a digitally signed object that provides a means of validating that a Customer Autonomous System holder has authorized members of Provider set to be its upstream providers or provide route server service at internet exchange point.
+                For the Providers it means that they are legal to send prefixes received from the Customer Autonomous System in all directions including providers and peers.
             </t>
         </abstract>
 
@@ -166,7 +160,14 @@
         <section title="The ASPA eContent" anchor="content">
             <t>
                 The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized to further propagate announcements received from the customer.
-                If customer has multiple providers they MUST be registered in a single ASPA object.
+            </t>
+            <t>
+                Not all route servers at internet exchange points are transparent, e.g. in some cases they are present in the ASPATH.
+                In this case route server AS is acting as provider AS, which propagates routes between its customers.
+                Thus, a customer MUST add both upstream providers and route sever AS it is connected to its SPAS.
+            </t>
+            <t>
+                If customer is connected to multiple transit providers/route servers they MUST be registered in a single ASPA object.
                 This rule is important to avoid possible race conditions during updates.
                 An ASPA is formally defined as:
             </t>
@@ -210,7 +211,7 @@
 
             <section title="customerASID">
                 <t>
-                    The customerASID field contains the AS number of the Autonomous System that authorizes an upstream providers (listed in the providerASSET) to propagate prefixes in the specified address family other ASes.
+                    The customerASID field contains the AS number of the Autonomous System that authorizes an providers (listed in the providerASSET) to propagate prefixes in the specified address family other ASes.
                 </t>
             </section>
 
@@ -288,7 +289,7 @@
             <t>
                 Please add the id-mod-rpki-aspa-2018 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)
                 registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
-            </t>        
+            </t>
             <figure>
                 <artwork type="text">
     Decimal   | Description                   | Specification
@@ -298,9 +299,9 @@
             </figure>
 
             <t>
-                Please add the ASPA to the SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) registry 
+                Please add the ASPA to the SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) registry
                 (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-1) as follows:
-            </t>        
+            </t>
             <figure>
                 <artwork type="text">
     Decimal   | Description                   | Specification
@@ -313,7 +314,7 @@
                 Please add Autonomous System Provider Authorization to the RPKI Signed Object registry
                 (https://www.iana.org/assignments/rpki/rpki.xhtml#signed-objects)
                 as follows:
-            </t>        
+            </t>
             <figure>
                 <artwork type="text">
     Name                                     | OID                         | Specification
@@ -321,25 +322,28 @@
     Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.TBD | [ThisRFC]
                    </artwork>
             </figure>
-        <t>
+
+            <t>
                Please add an item for the Autonomous System Provider Authorization
                file extension to the "RPKI Repository Name Scheme"
                registry created by <xref target="RFC6481"/> as follows:
-        </t>
-        <artwork>
+            </t>
+            <figure>
+                <artwork>
 <![CDATA[
    Filename
    Extension  RPKI Object                               Reference
    --------------------------------------------------------------------------------------
       .asa    Autonomous System Provider Authorization  [draft-ietf-sidrops-aspa-profile]
 ]]>
-        </artwork>
+                </artwork>
+            </figure>
 
         </section>
 
         <section anchor="Security" title="Security Considerations">
             <t>
-                While it's not restricted, but it's highly recommended maintaining for selected Customer AS a single ASPA object that covers all its providers.
+                While it's not restricted, but it's highly recommended maintaining for selected Customer AS a single ASPA object that covers all connected providers/route servers.
                 Such policy should prevent race conditions during ASPA updates that might affect prefix propagation.
                 The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
                 In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries.
