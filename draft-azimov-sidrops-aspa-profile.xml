@@ -20,7 +20,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-07" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-08" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
@@ -151,7 +151,7 @@
 
         <section title="The ASPA Content Type" anchor="content-type">
             <t>
-                The content-type for an ASPA is defined as id-cct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.TBD.
+                The content-type for an ASPA is defined as id-cct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
 
                 This OID MUST appear both within the eContentType in the encapContentInfo structure as well as the content-type signed attribute within the signerInfo structure (see <xref target="RFC6488" />).
             </t>
@@ -177,7 +177,7 @@
     ct-ASPA CONTENT-TYPE ::=
         { ASProviderAttestation IDENTIFIED BY id-ct-ASPA }
 
-    id-ct-ASPA OBJECT IDENTIFIER ::= { id-ct TBD }
+    id-ct-ASPA OBJECT IDENTIFIER ::= { id-ct 49 }
 
     ASProviderAttestation ::= SEQUENCE {
         version [0] ASPAVersion DEFAULT v0,
@@ -263,7 +263,7 @@
 
     id-ct OBJECT IDENTIFIER ::= { id-smime 1 }
   
-    id-ct-ASPA OBJECT IDENTIFIER ::= { id-ct TBD }
+    id-ct-ASPA OBJECT IDENTIFIER ::= { id-ct 49 }
   
     ct-ASPA CONTENT-TYPE ::=
         { TYPE ASProviderAttestation IDENTIFIED BY id-ct-ASPA }
@@ -306,7 +306,7 @@
                 <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
-    TBD       | id-ct-ASPA                    | [ThisRFC]
+    49        | id-ct-ASPA                    | [ThisRFC]
                    </artwork>
             </figure>
 
@@ -319,7 +319,7 @@
                 <artwork type="text">
     Name                                     | OID                         | Specification
     --------------------------------------------------------------------------------------
-    Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.TBD | [ThisRFC]
+    Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.49  | [ThisRFC]
                    </artwork>
             </figure>
 
