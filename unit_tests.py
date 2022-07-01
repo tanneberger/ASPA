@@ -8,7 +8,7 @@ class ASPATests(unittest.TestCase):
         # just an example for the tests
         aspa_records = {
             IPv4: {
-                3356: {0},
+                3356: {6695},
                 2914: {0},
                 174: {0},
                 6695: {0},
@@ -172,11 +172,6 @@ class ASPATests(unittest.TestCase):
                   Segment(174, AS_SEQUENCE), Segment(13238, AS_SEQUENCE), Segment(1, AS_SEQUENCE)]
         self.assertEqual(self.aspa_manager.check_downflow_path(aspath, 1, IPv4), Unknown)
 
-        # IX in the middle result in Unknown
-        aspath = [Segment(12389, AS_SEQUENCE), Segment(3356, AS_SEQUENCE), Segment(6695, AS_SEQUENCE),
-                  Segment(174, AS_SEQUENCE), Segment(13238, AS_SEQUENCE)]
-        self.assertEqual(self.aspa_manager.check_downflow_path(aspath, 1, IPv4), Unknown)
-
 
     def test_downstream_path_unverifiable(self):
         # Unknown in the beginning
@@ -213,6 +208,11 @@ class ASPATests(unittest.TestCase):
         # ISP in the path through IX without 6695 in the path
         aspath = [Segment(1, AS_SEQUENCE), Segment(6695, AS_SEQUENCE)]
         self.assertEqual(self.aspa_manager.check_ix_path(aspath, 6695, IPv4), Valid)
+
+        # non trasparent IX with ASPA record
+        aspath = [Segment(12389, AS_SEQUENCE), Segment(3356, AS_SEQUENCE), Segment(6695, AS_SEQUENCE),
+                  Segment(174, AS_SEQUENCE), Segment(13238, AS_SEQUENCE)]
+        self.assertEqual(self.aspa_manager.check_downflow_path(aspath, 13238, IPv4), Valid)
 
     def test_ix_path_invalid(self):
         # T1, T1, IX without 6695 in the path
