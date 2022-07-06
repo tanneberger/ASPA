@@ -206,16 +206,16 @@
       </t>
 
       <section title="Upstream Paths" anchor="Upflow">
-        <t>
-            When a route is received from a customer, a literal peer, or by a RS at an IX, each consecutive AS_SEQUENCE pair MUST be equal (prepend policy) or belong to customer-provider or mutual transit relationship (<xref target="Complex"/>).
-            If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
-            The goal of the procedure described below is to check the correctness of this statement.
-				</t>
+      <t>
+          When a route is received from a customer, a literal peer, by a RS or RS-client at an IX, each consecutive AS_SEQUENCE pair MUST be equal (prepend policy) or belong to customer-provider or mutual transit relationship (<xref target="Complex"/>).
+          If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
+          The goal of the procedure described below is to check the correctness of this statement.
+      </t>
 
-				<t>
-          The following Python function and algorithm describes the procedure that MUST be applied on routes with AFI received from a customer, peer or RS-client:
-          <figure>
-            <artwork>
+      <t>
+        The following Python function and algorithm describes the procedure that MUST be applied on routes with AFI received from a customer, peer or RS-client:
+        <figure>
+          <artwork>
     def check_upflow_path(aspath, neighbor_as, afi):
         if len(aspath) == 0:
             return Invalid
@@ -243,42 +243,42 @@
                         semi_state = pair_check
                     as1 = segment.value
         return semi_state
-            </artwork>
-          </figure>
-					<list style="numbers">
-						<t>
-							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
-						</t>
-						<t>
-							If the last segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS then procedure halts with the outcome "Invalid";
-						</t>
-						<t>
-							If there exists I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns "Invalid" then the procedure also halts with the outcome "Invalid";
-						</t>
-						<t>
-							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "Unverifiable";
-						</t>
-            <t>
-							If there exists I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns "Unknown" then the procedure also halts with the outcome "Unknown";
-            </t>
-						<t>
-							Otherwise, the procedure halts with an outcome of "Valid".
-						</t>
-					</list>
-				</t>
-			</section>
+          </artwork>
+        </figure>
+        <list style="numbers">
+          <t>
+            If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
+          </t>
+          <t>
+            If the last segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS then procedure halts with the outcome "Invalid";
+          </t>
+          <t>
+              If there exists I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns "Invalid" then the procedure also halts with the outcome "Invalid";
+          </t>
+          <t>
+              If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "Unverifiable";
+          </t>
+          <t>
+            If there exists I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns "Unknown" then the procedure also halts with the outcome "Unknown";
+          </t>
+          <t>
+              Otherwise, the procedure halts with an outcome of "Valid".
+          </t>
+        </list>
+      </t>
+    </section>
 
-			<section title="Downstream Paths" anchor="Downflow">
-				<t>
-					When route is received from provider it may have both Upstream and Downstream fragments, where a Downstream follows an Upstream fragment.
-          If the path differs from this rule, e.g. the Downstream fragment is followed by Upstream fragment it means that the route was leaked or the AS_PATH attribute was malformed.
-					The first unequal pair of AS_SEQUENCE segments that has an "Invalid" outcome of the customer-provider validation procedure indicates the end of the Upstream fragment.
-					All subsequent reverse pairs of AS_SEQUENCE segments MUST be equal (prepend policy) or belong to a customer-provider or mutual transit relationship <xref target="Complex"/>, thus can be also verified using ASPA objects.
-				</t>
-				<t>
-          The following Python function and algorithm describe the procedure that MUST be applied on routes with AFI received from a provider:
-          <figure>
-            <artwork>
+      <section title="Downstream Paths" anchor="Downflow">
+      <t>
+        When route is received from provider it may have both Upstream and Downstream fragments, where a Downstream follows an Upstream fragment.
+  If the path differs from this rule, e.g. the Downstream fragment is followed by Upstream fragment it means that the route was leaked or the AS_PATH attribute was malformed.
+        The first unequal pair of AS_SEQUENCE segments that has an "Invalid" outcome of the customer-provider validation procedure indicates the end of the Upstream fragment.
+        All subsequent reverse pairs of AS_SEQUENCE segments MUST be equal (prepend policy) or belong to a customer-provider or mutual transit relationship <xref target="Complex"/>, thus can be also verified using ASPA objects.
+      </t>
+      <t>
+        The following Python function and algorithm describe the procedure that MUST be applied on routes with AFI received from a provider:
+        <figure>
+          <artwork>
     def check_downflow_path(aspath, neighbor_as, afi):
         if len(aspath) == 0:
             return Invalid
@@ -315,15 +315,15 @@
                     as1 = segment.value
 
         return semi_state
-            </artwork>
-          </figure>
-					<list style="numbers">
-						<t>
-							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
-						</t>
-						<t>
-							If a route is received from a provider and the last segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS, then the procedure halts with the outcome "Invalid";
-						</t>
+          </artwork>
+        </figure>
+        <list style="numbers">
+            <t>
+              If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
+            </t>
+            <t>
+              If a route is received from a provider and the last segment in the AS_PATH has type AS_SEQUENCE and its value isn't equal to receiver's neighbor AS, then the procedure halts with the outcome "Invalid";
+            </t>
             <t>
               Let's define I_MIN as the minimal index for which Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, its values aren't equal and the validation procedure for (Seg(I-1).value, Seg(I).value, AFI) returns "Invalid".
               If I_MIN doesn't exist put the length of AS_PATH in I_MIN variable and jump to 5.
@@ -335,30 +335,30 @@
 							If the AS_PATH has at least one AS_SET segment then procedure halts with the outcome "Unverifiable";
 						</t>
             <t>
-	            If there exists J > I_MIN such that both Seg(J-1).type, Seg(J).type equal to AS_SEQUENCE, Seg(J-1).value != Seg(J).value and the customer-provider validation procedure (<xref target="pair-validation"/>) returns "Unknown" for (Seg(J).value, Seg(J-1).value, AFI), then the procedure halts with the outcome "Unknown";
+              If there exists J > I_MIN such that both Seg(J-1).type, Seg(J).type equal to AS_SEQUENCE, Seg(J-1).value != Seg(J).value and the customer-provider validation procedure (<xref target="pair-validation"/>) returns "Unknown" for (Seg(J).value, Seg(J-1).value, AFI), then the procedure halts with the outcome "Unknown";
             </t>
             <t>
-	            If there exists I_MIN > J such that both Seg(J-1).type, Seg(J).type equal to AS_SEQUENCE, Seg(J-1).value != Seg(J).value and the customer-provider validation procedure (<xref target="pair-validation"/>) returns "Unknown" for (Seg(J-1).value, Seg(J).value, AFI), then the procedure halts with the outcome "Unknown";
+              If there exists I_MIN > J such that both Seg(J-1).type, Seg(J).type equal to AS_SEQUENCE, Seg(J-1).value != Seg(J).value and the customer-provider validation procedure (<xref target="pair-validation"/>) returns "Unknown" for (Seg(J-1).value, Seg(J).value, AFI), then the procedure halts with the outcome "Unknown";
             </t>
-						<t>
-							Otherwise, the procedure halts with an outcome of "Valid".
-						</t>
-					</list>
-				</t>
-			</section>
+            <t>
+                Otherwise, the procedure halts with an outcome of "Valid".
+            </t>
+          </list>
+        </t>
+      </section>
 
-			<section title="Paths from Route Server">
-				<t>
+      <section title="Paths from Route Server">
+        <t>
           A route received from a RS at IX has much in common with route received from a provider.
           A valid route from RS contains Upflow fragment and MAY contain Downflow fragment that contains IX AS.
           The ambiguity is created by transparent IXes that by default don't add their AS in the AS_PATH.
           In this case, a route will have only Upflow segment, though even 'transparent' IXes may support control communities that give a way to explicitly add IX AS in the path.
-				</t>
+        </t>
         <t>
           Routes from RS MAY be processed the same way as routes from Providers, but in the case of full IX 'transparency', it will limit the opportunity of IX members to detect and filter route leaks.
           This document suggests using the presence of IX AS as a token to distinguish if Upflow or Downflow path verification procedure should be applied.
         </t>
-				<t>
+        <t>
           The following Python function and algorithm describe the procedure that SHOULD be applied on routes with AFI received from a RS:
           <figure>
             <artwork>
@@ -370,36 +370,36 @@
             return check_upflow_path(aspath, aspath[-1].value, afi)
         else:
             return check_downflow_path(aspath, neighbor_as, afi)
-            </artwork>
-          </figure>
-					<list style="numbers">
-						<t>
-							If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
-						</t>
-						<t>
-							If a route is received from a RS and the last segment in the AS_PATH isn't equal to receiver's neighbor AS, the result equals to the outcome of upflow verification procedure applied to AS_PATH with neighbor_as replaced with the value of the last AS_PATH segment <xref target="Upflow"/>;
-						</t>
-            <t>
-							If a route is received from a RS and the last segment in the AS_PATH is equal to receiver's neighbor AS, the result equals to the outcome of downflow verification procedure applied to AS_PATH <xref target="Downflow"/>;
-            </t>
-					</list>
-				</t>
-			</section>
+          </artwork>
+        </figure>
+        <list style="numbers">
+          <t>
+            If the AS_PATH has zero length then procedure halts with the outcome "Invalid";
+          </t>
+          <t>
+            If a route is received from a RS and the last segment in the AS_PATH isn't equal to receiver's neighbor AS, the result equals to the outcome of upflow verification procedure applied to AS_PATH with neighbor_as replaced with the value of the last AS_PATH segment <xref target="Upflow"/>;
+          </t>
+          <t>
+            If a route is received from a RS and the last segment in the AS_PATH is equal to receiver's neighbor AS, the result equals to the outcome of downflow verification procedure applied to AS_PATH <xref target="Downflow"/>;
+          </t>
+        </list>
+      </t>
+    </section>
 
-			<section title="Mitigation">
-				<t>
-					If the output of the AS_PATH verification procedure is "Invalid" the route MUST be rejected.
-				</t>
-				<t>
-					If the output of the AS_PATH verification procedure is 'Unverifiable' it means that AS_PATH can't be fully checked.
-					Such routes should be treated with caution and SHOULD be processed the same way as "Invalid" routes.
-					This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
-				</t>
-				<t>
-					The above AS_PATH verification procedure is able to check routes received from customer, peers, providers, RS, and RS-clients.
-					The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> can provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
-				</t>
-			</section>
+      <section title="Mitigation">
+        <t>
+            If the output of the AS_PATH verification procedure is "Invalid" the route MUST be rejected.
+        </t>
+        <t>
+            If the output of the AS_PATH verification procedure is 'Unverifiable' it means that AS_PATH can't be fully checked.
+            Such routes should be treated with caution and SHOULD be processed the same way as "Invalid" routes.
+            This policy goes with full correspondence to <xref target="I-D.kumari-deprecate-as-set-confed-set"/>.
+        </t>
+        <t>
+            The above AS_PATH verification procedure is able to check routes received from customer, peers, providers, RS, and RS-clients.
+            The ASPA mechanism combined with BGP Roles <xref target="I-D.ietf-idr-bgp-open-policy" /> and ROA-based Origin Validation <xref target="RFC6483" /> can provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
+        </t>
+    </section>
     </section>
 
     <section title="Disavowal of Provider Authorizaion">
