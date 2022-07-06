@@ -157,7 +157,7 @@
 
     </section>
 
-    <section title="Customer-Provider Validation Procedure" anchor="pair-validation">
+    <section title="Customer-Provider Verification Procedure" anchor="pair-validation">
       <t>
         This section describes an abstract procedure that checks that a pair of ASNs (AS1, AS2) is included in the set of signed ASPAs.
         The semantics of its use is defined in next section.
@@ -168,6 +168,20 @@
       </t>
 
       <t>
+        The following pseudocode Python function and algorithm describes the customer-provider verification procedure for selected AFI:
+        <figure>
+          <artwork>
+    def verify_pair(self, as1, as2, afi):
+        aspa_records_as1 = aspa_records_afi.get(as1, None)
+        if aspa_records_as1 is None:
+            return Unknown
+
+        if as2 not in aspa_records_as1:
+            return Invalid
+        return Valid
+          </artwork>
+        </figure>
+
         <list style="numbers">
           <t>
             Retrieve all cryptographically valid ASPAs in a selected AFI with a customer value of AS1.
@@ -207,13 +221,13 @@
 
       <section title="Upstream Paths" anchor="Upflow">
       <t>
-          When a route is received from a customer, a literal peer, by a RS or RS-client at an IX, each consecutive AS_SEQUENCE pair MUST be equal (prepend policy) or belong to customer-provider or mutual transit relationship (<xref target="Complex"/>).
-          If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
+        When a route is received from a customer, a literal peer, by a RS or RS-client at an IX, each consecutive AS_SEQUENCE pair MUST be equal (prepend policy) or belong to customer-provider or mutual transit relationship (<xref target="Complex"/>).
+        If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed.
           The goal of the procedure described below is to check the correctness of this statement.
       </t>
 
       <t>
-        The following Python function and algorithm describes the procedure that MUST be applied on routes with AFI received from a customer, peer or RS-client:
+        The following pseudocode Python function and algorithm describes the procedure that MUST be applied on routes with AFI received from a customer, peer or RS-client:
         <figure>
           <artwork>
     def check_upflow_path(aspath, neighbor_as, afi):
@@ -276,7 +290,7 @@
         All subsequent reverse pairs of AS_SEQUENCE segments MUST be equal (prepend policy) or belong to a customer-provider or mutual transit relationship <xref target="Complex"/>, thus can be also verified using ASPA objects.
       </t>
       <t>
-        The following Python function and algorithm describe the procedure that MUST be applied on routes with AFI received from a provider:
+        The following pseudocode Python function and algorithm describe the procedure that MUST be applied on routes with AFI received from a provider:
         <figure>
           <artwork>
     def check_downflow_path(aspath, neighbor_as, afi):
@@ -359,7 +373,7 @@
           This document suggests using the presence of IX AS as a token to distinguish if Upflow or Downflow path verification procedure should be applied.
         </t>
         <t>
-          The following Python function and algorithm describe the procedure that SHOULD be applied on routes with AFI received from a RS:
+          The following pseudocode Python function and algorithm describe the procedure that SHOULD be applied on routes with AFI received from a RS:
           <figure>
             <artwork>
     def check_ix_path(aspath, neighbor_as, afi):
