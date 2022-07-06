@@ -206,7 +206,7 @@ class ASPATests(unittest.TestCase):
         self.assertEqual(self.aspa_manager.check_ix_path(aspath, 6695, IPv4), Valid)
 
         # ISP in the path through IX without 6695 in the path
-        aspath = [Segment(1, AS_SEQUENCE), Segment(6695, AS_SEQUENCE)]
+        aspath = [Segment(1, AS_SEQUENCE)]
         self.assertEqual(self.aspa_manager.check_ix_path(aspath, 6695, IPv4), Valid)
 
         # non trasparent IX with ASPA record
@@ -225,7 +225,7 @@ class ASPATests(unittest.TestCase):
 
         # single T1 in the path through IX with 4635 in the path, though ASPA for 4635 doesn't exist
         aspath = [Segment(3356, AS_SEQUENCE), Segment(4635, AS_SEQUENCE)]
-        self.assertEqual(self.aspa_manager.check_ix_path(aspath, 4635, IPv4), Valid)
+        self.assertEqual(self.aspa_manager.check_ix_path(aspath, 4635, IPv4), Invalid)
 
     def test_ix_path_unknown(self):
         # ISP unkown ISP in the path through IX without 6695 in the path

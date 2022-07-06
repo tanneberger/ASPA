@@ -59,8 +59,6 @@ class ASPA:
         if aspath[-1].type == AS_SEQUENCE and aspath[-1].value != neighbor_as:
             return Invalid
 
-        semi_state = Valid
-
         forward_invalid_index, forward_unknown_index, forward_unverifiable = self.get_indexes(aspath, afi)
 
         aspath_len = len(aspath)
@@ -70,7 +68,7 @@ class ASPA:
             return Unverifiable
         if forward_unknown_index < aspath_len:
             return Unknown
-        return semi_state
+        return Valid
 
     def check_downflow_path(self, aspath, neighbor_as, afi):
         if len(aspath) == 0:
@@ -94,11 +92,15 @@ class ASPA:
     def check_ix_path(self, aspath, neighbor_as, afi):
         if len(aspath) == 0:
             return Invalid
-        if len(aspath) == 0:
-            return Invalid
 
-        if aspath[-1].value != neighbor_as:
-            return self.check_upflow_path(aspath, aspath[-1].value, afi)
-        else:
-            return self.check_downflow_path(aspath, neighbor_as, afi)
+        forward_invalid_index, forward_unknown_index, forward_unverifiable = self.get_indexes(aspath, afi)
+
+        aspath_len = len(aspath)
+        if forward_invalid_index < aspath_len:
+            return Invalid
+        if forward_unverifiable:
+            return Unverifiable
+        if forward_unknown_index < aspath_len:
+            return Unknown
+        return Valid
 
