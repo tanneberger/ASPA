@@ -151,7 +151,7 @@
 
         <section title="The ASPA Content Type" anchor="content-type">
             <t>
-                The content-type for an ASPA is defined as id-cct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
+                The content-type for an ASPA is defined as id-ct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
 
                 This OID MUST appear both within the eContentType in the encapContentInfo structure as well as the content-type signed attribute within the signerInfo structure (see <xref target="RFC6488" />).
             </t>
@@ -169,29 +169,12 @@
             <t>
                 If customer is connected to multiple transit providers/route servers they MUST be registered in a single ASPA object.
                 This rule is important to avoid possible race conditions during updates.
-                An ASPA is formally defined as:
+            </t>
+            <t>
+                The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X680"/> module:
             </t>
 
-            <figure>
-                <artwork type="asn1">
-    ct-ASPA CONTENT-TYPE ::=
-        { ASProviderAttestation IDENTIFIED BY id-ct-ASPA }
-
-    id-ct-ASPA OBJECT IDENTIFIER ::= { id-ct 49 }
-
-    ASProviderAttestation ::= SEQUENCE {
-        version [0] ASPAVersion DEFAULT v0,
-        aFI  AddressFamilyIdentifier,
-        customerASID  ASID,
-        providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID }
-
-    ASPAVersion ::= INTEGER  { v0(0) }
-
-    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2))
-
-    ASID ::= INTEGER
-                </artwork>
-            </figure>
+            <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
 
             <t>
                 Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488" />.
@@ -203,22 +186,38 @@
                 </t>
             </section>
 
-            <section title="AFI">
-                <t>
-                    The AFI field contains Address Family Identifier for which the relation between customer and provider ASes is authorized. Presently defined values for the Address Family Identifier field are specified in the IANA's Address Family Numbers registry <xref target="IANA-AF" />.
-                </t>
-            </section>
-
             <section title="customerASID">
                 <t>
-                    The customerASID field contains the AS number of the Autonomous System that authorizes an providers (listed in the providerASSET) to propagate prefixes in the specified address family other ASes.
+                    The customerASID field contains the AS number of the Autonomous System (AS) that authorizes a collection of provider ASes (as listed in the providerASSet) to propagate prefixes in the specified address family to other ASes.
                 </t>
             </section>
 
-            <section title="providerASSET">
+            <section title="providers">
                 <t>
-                    The providerASSET contains the sequence (set) of AS numbers that are authorized to further propagate announcements in the specified address family received from the customer.
+                    The providers field contains the listing of ASes that are authorized to further propagate announcements in the specified address family received from the customer.
                 </t>
+                <t>
+                    Each element contained in the providers field is an instance of ProviderAS.
+                </t>
+                <section title="ProviderAS">
+                    <section title="providerASID">
+                        <t>
+                            The providerASID field contains the AS number of an AS that has been authorized by the customer AS to propagate prefixes in the specified address family to other ASes.
+                        </t>
+                    </section>
+                    <section title="afiLimit">
+                        <t>
+                            The afiLimit field optionally constrains the authorization given to the provider AS to a single address family.
+                        </t>
+                        <t>
+                            If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
+                            AFI values are specified in <xref target="IANA-AF"/>.
+                        </t>
+                        <t>
+                            If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
+                        </t>
+                    </section>
+                </section>
             </section>
         </section>
 
@@ -237,64 +236,16 @@
             </t>
         </section>
 
-        <section title="ASN.1 Module for the ASPA Content Type" anchor="module">
-            <figure>
-                <artwork type="asn1">
-    RPKI-ASPA-2020
-      { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-         pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2020(TBD2) }
-    DEFINITIONS IMPLICIT TAGS ::=
-    BEGIN
-    IMPORTS
-  
-    CONTENT-TYPE
-    FROM CryptographicMessageSyntax-2010  -- RFC 6268
-        { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-           pkcs-9(9) smime(16) modules(0) id-mod-cms-2009(58) } ;
-
-    ContentSet CONTENT-TYPE ::= { ct-ASPA, ... }
-
-    --
-    -- ASPA Content Type
-    --
-
-    id-smime OBJECT IDENTIFIER ::= { iso(1) member-body(2)
-         us(840) rsadsi(113549) pkcs(1) pkcs-9(9) 16 }
-
-    id-ct OBJECT IDENTIFIER ::= { id-smime 1 }
-  
-    id-ct-ASPA OBJECT IDENTIFIER ::= { id-ct 49 }
-  
-    ct-ASPA CONTENT-TYPE ::=
-        { TYPE ASProviderAttestation IDENTIFIED BY id-ct-ASPA }
-
-    ASProviderAttestation ::= SEQUENCE {
-      version [0] ASPAVersion DEFAULT v0,
-      aFI  AddressFamilyIdentifier,
-      customerASID  ASID,
-      providerASSET  SEQUENCE (SIZE(1..MAX)) OF ASID OPTIONAL }
-
-    ASPAVersion ::= INTEGER  { v0(0) }
-
-    AddressFamilyIdentifier ::= OCTET STRING (SIZE (2))
-
-    ASID ::= INTEGER
-
-    END
-                </artwork>
-            </figure>
-        </section>
-
         <section anchor="IANA" title="IANA Considerations">
             <t>
-                Please add the id-mod-rpki-aspa-2018 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)
+                Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)
                 registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
             </t>
             <figure>
                 <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
-    TBD2      | id-mod-rpki-aspa-2020         | [ThisRFC]
+    TBD2      | id-mod-rpki-aspa-2022         | [ThisRFC]
                    </artwork>
             </figure>
 
@@ -351,6 +302,7 @@
         </section>
 
         <section anchor="Acknowledgments" title="Acknowledgments">
+          The authors would like to thank Ben Maddison for substantial review and contributions to the ASN.1 specification.
         </section>
 
     </middle>
