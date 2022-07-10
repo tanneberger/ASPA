@@ -154,7 +154,6 @@
         For a selected Customer AS SHOULD exist only single ASPA object at any time.
         In this document we will use ASPA(AS1, AFI, [AS2, ...]) as notation to represent ASPA object for AS1 in the selected AFI.
       </t>
-
     </section>
 
     <section title="Customer-Provider Verification Procedure" anchor="pair-validation">
@@ -166,7 +165,6 @@
       <t>
         A relying party (RP) must have access to a local cache of the complete set of cryptographically valid ASPAs when performing customer-provider verification procedure.
       </t>
-
       <t>
         The following algorithm describes the customer-provider verification procedure for selected AFI:
         <list style="numbers">
@@ -184,7 +182,6 @@
             Otherwise, the procedure exits with an outcome of "Invalid."
           </t>
         </list>
-
       </t>
       <t>
         Since an AS1 may have different set of providers in different AFI, it should also have different SPAS in corresponding ASPAs.
@@ -201,27 +198,22 @@
         We will use index of AS_PATH, where Seg(0) stands for the segment of originating AS.
         We will use Seg(I).value and Seg(I).type to represent Ith segment value and its type respectively.
       </t>
-
-      <t>
-        The below procedures are applicable only for 32-bit AS number compatible BGP speakers.
-      </t>
-
       <t>
         We define Invalid Pair Index as a minimal I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns Invalid.
         If I index doesn't exist we put the length of AS_PATH in its value.
       </t>
-
       <t>
         We define Reverse Invalid Pair Index as Invalid Pair Index calculated for a reversed AS_PATH.
       </t>
-
       <t>
         We define Unknown Pair Index as a minimal I Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns Unknown.
-        If I index doesn't exist we put the length of AS_PATH in its value.
+        If I is greater than Invalid Pair Index or I doesn't exist we equate its value to the value of Invalid Pair Index.
       </t>
-
       <t>
         We define Reverse Unknown Pair Index as Unknown Pair Index calculated for a reversed AS_PATH.
+      </t>
+      <t>
+        The below procedures are applicable only for 32-bit AS number compatible BGP speakers.
       </t>
 
       <section title="Upstream Paths" anchor="Upflow">
@@ -229,21 +221,17 @@
           When a route is received from a customer, a literal peer, by a RS or RS-client at an IX, each consecutive AS_SEQUENCE pair MUST be equal (prepend policy) or belong to customer-provider or mutual transit relationship (<xref target="Complex"/>).
           If there are other types of relationships, it means that the route was leaked or the AS_PATH attribute was malformed and Invalid Pair Index will be less than AS_PATH length.
         </t>
-
         <t>
-          The attacker that creates route leak intentionally may try to strip himself from the path.
+          If an attacker creates route leak intentionally he may try to strip his AS from the AS_PATH.
           To strengthen route leak detection in case of malicious activity we need to check that AS_PATH is not empty and the latest AS in the AS_PATH equals to BGP neighbour AS with the exception for routes received from transparent IXes.
         </t>
-
         <t>
-          At the of high adoption level there might be interest to distinguish between AS_PATHs that are fully verified from AS_PATHs where one or more AS in the AS_PATH has no ASPA records.
+          At the of high adoption level there might be interest to distinguish between AS_PATHs that are Valid from AS_PATHs that can't be fully verified and may be leaked.
           If route is received from a customer, a literal peer, by a RS or RS-client at an IX and Unknown Pair Index is not equal to AS_PATH length it means that there is at least one AS without ASPA record.
         </t>
-
         <t>
           The goal of the procedure described below is to check the correctness of these statements.
         </t>
-
         <t>
           <list style="numbers">
             <t>
@@ -273,14 +261,14 @@
           When route is received from provider it may have both Upstream and Downstream fragments, where a Downstream follows an Upstream fragment.
           If the path differs from this rule it means that the route was leaked or the AS_PATH attribute was malformed.
           This statement can be transformed into the next one: if there is something between first Upstream fragment and last Downstream fragment it is a route leak.
-          The length of the Downstream segment is defined by Revered Pair Index.
-          With its help we can define next rule for route leak detection: if sum of Invalid Pair Index and Reverse Invalid Pair Index is less than AS_PATH length, route was leaked or the AS_PATH attribute was malformed.
+          The length of the first Upstream segment and last Downstream segment are defined by Invalid Pair Index and Reverse Invalid Pair Index respectively.
+          Using these indexes we can define next rule for route leak detection for routes received from providers: if sum of Invalid Pair Index and Reverse Invalid Pair Index is less than AS_PATH length, than route was leaked or the AS_PATH attribute was malformed.
         </t>
         <t>
-          Likewise we did in case of Upstream path, we need to check that AS_PATH is not empty and the latest AS in the AS_PATH equals to BGP neighbour AS.
+          Likewise we did in case of Upstream Paths, we need to check that AS_PATH is not empty and the latest AS in the AS_PATH equals to BGP neighbour AS.
         </t>
         <t>
-          Similar to route leak detection, we can distinguish fully verifiable AS_PATH by checking if sum of Unknown Pair Index and Reverse Unknown Pair Index is equal or greater than AS_PATH length.
+          Similar to route leak detection, we can distinguish the Valid AS_PATH from Unknown one by checking that sum of Unknown Pair Index and Reverse Unknown Pair Index is equal or greater than AS_PATH length.
         </t>
         <t>
           The goal of the procedure described below is to check the correctness of these statements.
