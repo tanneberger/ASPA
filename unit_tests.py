@@ -1,27 +1,28 @@
 import unittest
 from aspa_logic import *
 
+aspa_records = {
+    IPv4: {
+        3356: {6695},
+        2914: {0},
+        174: {0},
+        6695: {0},
+        13238: {6762, 174, 9002, 6939, 208722, 1299, 3356},
+        43247: {13238},
+        12389: {1273, 1299, 3257, 3356, 3491, 5511},
+        8342: {12389, 8359},
+        3: {4},
+        4: {3},
+    },
+    IPv6: {
+    }
+}
+
 class ASPATests(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(ASPATests, self).__init__(*args, **kwargs)
 
         # just an example for the tests
-        aspa_records = {
-            IPv4: {
-                3356: {6695},
-                2914: {0},
-                174: {0},
-                6695: {0},
-                13238: {6762, 174, 9002, 6939, 208722, 1299, 3356},
-                43247: {13238},
-                12389: {1273, 1299, 3257, 3356, 3491, 5511},
-                8342: {12389, 8359},
-                3:{4},
-                4:{3},
-            },
-            IPv6: {
-            }
-        }
         self.aspa_manager = ASPA(aspa_records)
 
     def test_upstream_path_valid(self):
