@@ -195,18 +195,18 @@
         AS_PATH may contain two types of components: AS_SEQUENCEs and AS_SETs, as defined in <xref target="RFC4271" />.
       </t>
       <t>
-        We will use index of AS_PATH, where Seg(0) stands for the first rightmost AS in the AS_PATH.
+        We will use index of AS_PATH, where Seg(1) stands for the first rightmost AS in the AS_PATH.
         We will use Seg(I).value and Seg(I).type to represent Ith segment value and its type respectively.
       </t>
       <t>
-        We define Invalid Pair Index as a minimal I such that Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns Invalid.
+        We define Invalid Pair Index as a minimal I such that Seg(I).type and Seg(I+1).type equal to AS_SEQUENCE, Seg(I).value != Seg(I+1).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I).value, Seg(I+1).value, AFI) returns Invalid.
         If I index doesn't exist we put the length of AS_PATH in its value.
       </t>
       <t>
         We define Reverse Invalid Pair Index as Invalid Pair Index calculated for a reversed AS_PATH.
       </t>
       <t>
-        We define Unknown Pair Index as a minimal I Seg(I-1).type and Seg(I).type equal to AS_SEQUENCE, Seg(I-1).value != Seg(I).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I-1).value, Seg(I).value, AFI) returns Unknown.
+        We define Unknown Pair Index as a minimal I Seg(I).type and Seg(I+1).type equal to AS_SEQUENCE, Seg(I).value != Seg(I+1).value and customer-provider validation procedure (<xref target="pair-validation"/>) with parameters (Seg(I).value, Seg(I+1).value, AFI) returns Unknown.
         If I is greater than Invalid Pair Index or I doesn't exist we equate its value to the value of Invalid Pair Index.
       </t>
       <t>

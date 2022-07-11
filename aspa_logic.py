@@ -31,7 +31,7 @@ class ASPA:
         unverifiable_flag = False
 
         as1 = 0
-        index = 0
+        index = 1
         for segment in aspath:
             if segment.type != AS_SEQUENCE:
                 as1 = 0
@@ -42,7 +42,7 @@ class ASPA:
                 elif as1 != segment.value:
                     pair_check = self.verify_pair(as1, segment.value, afi)
                     if pair_check == Invalid:
-                        return index, unknown_index if unknown_index else index, unverifiable_flag
+                        return index - 1, unknown_index - 1 if unknown_index else index - 1, unverifiable_flag
                     elif pair_check == Unknown and not unknown_index:
                         unknown_index = index
 
@@ -50,7 +50,7 @@ class ASPA:
 
             index += 1
 
-        return index, unknown_index if unknown_index else index, unverifiable_flag
+        return index - 1, unknown_index - 1 if unknown_index else index - 1, unverifiable_flag
 
     def check_upflow_path(self, aspath, neighbor_as, afi):
         if len(aspath) == 0:
