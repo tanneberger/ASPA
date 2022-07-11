@@ -163,11 +163,11 @@
             </t>
             <t>
                 Not all route servers at internet exchange points are transparent, e.g. in some cases they are present in the ASPATH.
-                In this case route server AS is acting as provider AS, which propagates routes between its customers.
-                Thus, a customer MUST add both upstream providers and route sever AS it is connected to its SPAS.
+                In this case route server AS is acting as a provider AS, which propagates routes between its customers.
+                Thus, a customer MUST add both upstream providers and non-transparent route sever AS it is connected to its SPAS.
             </t>
             <t>
-                If customer is connected to multiple transit providers/route servers they MUST be registered in a single ASPA object.
+                If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object.
                 This rule is important to avoid possible race conditions during updates.
             </t>
             <t>
