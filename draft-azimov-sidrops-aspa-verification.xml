@@ -30,11 +30,11 @@
   <front>
 
     <title abbrev="AS_PATH Verification">
-      BGP AS_PATH Verification Based on Resource Public Key Infrastructure (RPKI) Autonomous System Provider Authorization (ASPA) objects.
+      BGP AS_PATH Verification Based on Resource Public Key Infrastructure (RPKI) Autonomous System Provider Authorization (ASPA) Objects
     </title>
 
-    <author fullname="Alexander Azimov" initials="A"
-            surname="Azimov">
+    <author fullname="Alexander Azimov" initials="A" 
+            surname="Azimov (Ed.)">
       <organization>Yandex</organization>
       <address>
         <email>a.e.azimov@gmail.com</email>
@@ -87,6 +87,8 @@
     <abstract>
       <t>
         This document defines the semantics of an Autonomous System Provider Authorization object in the Resource Public Key Infrastructure to verify the AS_PATH attribute of routes advertised in the Border Gateway Protocol.
+        This AS_PATH verification is primarily intended for detection and mitigation of route leaks.
+        It also provides protection against forged-origin prefix hijacks.
       </t>
     </abstract>
 
@@ -108,31 +110,30 @@
         While these upgrades to BGP are quite useful, they still rely on transitive BGP attributes, i.e. AS_PATH, that can be manipulated by attackers.
       </t>
       <t>
-        BGPSec <xref target="RFC8205" /> was designed to solve the problem of AS_PATH validation.
-        Unfortunately, strict cryptographic validation brought expensive computational overhead for BGP routers.
-        BGPSec also proved vulnerable to downgrade attacks that nullify the benefits of AS_PATH signing.
-        As a result, to abuse the AS_PATH or any other signed transit attribute, an attacker merely needs to downgrade to 'old' BGP-4.
+        BGPsec <xref target="RFC8205" /> was designed to solve the problem of AS_PATH validation using a cryptographic signatures included in the UPDATE.
+        Unfortunately, the cryptographic validation of path signatures results in significant computational overhead for BGP routers.
+        More importantly, while BGPsec offers protection against path or prefix modifications, it does not protect against route leaks.
       </t>
       <t>
         An alternative approach was introduced with soBGP <xref target="I-D.white-sobgp-architecture"/>.
         Instead of strong cryptographic AS_PATH validation, it created an AS_PATH security function based on a shared database of AS adjacencies.
-        While such an approach has reasonable computational cost, the two side adjacencies don't provide a way to automate anomaly detection without high adoption rate - an attacker can easily create a one-way adjacency.
-        SO-BGP transported data about adjacencies in new additional BGP messages, which was recursively complex thus significantly increasing adoption complexity and risk.
-        In addition, the general goal to verification all AS_PATHs was not achievable given the indirect adjacencies at internet exchange points.
+        While such an approach has reasonable computational cost, the two-side adjacencies don't provide a way to automate anomaly detection without high adoption rate - an attacker can easily create a one-way adjacency.
+        soBGP transported data about adjacencies in new additional BGP messages, which was recursively complex thus significantly increasing adoption complexity.
+        In addition, the general goal of verification of all AS_PATHs was not achievable given the indirect adjacencies at Internet exchange points.
       </t>
       <t>
-        Instead of checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of malicious hijacks and route leaks.
-        To achieve this new AS_PATH verification procedures are defined to automatically detect invalid (malformed) AS_PATHs in announcements that are received from customers, peers, providers, RS and RS-clients.
-        This procedures uses a shared signed database of customer-to-provider relationships using a new RPKI object - Autonomous System Provider Authorization (ASPA).
+        Instead of strictly checking AS_PATH correctness, this document focuses on solving real-world operational problems - automatic detection of route leaks and combined with ROA detection of malicious bgp hijacks.
+        To achieve this, new AS_PATH verification procedures are described to automatically detect invalid (malformed) AS_PATHs in announcements that are received from customers, peers, providers, Route Servers (RSes), and RS-clients.
+        These procedures use a shared signed database of customer-to-provider relationships using a new RPKI object - Autonomous System Provider Authorization (ASPA).
         This technique provides benefits for participants even during early and incremental adoption.
       </t>
     </section>
 
     <section title="Anomaly Propagation" anchor="propagation">
       <t>
-        Both route leaks and hijacks have similar effects on ISP operations - they redirect traffic, resulting in increased latency, packet loss, or possible MiTM attacks.
-        But the level of risk depends significantly on the propagation of the anomalies.
-        For example, a hijack that is propagated only to customers may concentrate traffic in a particular ISP's customer cone; while if the anomaly is propagated through peers, upstreams, or reaches Tier-1 networks, thus distributing globally, traffic may be redirected at the level of entire countries and/or global providers.
+        Both route leaks and hijacks have similar effects on ISP operations - they redirect traffic, resulting in denial of service (DoS), eavesdropping, increased latency and packet loss.
+        But the level of risk depends significantly on the extent of propagation of the anomalies.
+        For example, a hijack that is propagated only to customers may cause bottlenecking within a particular ISP's customer cone, but if the anomaly is propagated through peers, upstreams, or reaches Tier-1 networks, thus distributing globally, the ill effects will likely be experienced across continents.
       </t>
       <t>
         The ability to constrain propagation of BGP anomalies to upstreams and peers, without requiring support from the source of the anomaly (which is critical if source has malicious intent), should significantly improve the security of inter-domain routing and solve the majority of problems.
