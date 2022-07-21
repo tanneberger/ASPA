@@ -26,7 +26,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-08" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-09" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -388,7 +388,8 @@
     <section anchor="Acknowledgments" title="Acknowledgments">
       <t>
         The authors wish to thank authors of <xref target="RFC6483" /> since its text was used as an example while writing this document.
-				The also authors wish to thank Iljitsch van Beijnum for giving a hint about Downstream paths.
+				The authors wish to thank Iljitsch van Beijnum for giving a hint about Downstream paths.
+        Authors wish to thank Kotikalapudi Sriram for algorithm improvements and helping with text clarity in the document.
       </t>
     </section>
 

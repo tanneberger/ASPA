@@ -20,7 +20,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-08" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-09" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
@@ -302,7 +302,9 @@
         </section>
 
         <section anchor="Acknowledgments" title="Acknowledgments">
-          The authors would like to thank Ben Maddison for substantial review and contributions to the ASN.1 specification.
+            <t>
+                The authors would like to thank Ben Maddison for substantial review and contributions to the ASN.1 specification.
+            </t>
         </section>
 
     </middle>
