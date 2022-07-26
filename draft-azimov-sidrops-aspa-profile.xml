@@ -301,6 +301,35 @@
             </t>
         </section>
 
+        <section removeInRFC="true">
+          <name>Implementation status</name>
+           <t>
+             This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in RFC 7942.
+             The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.
+             Please note that the listing of any individual implementation here does not imply endorsement by the IETF.
+             Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.
+             This is not intended as, and must not be construed to be, a catalog of available implementations or their features.
+             Readers are advised to note that other implementations may exist.
+           </t>
+
+           <t>
+             According to RFC 7942, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
+             It is up to the individual working groups to use this information as they see fit".
+           </t>
+
+           <ul>
+             <li>
+               A validator implementation <xref target="rpki-client"/> written in C based on the OpenBSD RPKI Validator was provided by Job Snijders from Fastly.
+             </li>
+             <li>
+               A signer implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
+             </li>
+             <li>
+               A signer implementation <xref target="krill"/> written in Rust was provided by Tim Bruijnzeels from NLnetLabs.
+             </li>
+           </ul>
+        </section>
+
         <section anchor="Acknowledgments" title="Acknowledgments">
             <t>
                 The authors would like to thank Ben Maddison for substantial review and contributions to the ASN.1 specification.
@@ -356,6 +385,33 @@
 
         <references title="Informative References">
             &RFC6480;
+            <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
+              <front>
+                <title>rpkimancer-aspa</title>
+                <author initials="B." surname="Maddison">
+                  <organization>Workonline</organization>
+                </author>
+                <date year="2022"/>
+              </front>
+            </reference>
+            <reference anchor="rpki-client" target="https://mailarchive.ietf.org/arch/msg/sidrops/Jdowj_bDhN_T993SN4bbsWeDgGA/">
+              <front>
+                <title>rpki-client</title>
+                <author initials="J." surname="Snijders">
+                  <organization>Fastly</organization>
+                </author>
+                <date year="2022"/>
+              </front>
+            </reference>
+            <reference anchor="krill" target="https://github.com/NLnetLabs/krill">
+              <front>
+                <title>Krill</title>
+                <author initials="T." surname="Bruijnzeels">
+                  <organization>NLnetLabs</organization>
+                </author>
+                <date year="2022"/>
+              </front>
+            </reference>
         </references>
     </back>
 </rfc>
