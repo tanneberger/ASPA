@@ -322,10 +322,13 @@
                A validator implementation <xref target="rpki-client"/> written in C based on the OpenBSD RPKI Validator was provided by Job Snijders from Fastly.
              </li>
              <li>
-               A signer implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
+               A signer and decoder implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
              </li>
              <li>
                A signer implementation <xref target="krill"/> written in Rust was provided by Tim Bruijnzeels from NLnetLabs.
+             </li>
+             <li>
+               At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
              </li>
            </ul>
         </section>
