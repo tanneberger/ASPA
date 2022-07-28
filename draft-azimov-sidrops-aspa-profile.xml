@@ -330,6 +330,9 @@
              <li>
                At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
              </li>
+             <li>
+               Di Ma <xref target="rpstir2">reported</xref> success validating objects produced by Tim Bruijnzeels in RPSTIR2.
+             </li>
            </ul>
         </section>
 
@@ -414,6 +417,14 @@
                 </author>
                 <date year="2022"/>
               </front>
+            </reference>
+            <reference anchor="rpstir2" target="https://mailarchive.ietf.org/arch/msg/sidrops/pxqAGPmR0MA3NMe-NxYyiEZ7RXw">
+              <front>
+              <title>RPSTIR2</title>
+              <author initials="D." surname="Ma">
+                <organization>ZDNS</organization>
+              </author>
+             </front>
             </reference>
         </references>
     </back>
