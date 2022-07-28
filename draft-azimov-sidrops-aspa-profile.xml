@@ -49,14 +49,6 @@
             </address>
         </author>
 
-        <author fullname="Keyur Patel" initials="K"
-            surname="Patel">
-            <organization abbrev="Arrcus">Arrcus, Inc.</organization>
-            <address>
-                <email>keyur@arrcus.com</email>
-            </address>
-        </author>
-
         <author fullname="Job Snijders" initials="J." surname="Snijders">
             <organization>Fastly</organization>
             <address>
@@ -83,7 +75,19 @@
                <email>housley@vigilsec.com</email>
           </address>
         </author>
-    
+ 
+        <author fullname="Ben Maddison" initials="B" surname="Maddison">
+            <organization abbrev="Workonline">Workonline</organization>
+            <address>
+                <postal>
+                     <street />
+                     <city>Cape Town</city>
+                     <country>South Africa</country>
+                </postal>
+                <email>benm@workonline.africa</email>
+            </address>
+        </author>
+
         <date />
 
         <keyword>BGP</keyword>
@@ -199,6 +203,17 @@
                 <t>
                     Each element contained in the providers field is an instance of ProviderAS.
                 </t>
+                <t>
+                    In addition to the constraints described by the formal ASN.1 definition, the contents of the providers field MUST satisfy the following constraints:
+                  <list style="symbols">
+                    <t>
+                        The elements of providers MUST be ordered in ascending numerical order by the value of the providerASID field.
+                    </t>
+                    <t>
+                        Each value of providerASID MUST be unique (with respect to the other elements of providers).
+                    </t>
+                  </list>
+                </t>
                 <section title="ProviderAS">
                     <section title="providerASID">
                         <t>
@@ -211,7 +226,7 @@
                         </t>
                         <t>
                             If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
-                            AFI values are specified in <xref target="IANA-AF"/>.
+                            Only permitted AFI values are the IPv4 and IPv6 AFI values as specified in <xref target="IANA-AF"/>.
                         </t>
                         <t>
                             If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
@@ -331,14 +346,14 @@
                At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
              </li>
              <li>
-               Di Ma <xref target="rpstir2">reported</xref> success validating objects produced by Tim Bruijnzeels in RPSTIR2.
+               Di Ma <xref target="rpstir2">reported</xref> success in RPSTIR2 validating objects produced by Tim Bruijnzeels.
              </li>
            </ul>
         </section>
 
         <section anchor="Acknowledgments" title="Acknowledgments">
             <t>
-                The authors would like to thank Ben Maddison for substantial review and contributions to the ASN.1 specification.
+                The authors would like to thank Keyur Patel for helping kickstart the ASPA profile project; and Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form.
             </t>
         </section>
 
