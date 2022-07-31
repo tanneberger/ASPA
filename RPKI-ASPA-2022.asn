@@ -1,6 +1,6 @@
 RPKI-ASPA-2022
   { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-     pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2020(TBD) }
+     pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2022(TBD) }
 
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
