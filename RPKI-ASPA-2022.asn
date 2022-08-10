@@ -31,7 +31,7 @@ ProviderAS ::= SEQUENCE {
   providerASID  ASID,
   afiLimit      AddressFamilyIdentifier OPTIONAL }
 
-ASID ::= INTEGER
+ASID ::= INTEGER (0..4294967295)
 
 AddressFamilyIdentifier ::= OCTET STRING (SIZE (2))
 
