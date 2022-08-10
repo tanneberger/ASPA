@@ -349,7 +349,13 @@
                At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
              </li>
              <li>
-               Di Ma <xref target="rpstir2">reported</xref> success in RPSTIR2 validating objects produced by Tim Bruijnzeels.
+               Di Ma reported <xref target="rpstir2">success</xref> in RPSTIR2 validating objects produced by Tim Bruijnzeels.
+             </li>
+             <li>
+               A signer <xref target="koenvh">implementation</xref> written in PHP based on OpenSSL was provided by Koen van Hove.
+             </li>
+             <li>
+               A signer <xref target="aspa-demo">implementation</xref> written in Perl based on OpenSSL was provided by Tom Harrison from APNIC.
              </li>
            </ul>
         </section>
@@ -442,7 +448,26 @@
               <author initials="D." surname="Ma">
                 <organization>ZDNS</organization>
               </author>
+              <date year="2022"/>
              </front>
+            </reference>
+            <reference anchor="aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
+              <front>
+              <title>RPKI ASPA Demo</title>
+              <author initials="T." surname="Harrison">
+                <organization>APNIC</organization>
+              </author>
+              <date year="2022"/>
+              </front>
+            </reference>
+            <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/-/blob/master/web/app/OpenSSL.php#L466">
+              <front>
+              <title>Relying Party Resiliency Platform</title>
+              <author initials="K." surname="van Hove">
+                <organization>Independent</organization>
+              </author>
+              <date year="2022"/>
+              </front>
             </reference>
         </references>
     </back>
