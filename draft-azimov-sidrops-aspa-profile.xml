@@ -246,6 +246,7 @@
                 <list style="symbols">
                     <t>
                         The Autonomous System Identifier Delegation Extension <xref target="RFC3779" /> MUST be present in the end-entity (EE) certificate (contained within the ASPA), and the Customer ASID in the ASPA eContent MUST be contained within the set of AS numbers specified by the EE certificate's Autonomous System Identifier Delegation Extension.
+                        The EE certificate's Autonomous System Identifier Delegation Extension MUST NOT contain any "inherit" elements.
                     </t>
                     <t>
                         The IP Address Delegation Extension <xref target="RFC3779" /> MUST be absent.
