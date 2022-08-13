@@ -460,7 +460,7 @@
               <date year="2022"/>
               </front>
             </reference>
-            <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/-/blob/master/web/app/OpenSSL.php#L466">
+            <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/">
               <front>
               <title>Relying Party Resiliency Platform</title>
               <author initials="K." surname="van Hove">
