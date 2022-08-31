@@ -13,9 +13,12 @@
         <!ENTITY RFC5280 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
         <!ENTITY RFC3779 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3779.xml">
         <!ENTITY RFC9234 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9234.xml">
-        <!ENTITY I-D.ietf-grow-route-leak-detection-mitigation SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-grow-route-leak-detection-mitigation.xml">
-        <!ENTITY I-D.ietf-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-sidrops-aspa-profile.xml">
-        <!ENTITY I-D.white-sobgp-architecture SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-white-sobgp-architecture-02.xml">
+
+<!ENTITY I-D.ietf-grow-route-leak-detection-mitigation SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-grow-route-leak-detection-mitigation.xml">
+
+<!ENTITY I-D.ietf-sidrops-aspa-profile SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-aspa-profile.xml">
+
+<!ENTITY I-D.white-sobgp-architecture SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-white-sobgp-architecture-02.xml">
         <!ENTITY I-D.ietf-idr-deprecate-as-set-confed-set SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-idr-deprecate-as-set-confed-set.xml">
         ]>
 
@@ -28,7 +31,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-09" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-verification-10" ipr="trust200902">
   <front>
 
     <title abbrev="AS_PATH Verification">
@@ -517,4 +520,5 @@ The ASes on the boundary of an AS Confederation MUST register ASPAs using the Co
     </references>
   </back>
 </rfc>
+
 
