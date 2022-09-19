@@ -20,7 +20,7 @@
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
 
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-10" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-11" ipr="trust200902">
     <front>
 
         <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
@@ -96,9 +96,8 @@
 
         <abstract>
             <t>
-                This document defines a standard profile for Autonomous System Provider Authorization in the Resource Public Key Infrastructure.
-                An Autonomous System Provider Authorization is a digitally signed object that provides a means of validating that a Customer Autonomous System holder has authorized members of Provider set to be its upstream providers or provide route server service at internet exchange point.
-                For the Providers it means that they are legal to send prefixes received from the Customer Autonomous System in all directions including providers and peers.
+                This document defines a standard profile for the Autonomous System Provider Authorization (ASPA) object in the Resource Public Key Infrastructure (RPKI).
+                An ASPA is a digitally signed object that provides a means of validating that a Customer Autonomous System (CAS) has authorized the members of a specified Provider AS set as its upstream provider(s) and/or connected Internet-exchange route server(s).
             </t>
         </abstract>
 
@@ -116,12 +115,13 @@
     <middle>
         <section title="Introduction" anchor="intro">
             <t>
-                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security.
-                (See <xref target="RFC6480" /> for more information.)
-                As part of this infrastructure, a mechanism is needed to validate that a AS has permission from a Customer AS (CAS) holder to send routes in all directions.
-                The digitally signed Autonomous System Provider Authorization (ASPA) object provides this validation mechanism.
+                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security
+                <xref target="RFC6480" />. As part of this infrastructure, a mechanism is needed to facilitate the customer AS to authorize another AS as a Provider. A Provider AS is a network that (a) offers its customers outbound (customer to Internet) data traffic connectivity and/or (b) further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send. 
+                The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.    
             </t>
-
+            <t>
+The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider. When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS. 
+            </t> 
             <t>
                 The ASPA uses the template for RPKI digitally signed
                 objects <xref target="RFC6488" />, which defines a
@@ -140,20 +140,20 @@
                 <list style="numbers">
                     <t>
                         The object identifier (OID) that identifies the ASPA signed object.
-                        This OID appears in the eContentType field of the encapContentInfo object as well as the content-type signed attribute within the signerInfo structure).
+                        This OID appears in the eContentType field of the encapContentInfo object as well as the content-type signed attribute within the signerInfo structure.
                     </t>
                     <t>
                         The ASN.1 syntax for the ASPA content, which is the payload signed by the CAS.
                         The ASPA content is encoded using the ASN.1 <xref target="X680"/> Distinguished Encoding Rules (DER) <xref target="X690"/>.
                     </t>
                     <t>
-                        The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488" />).
+                        The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488" />.
                     </t>
                 </list>
             </t>
         </section>
 
-        <section title="The ASPA Content Type" anchor="content-type">
+        <section title="ASPA Content Type" anchor="content-type">
             <t>
                 The content-type for an ASPA is defined as id-ct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
 
@@ -161,23 +161,24 @@
             </t>
         </section>
 
-        <section title="The ASPA eContent" anchor="content">
+        <section title="ASPA eContent" anchor="content">
             <t>
-                The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized to further propagate announcements received from the customer.
+
+                The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
             </t>
             <t>
-                Not all route servers at internet exchange points are transparent, e.g. in some cases they are present in the ASPATH.
-                In this case route server AS is acting as a provider AS, which propagates routes between its customers.
-                Thus, a customer MUST add both upstream providers and non-transparent route sever AS it is connected to its SPAS.
+                Not all route servers (RS) at internet exchange points are transparent, e.g., in some cases the AS number of the RS would be present in the AS_PATH.
+                In this case, the RS AS is acting as a provider AS, which propagates routes between its clients (i.e., customers).
+                Thus, a CAS MUST add both upstream providers and any connected non-transparent RS AS to its SPAS.
             </t>
             <t>
                 If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object.
-                This rule is important to avoid possible race conditions during updates.
+                This rule is important to avoid possible race conditions during updates of ASPAs. [Sriram note: These two sentences are repeated in the Security Considerations section using altered normative language. Please check if the repetition is necessary.] 
             </t>
             <t>
                 The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X680"/> module:
             </t>
-
+		
             <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
 
             <t>
@@ -192,13 +193,13 @@
 
             <section title="customerASID">
                 <t>
-                    The customerASID field contains the AS number of the Autonomous System (AS) that authorizes a collection of provider ASes (as listed in the providerASSet) to propagate prefixes in the specified address family to other ASes.
+                    The customerASID field contains the AS number of the Customer Autonomous System that is the authorizing entity.
                 </t>
             </section>
 
             <section title="providers">
                 <t>
-                    The providers field contains the listing of ASes that are authorized to further propagate announcements in the specified address family received from the customer.
+                    The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family. 
                 </t>
                 <t>
                     Each element contained in the providers field is an instance of ProviderAS.
@@ -220,7 +221,7 @@
                 <section title="ProviderAS">
                     <section title="providerASID">
                         <t>
-                            The providerASID field contains the AS number of an AS that has been authorized by the customer AS to propagate prefixes in the specified address family to other ASes.
+                            The providerASID field contains the AS number of an AS that has been authorized by the customer AS as its provider or RS in the specified address family.
                         </t>
                     </section>
                     <section title="afiLimit">
@@ -242,7 +243,7 @@
         <section title="ASPA Validation" anchor="validation">
             <t>
                 Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA object itself.
-                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488" /> as well as the following additional ASPA-specific validation step.
+                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488" /> as well as the following additional ASPA-specific validation steps.
                 <list style="symbols">
                     <t>
                         The Autonomous System Identifier Delegation Extension <xref target="RFC3779" /> MUST be present in the end-entity (EE) certificate (contained within the ASPA), and the Customer ASID in the ASPA eContent MUST be contained within the set of AS numbers specified by the EE certificate's Autonomous System Identifier Delegation Extension.
@@ -313,10 +314,10 @@
 
         <section anchor="Security" title="Security Considerations">
             <t>
-                While it's not restricted, but it's highly recommended maintaining for selected Customer AS a single ASPA object that covers all connected providers/route servers.
+                While it is not required, it is highly recommended that for a selected Customer AS a single ASPA object be maintained that covers all connected providers/route servers. [Sriram note: This differs normatively from what was previously stated in Section 3: "If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object." Note the MUST that was used before. Also, is it necessary to say this and the next sentence twice in the document as it was all said already in Section 3.] 
                 Such policy should prevent race conditions during ASPA updates that might affect prefix propagation.
                 The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
-                In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries.
+                In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
             </t>
         </section>
 
@@ -363,7 +364,8 @@
 
         <section anchor="Acknowledgments" title="Acknowledgments">
             <t>
-                The authors would like to thank Keyur Patel for helping kickstart the ASPA profile project; and Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form.
+                The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, and Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form. 
+<!-- Authors may consider adding... They wish to also thank Kotikalapudi Sriram for review and several suggestions for improvements. -->
             </t>
         </section>
 
