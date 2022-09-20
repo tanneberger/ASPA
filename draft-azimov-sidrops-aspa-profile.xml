@@ -339,7 +339,7 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
 
            <ul>
              <li>
-               A validator implementation <xref target="rpki-client"/> written in C based on the OpenBSD RPKI Validator was provided by Job Snijders from Fastly.
+               A validator implementation <xref target="rpki-client"/> (version 8.0 and higher), written in C was provided by Job Snijders from Fastly.
              </li>
              <li>
                A signer and decoder implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
@@ -427,7 +427,7 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
                 <date year="2022"/>
               </front>
             </reference>
-            <reference anchor="rpki-client" target="https://mailarchive.ietf.org/arch/msg/sidrops/Jdowj_bDhN_T993SN4bbsWeDgGA/">
+	    <reference anchor="rpki-client" target="https://www.rpki-client.org/">
               <front>
                 <title>rpki-client</title>
                 <author initials="J." surname="Snijders">
