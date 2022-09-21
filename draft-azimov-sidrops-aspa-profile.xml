@@ -116,8 +116,12 @@
         <section title="Introduction" anchor="intro">
             <t>
                 The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480" />.
-                As part of this infrastructure, a mechanism is needed to facilitate the customer AS to authorize another AS as a Provider.
-                A Provider AS is a network that (a) offers its customers outbound (customer to Internet) data traffic connectivity and/or (b) further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.
+                As part of this infrastructure, a mechanism is needed to facilitate holders of Autonomous System (AS) numbers in their capacity as Customer to authorize other ASes as their Provider(s).
+                A Provider AS (PAS) is a network that:
+                <list style="letters">
+                  <t>offers its customers outbound (customer to Internet) data traffic connectivity and/or</t>
+                  <t>further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.</t>
+                </list>
                 The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
             </t>
             <t>
@@ -224,7 +228,8 @@
                         </t>
                         <t>
                             If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
-                            Only the IPv4 and IPv6 AFI values are permitted, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
+                            This specification only supports IPv4 and IPv6.
+                            Therefore, the value MUST be either 0001 or 0002, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
                         </t>
                         <t>
                             If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
