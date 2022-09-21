@@ -115,28 +115,21 @@
     <middle>
         <section title="Introduction" anchor="intro">
             <t>
-                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security
-                <xref target="RFC6480" />. As part of this infrastructure, a mechanism is needed to facilitate the customer AS to authorize another AS as a Provider. A Provider AS is a network that (a) offers its customers outbound (customer to Internet) data traffic connectivity and/or (b) further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send. 
-                The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.    
+                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480" />.
+                As part of this infrastructure, a mechanism is needed to facilitate the customer AS to authorize another AS as a Provider.
+                A Provider AS is a network that (a) offers its customers outbound (customer to Internet) data traffic connectivity and/or (b) further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.
+                The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
             </t>
             <t>
-The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider. When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS. 
+                The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider.
+                When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS.
             </t> 
             <t>
-                The ASPA uses the template for RPKI digitally signed
-                objects <xref target="RFC6488" />, which defines a
-                Cryptographic Message Syntax (CMS) <xref
-                target="RFC5652" /> wrapper for the ASPA content as well
-                as a generic validation procedure for RPKI signed
-                objects.  As ASPAs need to be validated with RPKI
-                certificates issued by the current infrastructure, we
-                assume the mandatory-to-implement algorithms in <xref
-                target="RFC6485" />, or its successor.
+                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488" />, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                As ASPAs need to be validated with RPKI certificates issued by the current infrastructure, we assume the mandatory-to-implement algorithms in <xref target="RFC6485" />, or its successor.
             </t>
 
-		<t>To complete the specification of the ASPA (see
-		Section 4 of <xref target="RFC6488"/>), this document
-		defines:
+		<t>To complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
                 <list style="numbers">
                     <t>
                         The object identifier (OID) that identifies the ASPA signed object.
@@ -173,7 +166,8 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
             </t>
             <t>
                 If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object.
-                This rule is important to avoid possible race conditions during updates of ASPAs. [Sriram note: These two sentences are repeated in the Security Considerations section using altered normative language. Please check if the repetition is necessary.] 
+                This rule is important to avoid possible race conditions during updates of ASPAs.
+                [Sriram note: These two sentences are repeated in the Security Considerations section using altered normative language. Please check if the repetition is necessary.] 
             </t>
             <t>
                 The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X680"/> module:
@@ -199,7 +193,7 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
 
             <section title="providers">
                 <t>
-                    The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family. 
+                    The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family.
                 </t>
                 <t>
                     Each element contained in the providers field is an instance of ProviderAS.
@@ -230,7 +224,7 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
                         </t>
                         <t>
                             If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
-                            Only permitted AFI values are the IPv4 and IPv6 AFI values as specified in <xref target="IANA-AF"/>.
+                            Only the IPv4 and IPv6 AFI values are permitted, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
                         </t>
                         <t>
                             If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
@@ -314,7 +308,8 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
 
         <section anchor="Security" title="Security Considerations">
             <t>
-                While it is not required, it is highly recommended that for a selected Customer AS a single ASPA object be maintained that covers all connected providers/route servers. [Sriram note: This differs normatively from what was previously stated in Section 3: "If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object." Note the MUST that was used before. Also, is it necessary to say this and the next sentence twice in the document as it was all said already in Section 3.] 
+                While it is not required, it is highly recommended that for a selected Customer AS a single ASPA object be maintained that covers all connected providers/route servers.
+                [Sriram note: This differs normatively from what was previously stated in Section 3: "If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object." Note the MUST that was used before. Also, is it necessary to say this and the next sentence twice in the document as it was all said already in Section 3.] 
                 Such policy should prevent race conditions during ASPA updates that might affect prefix propagation.
                 The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
                 In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
@@ -364,8 +359,7 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
 
         <section anchor="Acknowledgments" title="Acknowledgments">
             <t>
-                The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, and Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form. 
-<!-- Authors may consider adding... They wish to also thank Kotikalapudi Sriram for review and several suggestions for improvements. -->
+                The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form, and Kotikalapudi Sriram for review and several suggestions for improvements.
             </t>
         </section>
 
@@ -401,17 +395,6 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
                     <date year="2015"/>
                </front>
                <seriesInfo name="ITU-T" value="Recommendation X.690"/>
-            </reference>
-
-            <reference anchor="IANA-AF" target="https://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml">
-                <front>
-                    <title>Address Family Numbers</title>
-                    <author>
-                        <organization>IANA</organization>
-                    </author>
-                    <date />
-                </front>
-               <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
             </reference>
 
         </references>
@@ -471,6 +454,16 @@ The ASPA object is a cryptographically signed attestation by a Customer AS (CAS)
               </author>
               <date year="2022"/>
               </front>
+            </reference>
+            <reference anchor="IANA-AF" target="https://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml">
+                <front>
+                    <title>Address Family Numbers</title>
+                    <author>
+                        <organization>IANA</organization>
+                    </author>
+                    <date />
+                </front>
+               <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
             </reference>
         </references>
     </back>
