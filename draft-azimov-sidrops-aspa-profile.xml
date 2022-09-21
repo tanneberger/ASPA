@@ -169,9 +169,8 @@
                 Thus, a CAS MUST add both upstream providers and any connected non-transparent RS AS to its SPAS.
             </t>
             <t>
-                If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object.
+                If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
                 This rule is important to avoid possible race conditions during updates of ASPAs.
-                [Sriram note: These two sentences are repeated in the Security Considerations section using altered normative language. Please check if the repetition is necessary.] 
             </t>
             <t>
                 The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X680"/> module:
