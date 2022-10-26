@@ -1,0 +1,17 @@
+NAME1=draft-azimov-sidrops-aspa-verification
+NAME2=draft-azimov-sidrops-aspa-profile
+
+.PHONY: all
+all: drafts
+
+.PHONY: drafts
+drafts: $(NAME1).txt $(NAME2).txt
+
+$(NAME1).txt: $(NAME1).xml
+	xml2rfc $(NAME1).xml --html --text --expand
+
+$(NAME2).txt: $(NAME2).xml
+	xml2rfc $(NAME2).xml --html --text --expand
+
+clean:
+	rm -f $(NAME1)*.html $(NAME2)*.html $(NAME1)*.txt $(NAME2)*.txt
