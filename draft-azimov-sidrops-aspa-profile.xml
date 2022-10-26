@@ -1,16 +1,5 @@
-<?xml version="1.0" encoding="US-ASCII"?>
-
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
-<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC3779 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3779.xml">
-<!ENTITY RFC8174 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
-<!ENTITY RFC5652 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5652.xml">
-<!ENTITY RFC6480 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6480.xml">
-<!ENTITY RFC6485 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6485.xml">
-<!ENTITY RFC6481 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6481.xml">
-<!ENTITY RFC6488 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6488.xml">
-]>
-
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <?rfc strict="yes" ?>
 <?rfc toc="yes"?>
@@ -19,286 +8,259 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-
-<rfc category="std" docName="draft-ietf-sidrops-aspa-profile-11" ipr="trust200902">
-    <front>
-
-        <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
-
-        <author fullname="Alexander Azimov" initials="A"
-            surname="Azimov">
-            <organization>Yandex</organization>
-            <address>
-                <email>a.e.azimov@gmail.com</email>
-            </address>
-        </author>
-
-        <author fullname="Eugene Uskov" initials="E"
-            surname="Uskov">
-            <organization>JetLend</organization>
-            <address>
-                <email>eu@jetlend.ru</email>
-            </address>
-        </author>
-
-        <author fullname="Randy Bush" initials="R"
-            surname="Bush">
-            <organization>Internet Initiative Japan</organization>
-            <address>
-                <email>randy@psg.com</email>
-            </address>
-        </author>
-
-        <author fullname="Job Snijders" initials="J." surname="Snijders">
-            <organization>Fastly</organization>
-            <address>
-                <postal>
-                    <street />
-                    <city>Amsterdam</city>
-                    <code />
-                    <country>NL</country>
-                </postal>
-                <email>job@fastly.com</email>
-            </address>
-        </author>
-
-        <author fullname="Russ Housley" initials="R" surname="Housley">
-            <organization abbrev="Vigil Security">Vigil Security, LLC</organization>
-            <address>
-                <postal>
-                    <street>918 Spring Knoll Drive</street>
-                    <city>Herndon</city>
-                    <region>VA</region>
-                    <code>20170</code>
-                    <country>USA</country>
-               </postal>
-               <email>housley@vigilsec.com</email>
-          </address>
-        </author>
- 
-        <author fullname="Ben Maddison" initials="B" surname="Maddison">
-            <organization abbrev="Workonline">Workonline</organization>
-            <address>
-                <postal>
-                     <street />
-                     <city>Cape Town</city>
-                     <country>South Africa</country>
-                </postal>
-                <email>benm@workonline.africa</email>
-            </address>
-        </author>
-
-        <date />
-
-        <keyword>BGP</keyword>
-        <keyword>Route leak</keyword>
-        <keyword>Hijacks</keyword>
-
-        <abstract>
-            <t>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-sidrops-aspa-profile-11" ipr="trust200902" consensus="true" submissionType="IETF">
+  <front>
+    <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
+    <author fullname="Alexander Azimov" initials="A" surname="Azimov">
+      <organization>Yandex</organization>
+      <address>
+        <email>a.e.azimov@gmail.com</email>
+      </address>
+    </author>
+    <author fullname="Eugene Uskov" initials="E" surname="Uskov">
+      <organization>JetLend</organization>
+      <address>
+        <email>eu@jetlend.ru</email>
+      </address>
+    </author>
+    <author fullname="Randy Bush" initials="R" surname="Bush">
+      <organization>Internet Initiative Japan</organization>
+      <address>
+        <email>randy@psg.com</email>
+      </address>
+    </author>
+    <author fullname="Job Snijders" initials="J." surname="Snijders">
+      <organization>Fastly</organization>
+      <address>
+        <postal>
+          <street/>
+          <city>Amsterdam</city>
+          <code/>
+          <country>NL</country>
+        </postal>
+        <email>job@fastly.com</email>
+      </address>
+    </author>
+    <author fullname="Russ Housley" initials="R" surname="Housley">
+      <organization abbrev="Vigil Security">Vigil Security, LLC</organization>
+      <address>
+        <postal>
+          <street>918 Spring Knoll Drive</street>
+          <city>Herndon</city>
+          <region>VA</region>
+          <code>20170</code>
+          <country>USA</country>
+        </postal>
+        <email>housley@vigilsec.com</email>
+      </address>
+    </author>
+    <author fullname="Ben Maddison" initials="B" surname="Maddison">
+      <organization abbrev="Workonline">Workonline</organization>
+      <address>
+        <postal>
+          <street/>
+          <city>Cape Town</city>
+          <country>South Africa</country>
+        </postal>
+        <email>benm@workonline.africa</email>
+      </address>
+    </author>
+    <date/>
+    <keyword>BGP</keyword>
+    <keyword>Route leak</keyword>
+    <keyword>Hijacks</keyword>
+    <abstract>
+      <t>
                 This document defines a profile for the Autonomous System Provider Authorization (ASPA) object in the Resource Public Key Infrastructure (RPKI).
                 An ASPA is a digitally signed object that provides a means of validating that a Customer Autonomous System (CAS) has authorized the members of a specified Provider AS set as its upstream provider(s) and/or connected Internet-exchange route server(s).
-            </t>
-        </abstract>
-
-        <note title="Requirements Language">
-            <t>
+      </t>
+    </abstract>
+    <note title="Requirements Language">
+      <t>
                 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
                 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
                 "OPTIONAL" in this document are to be interpreted as described in
                 BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and
                 only when, they appear in all capitals, as shown here.
-            </t>
-        </note>
-    </front>
-
-    <middle>
-        <section title="Introduction" anchor="intro">
-            <t>
-                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480" />.
+      </t>
+    </note>
+  </front>
+  <middle>
+    <section title="Introduction" anchor="intro">
+      <t>
+                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480"/>.
                 As part of this infrastructure, a mechanism is needed to facilitate holders of Autonomous System (AS) numbers in their capacity as Customer to authorize other ASes as their Provider(s).
                 A Provider AS (PAS) is a network that:
                 <list style="letters">
-                  <t>offers its customers outbound (customer to Internet) data traffic connectivity and/or</t>
-                  <t>further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.</t>
-                </list>
+          <t>offers its customers outbound (customer to Internet) data traffic connectivity and/or</t>
+          <t>further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.</t>
+        </list>
                 The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
-            </t>
-            <t>
+      </t>
+      <t>
                 The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider.
                 When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS.
-            </t> 
-            <t>
-                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488" />, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652" /> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
-                As ASPAs need to be validated with RPKI certificates issued by the current infrastructure, we assume the mandatory-to-implement algorithms in <xref target="RFC6485" />, or its successor.
-            </t>
-
-		<t>To complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
+      </t>
+      <t>
+                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488"/>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+                As ASPAs need to be validated with RPKI certificates issued by the current infrastructure, we assume the mandatory-to-implement algorithms in <xref target="RFC6485"/>, or its successor.
+      </t>
+      <t>To complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
                 <list style="numbers">
-                    <t>
+          <t>
                         The object identifier (OID) that identifies the ASPA signed object.
                         This OID appears in the eContentType field of the encapContentInfo object as well as the content-type signed attribute within the signerInfo structure.
-                    </t>
-                    <t>
+          </t>
+          <t>
                         The ASN.1 syntax for the ASPA content, which is the payload signed by the CAS.
                         The ASPA content is encoded using the ASN.1 <xref target="X680"/> Distinguished Encoding Rules (DER) <xref target="X690"/>.
-                    </t>
-                    <t>
-                        The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488" />.
-                    </t>
-                </list>
-            </t>
-        </section>
-
-        <section title="ASPA Content Type" anchor="content-type">
-            <t>
+          </t>
+          <t>
+                        The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488"/>.
+          </t>
+        </list>
+      </t>
+    </section>
+    <section title="ASPA Content Type" anchor="content-type">
+      <t>
                 The content-type for an ASPA is defined as id-ct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
 
-                This OID MUST appear both within the eContentType in the encapContentInfo structure as well as the content-type signed attribute within the signerInfo structure (see <xref target="RFC6488" />).
-            </t>
-        </section>
-
-        <section title="ASPA eContent" anchor="content">
-            <t>
+                This OID MUST appear both within the eContentType in the encapContentInfo structure as well as the content-type signed attribute within the signerInfo structure (see <xref target="RFC6488"/>).
+      </t>
+    </section>
+    <section title="ASPA eContent" anchor="content">
+      <t>
 
                 The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
-            </t>
-            <t>
+      </t>
+      <t>
                 Not all route servers (RS) at internet exchange points are transparent, e.g., in some cases the AS number of the RS would be present in the AS_PATH.
                 In this case, the RS AS is acting as a provider AS, which propagates routes between its clients (i.e., customers).
                 Thus, a CAS MUST add both upstream providers and any connected non-transparent RS AS to its SPAS.
-            </t>
-            <t>
+      </t>
+      <t>
                 If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
                 This rule is important to avoid possible race conditions during updates of ASPAs.
-            </t>
-            <t>
+      </t>
+      <t>
                 The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X680"/> module:
-            </t>
-		
-            <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
+      </t>
 
-            <t>
-                Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488" />.
-            </t>
+      <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
 
-            <section title="version">
-                <t>
+      <t>
+                Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
+      </t>
+      <section title="version">
+        <t>
                     The version number of the ASProviderAttestation MUST be v0.
-                </t>
-            </section>
-
-            <section title="customerASID">
-                <t>
+        </t>
+      </section>
+      <section title="customerASID">
+        <t>
                     The customerASID field contains the AS number of the Customer Autonomous System that is the authorizing entity.
-                </t>
-            </section>
-
-            <section title="providers">
-                <t>
+        </t>
+      </section>
+      <section title="providers">
+        <t>
                     The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family.
-                </t>
-                <t>
+        </t>
+        <t>
                     Each element contained in the providers field is an instance of ProviderAS.
-                </t>
-                <t>
+        </t>
+        <t>
                     In addition to the constraints described by the formal ASN.1 definition, the contents of the providers field MUST satisfy the following constraints:
                   <list style="symbols">
-                    <t>
+            <t>
                         The CustomerASID value MUST NOT appear in any providerASID field.
-                    </t>
-                    <t>
+            </t>
+            <t>
                         The elements of providers MUST be ordered in ascending numerical order by the value of the providerASID field.
-                    </t>
-                    <t>
+            </t>
+            <t>
                         Each value of providerASID MUST be unique (with respect to the other elements of providers).
-                    </t>
-                  </list>
-                </t>
-                <section title="ProviderAS">
-                    <section title="providerASID">
-                        <t>
+            </t>
+          </list>
+        </t>
+        <section title="ProviderAS">
+          <section title="providerASID">
+            <t>
                             The providerASID field contains the AS number of an AS that has been authorized by the customer AS as its provider or RS in the specified address family.
-                        </t>
-                    </section>
-                    <section title="afiLimit">
-                        <t>
+            </t>
+          </section>
+          <section title="afiLimit">
+            <t>
                             The afiLimit field optionally constrains the authorization given to the provider AS to a single address family.
-                        </t>
-                        <t>
+            </t>
+            <t>
                             If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
                             This specification only supports IPv4 and IPv6.
                             Therefore, the value MUST be either 0001 or 0002, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
-                        </t>
-                        <t>
-                            If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
-                        </t>
-                    </section>
-                </section>
-            </section>
-        </section>
-
-        <section title="ASPA Validation" anchor="validation">
-            <t>
-                Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA object itself.
-                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488" /> as well as the following additional ASPA-specific validation steps.
-                <list style="symbols">
-                    <t>
-                        The Autonomous System Identifier Delegation Extension <xref target="RFC3779" /> MUST be present in the end-entity (EE) certificate (contained within the ASPA), and the Customer ASID in the ASPA eContent MUST be contained within the set of AS numbers specified by the EE certificate's Autonomous System Identifier Delegation Extension.
-                        The EE certificate's Autonomous System Identifier Delegation Extension MUST NOT contain any "inherit" elements.
-                    </t>
-                    <t>
-                        The IP Address Delegation Extension <xref target="RFC3779" /> MUST be absent.
-                    </t>
-                </list>
             </t>
-        </section>
-
-        <section anchor="IANA" title="IANA Considerations">
             <t>
+                            If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
+            </t>
+          </section>
+        </section>
+      </section>
+    </section>
+    <section title="ASPA Validation" anchor="validation">
+      <t>
+                Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA object itself.
+                To validate an ASPA, the relying party MUST perform all the validation checks specified in <xref target="RFC6488"/> as well as the following additional ASPA-specific validation steps.
+                <list style="symbols">
+          <t>
+                        The Autonomous System Identifier Delegation Extension <xref target="RFC3779"/> MUST be present in the end-entity (EE) certificate (contained within the ASPA), and the Customer ASID in the ASPA eContent MUST be contained within the set of AS numbers specified by the EE certificate's Autonomous System Identifier Delegation Extension.
+                        The EE certificate's Autonomous System Identifier Delegation Extension MUST NOT contain any "inherit" elements.
+          </t>
+          <t>
+                        The IP Address Delegation Extension <xref target="RFC3779"/> MUST be absent.
+          </t>
+        </list>
+      </t>
+    </section>
+    <section anchor="IANA" title="IANA Considerations">
+      <t>
                 Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)
                 registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
-            </t>
-            <figure>
-                <artwork type="text">
+      </t>
+      <figure>
+        <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
     TBD2      | id-mod-rpki-aspa-2022         | [ThisRFC]
                    </artwork>
-            </figure>
-
-            <t>
+      </figure>
+      <t>
                 Please add the ASPA to the SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) registry
                 (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-1) as follows:
-            </t>
-            <figure>
-                <artwork type="text">
+      </t>
+      <figure>
+        <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
     49        | id-ct-ASPA                    | [ThisRFC]
                    </artwork>
-            </figure>
-
-            <t>
+      </figure>
+      <t>
                 Please add Autonomous System Provider Authorization to the RPKI Signed Object registry
                 (https://www.iana.org/assignments/rpki/rpki.xhtml#signed-objects)
                 as follows:
-            </t>
-            <figure>
-                <artwork type="text">
+      </t>
+      <figure>
+        <artwork type="text">
     Name                                     | OID                         | Specification
     --------------------------------------------------------------------------------------
     Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.49  | [ThisRFC]
                    </artwork>
-            </figure>
-
-            <t>
+      </figure>
+      <t>
                Please add an item for the Autonomous System Provider Authorization
                file extension to the "RPKI Repository Name Scheme"
                registry created by <xref target="RFC6481"/> as follows:
-            </t>
-            <figure>
-                <artwork>
+      </t>
+      <figure>
+        <artwork>
 <![CDATA[
    Filename
    Extension  RPKI Object                               Reference
@@ -306,169 +268,254 @@
       .asa    Autonomous System Provider Authorization  [draft-ietf-sidrops-aspa-profile]
 ]]>
                 </artwork>
-            </figure>
-
-        </section>
-
-        <section anchor="Security" title="Security Considerations">
-            <t>
-                While it is not required, it is highly recommended that for a selected Customer AS a single ASPA object be maintained that covers all connected providers/route servers.
-                [Sriram note: This differs normatively from what was previously stated in Section 3: "If customer is connected to multiple transit providers/non-transparent route servers they MUST be registered in a single ASPA object." Note the MUST that was used before. Also, is it necessary to say this and the next sentence twice in the document as it was all said already in Section 3.] 
-                Such policy should prevent race conditions during ASPA updates that might affect prefix propagation.
+      </figure>
+    </section>
+    <section anchor="Security" title="Security Considerations">
+      <t>
+                While it is not technically enforcable, it is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers/route servers.
+                Administrating all providers in a single object helps prevent race conditions during ASPA updates that might affect prefix propagation.
                 The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
                 In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
-            </t>
-        </section>
-
-        <section removeInRFC="true">
-          <name>Implementation status</name>
-           <t>
+      </t>
+    </section>
+    <section removeInRFC="true">
+      <name>Implementation status</name>
+      <t>
              This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in RFC 7942.
              The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.
              Please note that the listing of any individual implementation here does not imply endorsement by the IETF.
              Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.
              This is not intended as, and must not be construed to be, a catalog of available implementations or their features.
              Readers are advised to note that other implementations may exist.
-           </t>
-
-           <t>
+      </t>
+      <t>
              According to RFC 7942, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
              It is up to the individual working groups to use this information as they see fit".
-           </t>
-
-           <ul>
-             <li>
+      </t>
+      <ul>
+        <li>
                A validator implementation <xref target="rpki-client"/> (version 8.0 and higher), written in C was provided by Job Snijders from Fastly.
              </li>
-             <li>
+        <li>
                A signer and decoder implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
              </li>
-             <li>
+        <li>
                A signer implementation <xref target="krill"/> written in Rust was provided by Tim Bruijnzeels from NLnetLabs.
              </li>
-             <li>
+        <li>
                At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
              </li>
-             <li>
+        <li>
                Di Ma reported <xref target="rpstir2">success</xref> in RPSTIR2 validating objects produced by Tim Bruijnzeels.
              </li>
-             <li>
+        <li>
                A signer <xref target="koenvh">implementation</xref> written in PHP based on OpenSSL was provided by Koen van Hove.
              </li>
-             <li>
+        <li>
                A signer <xref target="aspa-demo">implementation</xref> written in Perl based on OpenSSL was provided by Tom Harrison from APNIC.
              </li>
-           </ul>
-        </section>
-
-        <section anchor="Acknowledgments" title="Acknowledgments">
-            <t>
+      </ul>
+    </section>
+    <section anchor="Acknowledgments" title="Acknowledgments">
+      <t>
                 The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form, and Kotikalapudi Sriram for review and several suggestions for improvements.
-            </t>
-        </section>
-
-    </middle>
-
-    <back>
-        <references title="Normative References">
-            &RFC2119;
-            &RFC3779;
-            &RFC8174;
-            &RFC5652;
-            &RFC6485;
-            &RFC6481;
-            &RFC6488;
-
-            <reference anchor="X680" >
-                <front>
-                    <title>Information technology -- Abstract Syntax Notation One (ASN.1): Specification of basic notation</title>
-                    <author>
-                        <organization>ITU-T</organization>
-                    </author>
-                    <date year="2015"/>
-                </front>
-                <seriesInfo name="ITU-T" value="Recommendation X.680"/>
+      </t>
+    </section>
+  </middle>
+  <back>
+    <references title="Normative References">
+      <reference anchor="RFC2119" target="https://www.rfc-editor.org/info/rfc2119" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
+        <front>
+          <title>Key words for use in RFCs to Indicate Requirement Levels</title>
+          <author fullname="S. Bradner" initials="S." surname="Bradner"/>
+          <date month="March" year="1997"/>
+          <abstract>
+            <t>In many standards track documents several words are used to signify the requirements in the specification.  These words are often capitalized.  This document defines these words as they should be interpreted in IETF documents.  This document specifies an Internet Best Current Practices for the Internet Community, and requests discussion and suggestions for improvements.</t>
+          </abstract>
+        </front>
+        <seriesInfo name="BCP" value="14"/>
+        <seriesInfo name="RFC" value="2119"/>
+        <seriesInfo name="DOI" value="10.17487/RFC2119"/>
+      </reference>
+      <reference anchor="RFC3779" target="https://www.rfc-editor.org/info/rfc3779" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3779.xml">
+        <front>
+          <title>X.509 Extensions for IP Addresses and AS Identifiers</title>
+          <author fullname="C. Lynn" initials="C." surname="Lynn"/>
+          <author fullname="S. Kent" initials="S." surname="Kent"/>
+          <author fullname="K. Seo" initials="K." surname="Seo"/>
+          <date month="June" year="2004"/>
+          <abstract>
+            <t>This document defines two X.509 v3 certificate extensions.  The first binds a list of IP address blocks, or prefixes, to the subject of a certificate.  The second binds a list of autonomous system identifiers to the subject of a certificate.  These extensions may be used to convey the authorization of the subject to use the IP addresses and autonomous system identifiers contained in the extensions. [STANDARDS-TRACK]</t>
+          </abstract>
+        </front>
+        <seriesInfo name="RFC" value="3779"/>
+        <seriesInfo name="DOI" value="10.17487/RFC3779"/>
+      </reference>
+      <reference anchor="RFC8174" target="https://www.rfc-editor.org/info/rfc8174" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
+        <front>
+          <title>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</title>
+          <author fullname="B. Leiba" initials="B." surname="Leiba"/>
+          <date month="May" year="2017"/>
+          <abstract>
+            <t>RFC 2119 specifies common key words that may be used in protocol specifications.  This document aims to reduce the ambiguity by clarifying that only UPPERCASE usage of the key words have the defined special meanings.</t>
+          </abstract>
+        </front>
+        <seriesInfo name="BCP" value="14"/>
+        <seriesInfo name="RFC" value="8174"/>
+        <seriesInfo name="DOI" value="10.17487/RFC8174"/>
+      </reference>
+      <reference anchor="RFC5652" target="https://www.rfc-editor.org/info/rfc5652" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5652.xml">
+        <front>
+          <title>Cryptographic Message Syntax (CMS)</title>
+          <author fullname="R. Housley" initials="R." surname="Housley"/>
+          <date month="September" year="2009"/>
+          <abstract>
+            <t>This document describes the Cryptographic Message Syntax (CMS).  This syntax is used to digitally sign, digest, authenticate, or encrypt arbitrary message content. [STANDARDS-TRACK]</t>
+          </abstract>
+        </front>
+        <seriesInfo name="STD" value="70"/>
+        <seriesInfo name="RFC" value="5652"/>
+        <seriesInfo name="DOI" value="10.17487/RFC5652"/>
+      </reference>
+      <reference anchor="RFC6485" target="https://www.rfc-editor.org/info/rfc6485" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6485.xml">
+        <front>
+          <title>The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)</title>
+          <author fullname="G. Huston" initials="G." surname="Huston"/>
+          <date month="February" year="2012"/>
+          <abstract>
+            <t>This document specifies the algorithms, algorithms' parameters, asymmetric key formats, asymmetric key size, and signature format for the Resource Public Key Infrastructure (RPKI) subscribers that generate digital signatures on certificates, Certificate Revocation Lists, and signed objects as well as for the relying parties (RPs) that verify these digital signatures. [STANDARDS-TRACK]</t>
+          </abstract>
+        </front>
+        <seriesInfo name="RFC" value="6485"/>
+        <seriesInfo name="DOI" value="10.17487/RFC6485"/>
+      </reference>
+      <reference anchor="RFC6481" target="https://www.rfc-editor.org/info/rfc6481" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6481.xml">
+        <front>
+          <title>A Profile for Resource Certificate Repository Structure</title>
+          <author fullname="G. Huston" initials="G." surname="Huston"/>
+          <author fullname="R. Loomans" initials="R." surname="Loomans"/>
+          <author fullname="G. Michaelson" initials="G." surname="Michaelson"/>
+          <date month="February" year="2012"/>
+          <abstract>
+            <t>This document defines a profile for the structure of the Resource Public Key Infrastructure (RPKI) distributed repository.  Each individual repository publication point is a directory that contains files that correspond to X.509/PKIX Resource Certificates, Certificate Revocation Lists and signed objects.  This profile defines the object (file) naming scheme, the contents of repository publication points (directories), and a suggested internal structure of a local repository cache that is intended to facilitate synchronization across a distributed collection of repository publication points and to facilitate certification path construction. [STANDARDS-TRACK]</t>
+          </abstract>
+        </front>
+        <seriesInfo name="RFC" value="6481"/>
+        <seriesInfo name="DOI" value="10.17487/RFC6481"/>
+      </reference>
+      <reference anchor="RFC6488" target="https://www.rfc-editor.org/info/rfc6488" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6488.xml">
+        <front>
+          <title>Signed Object Template for the Resource Public Key Infrastructure (RPKI)</title>
+          <author fullname="M. Lepinski" initials="M." surname="Lepinski"/>
+          <author fullname="A. Chi" initials="A." surname="Chi"/>
+          <author fullname="S. Kent" initials="S." surname="Kent"/>
+          <date month="February" year="2012"/>
+          <abstract>
+            <t>This document defines a generic profile for signed objects used in the Resource Public Key Infrastructure (RPKI).  These RPKI signed objects make use of Cryptographic Message Syntax (CMS) as a standard encapsulation format. [STANDARDS-TRACK]</t>
+          </abstract>
+        </front>
+        <seriesInfo name="RFC" value="6488"/>
+        <seriesInfo name="DOI" value="10.17487/RFC6488"/>
+      </reference>
+      <reference anchor="X680">
+        <front>
+          <title>Information technology -- Abstract Syntax Notation One (ASN.1): Specification of basic notation</title>
+          <author>
+            <organization>ITU-T</organization>
+          </author>
+          <date year="2015"/>
+        </front>
+        <seriesInfo name="ITU-T" value="Recommendation X.680"/>
+      </reference>
+      <reference anchor="X690">
+        <front>
+          <title>Information Technology -- ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)</title>
+          <author>
+            <organization>ITU-T</organization>
+          </author>
+          <date year="2015"/>
+        </front>
+        <seriesInfo name="ITU-T" value="Recommendation X.690"/>
+      </reference>
+    </references>
+    <references title="Informative References">
+      <reference anchor="RFC6480" target="https://www.rfc-editor.org/info/rfc6480" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6480.xml">
+        <front>
+          <title>An Infrastructure to Support Secure Internet Routing</title>
+          <author fullname="M. Lepinski" initials="M." surname="Lepinski"/>
+          <author fullname="S. Kent" initials="S." surname="Kent"/>
+          <date month="February" year="2012"/>
+          <abstract>
+            <t>This document describes an architecture for an infrastructure to support improved security of Internet routing.  The foundation of this architecture is a Resource Public Key Infrastructure (RPKI) that represents the allocation hierarchy of IP address space and Autonomous System (AS) numbers; and a distributed repository system for storing and disseminating the data objects that comprise the RPKI, as well as other signed objects necessary for improved routing security.  As an initial application of this architecture, the document describes how a legitimate holder of IP address space can explicitly and verifiably authorize one or more ASes to originate routes to that address space.  Such verifiable authorizations could be used, for example, to more securely construct BGP route filters.  This document is not an Internet Standards Track specification; it is published for informational purposes.</t>
+          </abstract>
+        </front>
+        <seriesInfo name="RFC" value="6480"/>
+        <seriesInfo name="DOI" value="10.17487/RFC6480"/>
+      </reference>
+      <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
+        <front>
+          <title>rpkimancer-aspa</title>
+          <author initials="B." surname="Maddison">
+            <organization>Workonline</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="rpki-client" target="https://www.rpki-client.org/">
+        <front>
+          <title>rpki-client</title>
+          <author initials="J." surname="Snijders">
+            <organization>Fastly</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="krill" target="https://github.com/NLnetLabs/krill">
+        <front>
+          <title>Krill</title>
+          <author initials="T." surname="Bruijnzeels">
+            <organization>NLnetLabs</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="rpstir2" target="https://mailarchive.ietf.org/arch/msg/sidrops/pxqAGPmR0MA3NMe-NxYyiEZ7RXw">
+        <front>
+          <title>RPSTIR2</title>
+          <author initials="D." surname="Ma">
+            <organization>ZDNS</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
+        <front>
+          <title>RPKI ASPA Demo</title>
+          <author initials="T." surname="Harrison">
+            <organization>APNIC</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/">
+        <front>
+          <title>Relying Party Resiliency Platform</title>
+          <author initials="K." surname="van Hove">
+            <organization>Independent</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="IANA-AF" target="https://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml">
+        <front>
+          <title>Address Family Numbers</title>
+          <author>
+            <organization>IANA</organization>
+          </author>
+          <date/>
+        </front>
+        <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
             </reference>
-
-            <reference anchor="X690" >
-                <front>
-                    <title>Information Technology -- ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)</title>
-                    <author>
-                        <organization>ITU-T</organization>
-                    </author>
-                    <date year="2015"/>
-               </front>
-               <seriesInfo name="ITU-T" value="Recommendation X.690"/>
-            </reference>
-
-        </references>
-
-        <references title="Informative References">
-            &RFC6480;
-            <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
-              <front>
-                <title>rpkimancer-aspa</title>
-                <author initials="B." surname="Maddison">
-                  <organization>Workonline</organization>
-                </author>
-                <date year="2022"/>
-              </front>
-            </reference>
-	    <reference anchor="rpki-client" target="https://www.rpki-client.org/">
-              <front>
-                <title>rpki-client</title>
-                <author initials="J." surname="Snijders">
-                  <organization>Fastly</organization>
-                </author>
-                <date year="2022"/>
-              </front>
-            </reference>
-            <reference anchor="krill" target="https://github.com/NLnetLabs/krill">
-              <front>
-                <title>Krill</title>
-                <author initials="T." surname="Bruijnzeels">
-                  <organization>NLnetLabs</organization>
-                </author>
-                <date year="2022"/>
-              </front>
-            </reference>
-            <reference anchor="rpstir2" target="https://mailarchive.ietf.org/arch/msg/sidrops/pxqAGPmR0MA3NMe-NxYyiEZ7RXw">
-              <front>
-              <title>RPSTIR2</title>
-              <author initials="D." surname="Ma">
-                <organization>ZDNS</organization>
-              </author>
-              <date year="2022"/>
-             </front>
-            </reference>
-            <reference anchor="aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
-              <front>
-              <title>RPKI ASPA Demo</title>
-              <author initials="T." surname="Harrison">
-                <organization>APNIC</organization>
-              </author>
-              <date year="2022"/>
-              </front>
-            </reference>
-            <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/">
-              <front>
-              <title>Relying Party Resiliency Platform</title>
-              <author initials="K." surname="van Hove">
-                <organization>Independent</organization>
-              </author>
-              <date year="2022"/>
-              </front>
-            </reference>
-            <reference anchor="IANA-AF" target="https://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml">
-                <front>
-                    <title>Address Family Numbers</title>
-                    <author>
-                        <organization>IANA</organization>
-                    </author>
-                    <date />
-                </front>
-               <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
-            </reference>
-        </references>
-    </back>
+    </references>
+  </back>
 </rfc>
