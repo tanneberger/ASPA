@@ -230,7 +230,7 @@
         <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
-    TBD2      | id-mod-rpki-aspa-2022         | [ThisRFC]
+    TBD2      | id-mod-rpki-aspa-2022         | [RFC-to-be]
                    </artwork>
       </figure>
       <t>
@@ -241,7 +241,7 @@
         <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
-    49        | id-ct-ASPA                    | [ThisRFC]
+    49        | id-ct-ASPA                    | [RFC-to-be]
                    </artwork>
       </figure>
       <t>
@@ -253,7 +253,7 @@
         <artwork type="text">
     Name                                     | OID                         | Specification
     --------------------------------------------------------------------------------------
-    Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.49  | [ThisRFC]
+    Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.49  | [RFC-to-be]
                    </artwork>
       </figure>
       <t>
@@ -267,10 +267,44 @@
    Filename
    Extension  RPKI Object                               Reference
    --------------------------------------------------------------------------------------
-      .asa    Autonomous System Provider Authorization  [draft-ietf-sidrops-aspa-profile]
+      .asa    Autonomous System Provider Authorization  [RFC-to-be]
 ]]>
                 </artwork>
       </figure>
+
+      <section>
+        <name>Media Type</name>
+        <t>
+          The IANA is requested to register the media type application/rpki-aspa in the "Media Type" registry as follows:
+        </t>
+        <artwork>
+<![CDATA[
+   Type name: application
+   Subtype name: rpki-aspa
+   Required parameters: N/A
+   Optional parameters: N/A
+   Encoding considerations: binary
+   Security considerations: Carries an RPKI ASPA [RFC-to-be].
+       This media type contains no active content. See
+       Section 4 of [RFC-to-be] for further information.
+   Interoperability considerations: None
+   Published specification: [RFC-to-be]
+   Applications that use this media type: RPKI operators
+   Additional information:
+     Content: This media type is a signed object, as defined
+         in [RFC6488], which contains a payload of a list of
+         AS identifers as defined in [RFC-to-be].
+     Magic number(s): None
+     File extension(s): .asa
+     Macintosh file type code(s):
+   Person & email address to contact for further information:
+     Job Snijders <job@fastly.com>
+   Intended usage: COMMON
+   Restrictions on usage: None
+   Change controller: IETF
+]]>
+        </artwork>
+      </section>
     </section>
     <section anchor="Security" title="Security Considerations">
       <t>
@@ -320,7 +354,7 @@
     </section>
     <section anchor="Acknowledgments" title="Acknowledgments">
       <t>
-                The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form, and Kotikalapudi Sriram for review and several suggestions for improvements.
+        The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form, and Kotikalapudi Sriram for review and several suggestions for improvements.
       </t>
     </section>
   </middle>
