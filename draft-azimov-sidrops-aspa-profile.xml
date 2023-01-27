@@ -352,13 +352,17 @@
              </li>
       </ul>
     </section>
+
     <section anchor="Acknowledgments" title="Acknowledgments">
       <t>
         The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form, and Kotikalapudi Sriram for review and several suggestions for improvements.
       </t>
     </section>
+
   </middle>
+
   <back>
+
     <references title="Normative References">
       <reference anchor="RFC2119" target="https://www.rfc-editor.org/info/rfc2119" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
         <front>
@@ -550,8 +554,94 @@
           </author>
           <date/>
         </front>
-        <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
-            </reference>
+      </reference>
+      <?rfc include="reference.RFC.4648.xml"?>
     </references>
+
+    <section anchor="example">
+      <name>Example ASPA eContent Payload</name>
+      <t>
+        Below an example of a DER encoded ASPA eContent is provided with annotation following the '#' character.
+      </t>
+      <artwork>
+<![CDATA[
+$ echo 302002023cca301a300402020b6230040202205b3005020300c7903005020303259e \
+  | xxd -r -ps \
+  | openssl asn1parse -inform DER -i -dump
+    0:d=0  hl=2 l=  32 cons: SEQUENCE
+    2:d=1  hl=2 l=   2 prim:  INTEGER      :3CCA    # Customer ASID 15562
+    6:d=1  hl=2 l=  26 cons:  SEQUENCE              # ProviderASSet
+    8:d=2  hl=2 l=   4 cons:   SEQUENCE             #  ProviderAS
+   10:d=3  hl=2 l=   2 prim:    INTEGER     :0B62   #   ASID 2914
+   14:d=2  hl=2 l=   4 cons:   SEQUENCE             #  ProviderAS
+   16:d=3  hl=2 l=   2 prim:    INTEGER     :205B   #   ASID 8283
+   20:d=2  hl=2 l=   5 cons:   SEQUENCE             #  ProviderAS
+   22:d=3  hl=2 l=   3 prim:    INTEGER     :C790   #   ASID 51088
+   27:d=2  hl=2 l=   5 cons:   SEQUENCE             #  ProviderAS
+   29:d=3  hl=2 l=   3 prim:    INTEGER     :03259E #   ASID 206238
+]]>
+      </artwork>
+
+      <t>
+        Below is a complete <xref target="RFC4648">Base64</xref> encoded RPKI ASPA Signed Object.
+      </t>
+      <artwork>
+<![CDATA[
+MIIGpAYJKoZIhvcNAQcCoIIGlTCCBpECAQMxDTALBglghkgBZQMEAgEwMwYLKoZIhvcNAQkQ
+ATGgJAQiMCACAjzKMBowBAICC2IwBAICIFswBQIDAMeQMAUCAwMlnqCCBJgwggSUMIIDfKAD
+AgECAgoAocd1L/ix0uAdMA0GCSqGSIb3DQEBCwUAMDMxMTAvBgNVBAMTKGNhYTgwNWRiYWMz
+NjQ3NDliOWIxMTU1OTBhYjZlZjBmOTcwY2RiZDgwHhcNMjIxMjE2MTIyOTU3WhcNMjMxMjE2
+MTIyOTU3WjAVMRMwEQYDVQQDDAoxNjcxMTkzNTkxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAsL/HdNkIhbYMis9xNfwvRYd3nqvlUQuzexfuX/HCLGIODNfbTqWaDeUcREyS
+w+8cBP3gu1LwOjBSOdjDPFu9ceC1/EDHNXLhLG+CuOH/OePFFxwzdBb4yNKCFvoKd+F9JP57
+55CDk8QusbJtWhRNL2lKHQevPAQpSqTkSF1SdFyzyBiEJE21CfOHBuDysLAj21c89gJst+lN
+n2P9jBwaMqYibT2qbX9Chh3susjZk2M/etiIIxyRKBWLZT8V85KFghdf++mDc099ZP+JQnVn
+q8SzZgkekn5pvsPWff5eB5ZvUe8Sn3XwfDSG4WgQP7Q0CX1l4X+g0fx7dEX7lmZbZwIDAQAB
+o4IBxjCCAcIwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBQWNJ/mFfUaYaEoy70AbtZUiXyb
+UzAfBgNVHSMEGDAWgBTKqAXbrDZHSbmxFVkKtu8Plwzb2DAYBgNVHSABAf8EDjAMMAoGCCsG
+AQUFBw4CMBkGCCsGAQUFBwEIAQH/BAowCKAGMAQCAjzKMGQGCCsGAQUFBwEBBFgwVjBUBggr
+BgEFBQcwAoZIcnN5bmM6Ly9ycGtpLnJpcGUubmV0L3JlcG9zaXRvcnkvREVGQVVMVC95cWdG
+MjZ3MlIwbTVzUlZaQ3JidkQ1Y00yOWcuY2VyMGQGA1UdHwRdMFswWaBXoFWGU3JzeW5jOi8v
+Y2hsb2Uuc29ib3Jub3N0Lm5ldC9ycGtpL1JJUEUtbmxqb2JzbmlqZGVycy95cWdGMjZ3MlIw
+bTVzUlZaQ3JidkQ1Y00yOWcuY3JsMG8GCCsGAQUFBwELBGMwYTBfBggrBgEFBQcwC4ZTcnN5
+bmM6Ly9jaGxvZS5zb2Jvcm5vc3QubmV0L3Jwa2kvUklQRS1ubGpvYnNuaWpkZXJzL0ZqU2Y1
+aFgxR21HaEtNdTlBRzdXVklsOG0xTS5hc2EwDQYJKoZIhvcNAQELBQADggEBAHdOVNM2GrQc
+TBQebdi2iKgC92XlGF9AlZcX4ZCQBL7gfQLfGEm6cIT73/Qo5PPsZ6kldQrPrERGeTntSEcV
+LceFPihm54aAAbmQ0YQ3aZMdwvsbsLFMWBhbNiGwH6HdxyX63q94Did8IxE0HwOjJGfg02uN
+xO9DseGSRGNzc9iZmLDFIn2wP1cmTKqntfxjNqc9T3zFWZT/m1BmXKylwpCIxxHbYYaOBnQi
+xtJJ8HZlular3fwFQuVDuMxQ6Wg1jW3k6UBm06YwnyD3Nzck+4cIcGRnbQYDKBH/n3AyDGWr
+UNnLSgFQzVV/Eu8rP2BXKHeLUCMw0/tB7f6vj+9LZS4xggGqMIIBpgIBA4AUFjSf5hX1GmGh
+KMu9AG7WVIl8m1MwCwYJYIZIAWUDBAIBoGswGgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEx
+MBwGCSqGSIb3DQEJBTEPFw0yMjEyMTYxMjMwMDJaMC8GCSqGSIb3DQEJBDEiBCDncgAuReFz
+5lNB3nCNIY9N+TPcUjXeL3A8kGdpwI1JwTANBgkqhkiG9w0BAQEFAASCAQCaB43YGSkCOO/I
+X26d9xC5vqGcZYNjAQe76VHDFJqa5x7RpthJC1cPe3fdKLazu6ywcuo6vvElT2OH0s/K0mCa
+xFwfnZOn3cNUDJPtFYUynfQKyVGZjtyP8HLzxmgy2mSUzdcfEWVPSHc/u9CaIHdSNbeW7rBD
+lWnf3j4MOVr5z4yf9BU2oBodpongR7dR1fvl7N/RymOdaLdqFYaj82plECZh9XqWqmHReBQG
+c+EfXh7mw9aGQdFhBnprjRKd/oiBI1PVmystPv+XvunT8y8AxQ3XG1GL6Nca7OnfxNqGuyhs
+0nbcbcd92GJwF3SBkdestmXZgxkl0HV7ZPH1xlvh
+]]>
+      </artwork>
+    <t>
+      The above should decode as following:
+    </t>
+    <artwork>
+<![CDATA[
+Object SHA256 hash:          wsCvp2J+eZeizU8nrXHkLPhcjyqZ5euDlwLssA/nlwg=
+EE Subject key identifier:   16:34:9F:E6:15:F5:1A:61:A1:28:CB:BD:00:6E:D6:54:89:7C:9B:53
+EE Certificate issuer:       /CN=caa805dbac364749b9b115590ab6ef0f970cdbd8
+EE Certificate serial:       A1C7752FF8B1D2E01D
+EE Authority key identifier: CA:A8:05:DB:AC:36:47:49:B9:B1:15:59:0A:B6:EF:0F:97:0C:DB:D8
+EE Authority info access:    rsync://rpki.ripe.net/repository/DEFAULT/yqgF26w2R0m5sRVZCrbvD5cM29g.cer
+EE Subject info access:      rsync://chloe.sobornost.net/rpki/RIPE-nljobsnijders/FjSf5hX1GmGhKMu9AG7WVIl8m1M.asa
+EE NotAfter:                 Sat 16 Dec 2023 12:29:57 +0000
+ASPA eContent:
+  Customer AS:               15562
+  Provider Set:              1: AS: 2914
+                             2: AS: 8283
+                             3: AS: 51088
+                             4: AS: 206238
+]]>
+      </artwork>
+    </section>
   </back>
 </rfc>
