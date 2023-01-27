@@ -81,8 +81,9 @@
     <keyword>Hijacks</keyword>
     <abstract>
       <t>
-                This document defines a profile for the Autonomous System Provider Authorization (ASPA) object in the Resource Public Key Infrastructure (RPKI).
-                An ASPA is a digitally signed object that provides a means of validating that a Customer Autonomous System (CAS) has authorized the members of a specified Provider AS set as its upstream provider(s) and/or connected Internet-exchange route server(s).
+        This document defines a Cryptographic Message Syntax (CMS) protected content type for Autonomous System Provider Authorization (ASPA) objects for use with the Resource Public Key Infrastructure (RPKI).
+        An ASPA is a digitally signed object through which the issuer (the holder of an Autonomous System identifier), can authorize one or more other Autonomous Systems (ASes) as its upstream providers.
+        When validated, an ASPA's eContent can be used for detection and mitigation of route leaks.
       </t>
     </abstract>
 
@@ -102,7 +103,7 @@
     <section title="Introduction" anchor="intro">
       <t>
         The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480"/>.
-        As part of this infrastructure, a mechanism is needed to facilitate holders of Autonomous System (AS) numbers in their capacity as Customer to authorize other ASes as their Provider(s).
+        As part of this infrastructure, a mechanism is needed to facilitate holders of Autonomous System (AS) identifiers in their capacity as Customer to authorize other ASes as their Provider(s).
         A Provider AS (PAS) is a network that:
         <list style="letters">
           <t>offers its customers outbound (customer to Internet) data traffic connectivity and/or</t>
@@ -111,8 +112,9 @@
         The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
       </t>
       <t>
-        The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider.
-        When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS.
+        An ASPA object is a cryptographically verifiable attestation signed by the holder of an Autonomous System identifier (hereafter called the "Customer AS", or CAS).
+        An ASPA contains lists one or more ASes, each listing meaning the listed AS is authorized to act as Provider network.
+        When the CAS has multiple Providers, all Provider ASes are listed in the ASPA, including any non-transparent Internet Exchange Point (IXP) route server (RS) AS that provide service to the CAS.
       </t>
       <t>
         The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488"/>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
@@ -148,9 +150,9 @@
                 The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
       </t>
       <t>
-	Not all route servers (RS) at internet exchange points are transparent, e.g., in some cases the AS number of the RS would be present in the AS_PATH.
-	In this case, the RS AS is acting as a provider AS, which propagates routes between its clients (i.e., customers).
-	Thus, a CAS MUST add both upstream providers and any connected non-transparent RS AS to its SPAS.
+	Most Route Servers (RS) at Internet Exchange Points are transparent, however in some cases the RS AS number is visibly present in the AS_PATH attribute.
+	In these case, the RS AS is acting as a Provider AS, propagating BGP routes between its clients (i.e., customers).
+	Thus, a CAS MUST list both upstream providers and non-transparent RS AS in its ASPAs.
       </t>
       <t>
 	If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
