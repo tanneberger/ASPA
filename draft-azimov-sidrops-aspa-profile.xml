@@ -113,7 +113,7 @@
           </t>
           <t>
                         The ASN.1 syntax for the ASPA content, which is the payload signed by the CAS.
-                        The ASPA content is encoded using the ASN.1 <xref target="X680"/> Distinguished Encoding Rules (DER) <xref target="X690"/>.
+                        The ASPA content is encoded using the ASN.1 <xref target="X.680"/> Distinguished Encoding Rules (DER) <xref target="X.690"/>.
           </t>
           <t>
                         The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488"/>.
@@ -143,7 +143,7 @@
                 This rule is important to avoid possible race conditions during updates of ASPAs.
       </t>
       <t>
-                The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X680"/> module:
+                The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
       </t>
 
       <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
@@ -364,100 +364,16 @@
   <back>
 
     <references title="Normative References">
-      <reference anchor="RFC2119" target="https://www.rfc-editor.org/info/rfc2119" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
-        <front>
-          <title>Key words for use in RFCs to Indicate Requirement Levels</title>
-          <author fullname="S. Bradner" initials="S." surname="Bradner"/>
-          <date month="March" year="1997"/>
-          <abstract>
-            <t>In many standards track documents several words are used to signify the requirements in the specification.  These words are often capitalized.  This document defines these words as they should be interpreted in IETF documents.  This document specifies an Internet Best Current Practices for the Internet Community, and requests discussion and suggestions for improvements.</t>
-          </abstract>
-        </front>
-        <seriesInfo name="BCP" value="14"/>
-        <seriesInfo name="RFC" value="2119"/>
-        <seriesInfo name="DOI" value="10.17487/RFC2119"/>
-      </reference>
-      <reference anchor="RFC3779" target="https://www.rfc-editor.org/info/rfc3779" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3779.xml">
-        <front>
-          <title>X.509 Extensions for IP Addresses and AS Identifiers</title>
-          <author fullname="C. Lynn" initials="C." surname="Lynn"/>
-          <author fullname="S. Kent" initials="S." surname="Kent"/>
-          <author fullname="K. Seo" initials="K." surname="Seo"/>
-          <date month="June" year="2004"/>
-          <abstract>
-            <t>This document defines two X.509 v3 certificate extensions.  The first binds a list of IP address blocks, or prefixes, to the subject of a certificate.  The second binds a list of autonomous system identifiers to the subject of a certificate.  These extensions may be used to convey the authorization of the subject to use the IP addresses and autonomous system identifiers contained in the extensions. [STANDARDS-TRACK]</t>
-          </abstract>
-        </front>
-        <seriesInfo name="RFC" value="3779"/>
-        <seriesInfo name="DOI" value="10.17487/RFC3779"/>
-      </reference>
-      <reference anchor="RFC8174" target="https://www.rfc-editor.org/info/rfc8174" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
-        <front>
-          <title>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</title>
-          <author fullname="B. Leiba" initials="B." surname="Leiba"/>
-          <date month="May" year="2017"/>
-          <abstract>
-            <t>RFC 2119 specifies common key words that may be used in protocol specifications.  This document aims to reduce the ambiguity by clarifying that only UPPERCASE usage of the key words have the defined special meanings.</t>
-          </abstract>
-        </front>
-        <seriesInfo name="BCP" value="14"/>
-        <seriesInfo name="RFC" value="8174"/>
-        <seriesInfo name="DOI" value="10.17487/RFC8174"/>
-      </reference>
-      <reference anchor="RFC5652" target="https://www.rfc-editor.org/info/rfc5652" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5652.xml">
-        <front>
-          <title>Cryptographic Message Syntax (CMS)</title>
-          <author fullname="R. Housley" initials="R." surname="Housley"/>
-          <date month="September" year="2009"/>
-          <abstract>
-            <t>This document describes the Cryptographic Message Syntax (CMS).  This syntax is used to digitally sign, digest, authenticate, or encrypt arbitrary message content. [STANDARDS-TRACK]</t>
-          </abstract>
-        </front>
-        <seriesInfo name="STD" value="70"/>
-        <seriesInfo name="RFC" value="5652"/>
-        <seriesInfo name="DOI" value="10.17487/RFC5652"/>
-      </reference>
-      <reference anchor="RFC6485" target="https://www.rfc-editor.org/info/rfc6485" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6485.xml">
-        <front>
-          <title>The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)</title>
-          <author fullname="G. Huston" initials="G." surname="Huston"/>
-          <date month="February" year="2012"/>
-          <abstract>
-            <t>This document specifies the algorithms, algorithms' parameters, asymmetric key formats, asymmetric key size, and signature format for the Resource Public Key Infrastructure (RPKI) subscribers that generate digital signatures on certificates, Certificate Revocation Lists, and signed objects as well as for the relying parties (RPs) that verify these digital signatures. [STANDARDS-TRACK]</t>
-          </abstract>
-        </front>
-        <seriesInfo name="RFC" value="6485"/>
-        <seriesInfo name="DOI" value="10.17487/RFC6485"/>
-      </reference>
-      <reference anchor="RFC6481" target="https://www.rfc-editor.org/info/rfc6481" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6481.xml">
-        <front>
-          <title>A Profile for Resource Certificate Repository Structure</title>
-          <author fullname="G. Huston" initials="G." surname="Huston"/>
-          <author fullname="R. Loomans" initials="R." surname="Loomans"/>
-          <author fullname="G. Michaelson" initials="G." surname="Michaelson"/>
-          <date month="February" year="2012"/>
-          <abstract>
-            <t>This document defines a profile for the structure of the Resource Public Key Infrastructure (RPKI) distributed repository.  Each individual repository publication point is a directory that contains files that correspond to X.509/PKIX Resource Certificates, Certificate Revocation Lists and signed objects.  This profile defines the object (file) naming scheme, the contents of repository publication points (directories), and a suggested internal structure of a local repository cache that is intended to facilitate synchronization across a distributed collection of repository publication points and to facilitate certification path construction. [STANDARDS-TRACK]</t>
-          </abstract>
-        </front>
-        <seriesInfo name="RFC" value="6481"/>
-        <seriesInfo name="DOI" value="10.17487/RFC6481"/>
-      </reference>
-      <reference anchor="RFC6488" target="https://www.rfc-editor.org/info/rfc6488" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6488.xml">
-        <front>
-          <title>Signed Object Template for the Resource Public Key Infrastructure (RPKI)</title>
-          <author fullname="M. Lepinski" initials="M." surname="Lepinski"/>
-          <author fullname="A. Chi" initials="A." surname="Chi"/>
-          <author fullname="S. Kent" initials="S." surname="Kent"/>
-          <date month="February" year="2012"/>
-          <abstract>
-            <t>This document defines a generic profile for signed objects used in the Resource Public Key Infrastructure (RPKI).  These RPKI signed objects make use of Cryptographic Message Syntax (CMS) as a standard encapsulation format. [STANDARDS-TRACK]</t>
-          </abstract>
-        </front>
-        <seriesInfo name="RFC" value="6488"/>
-        <seriesInfo name="DOI" value="10.17487/RFC6488"/>
-      </reference>
-      <reference anchor="X680">
+
+      <?rfc include="reference.RFC.2119.xml"?>
+      <?rfc include="reference.RFC.3779.xml"?>
+      <?rfc include="reference.RFC.5652.xml"?>
+      <?rfc include="reference.RFC.6481.xml"?>
+      <?rfc include="reference.RFC.6485.xml"?>
+      <?rfc include="reference.RFC.6488.xml"?>
+      <?rfc include="reference.RFC.8174.xml"?>
+
+      <reference anchor="X.680">
         <front>
           <title>Information technology -- Abstract Syntax Notation One (ASN.1): Specification of basic notation</title>
           <author>
@@ -467,7 +383,8 @@
         </front>
         <seriesInfo name="ITU-T" value="Recommendation X.680"/>
       </reference>
-      <reference anchor="X690">
+
+      <reference anchor="X.690">
         <front>
           <title>Information Technology -- ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)</title>
           <author>
@@ -477,21 +394,14 @@
         </front>
         <seriesInfo name="ITU-T" value="Recommendation X.690"/>
       </reference>
+
     </references>
+
     <references title="Informative References">
-      <reference anchor="RFC6480" target="https://www.rfc-editor.org/info/rfc6480" xml:base="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6480.xml">
-        <front>
-          <title>An Infrastructure to Support Secure Internet Routing</title>
-          <author fullname="M. Lepinski" initials="M." surname="Lepinski"/>
-          <author fullname="S. Kent" initials="S." surname="Kent"/>
-          <date month="February" year="2012"/>
-          <abstract>
-            <t>This document describes an architecture for an infrastructure to support improved security of Internet routing.  The foundation of this architecture is a Resource Public Key Infrastructure (RPKI) that represents the allocation hierarchy of IP address space and Autonomous System (AS) numbers; and a distributed repository system for storing and disseminating the data objects that comprise the RPKI, as well as other signed objects necessary for improved routing security.  As an initial application of this architecture, the document describes how a legitimate holder of IP address space can explicitly and verifiably authorize one or more ASes to originate routes to that address space.  Such verifiable authorizations could be used, for example, to more securely construct BGP route filters.  This document is not an Internet Standards Track specification; it is published for informational purposes.</t>
-          </abstract>
-        </front>
-        <seriesInfo name="RFC" value="6480"/>
-        <seriesInfo name="DOI" value="10.17487/RFC6480"/>
-      </reference>
+
+      <?rfc include="reference.RFC.4648.xml"?>
+      <?rfc include="reference.RFC.6480.xml"?>
+
       <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
         <front>
           <title>rpkimancer-aspa</title>
@@ -501,6 +411,7 @@
           <date year="2022"/>
         </front>
       </reference>
+
       <reference anchor="rpki-client" target="https://www.rpki-client.org/">
         <front>
           <title>rpki-client</title>
@@ -510,6 +421,7 @@
           <date year="2022"/>
         </front>
       </reference>
+
       <reference anchor="krill" target="https://github.com/NLnetLabs/krill">
         <front>
           <title>Krill</title>
@@ -519,6 +431,7 @@
           <date year="2022"/>
         </front>
       </reference>
+
       <reference anchor="rpstir2" target="https://mailarchive.ietf.org/arch/msg/sidrops/pxqAGPmR0MA3NMe-NxYyiEZ7RXw">
         <front>
           <title>RPSTIR2</title>
@@ -528,6 +441,7 @@
           <date year="2022"/>
         </front>
       </reference>
+
       <reference anchor="aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
         <front>
           <title>RPKI ASPA Demo</title>
@@ -537,6 +451,7 @@
           <date year="2022"/>
         </front>
       </reference>
+
       <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/">
         <front>
           <title>Relying Party Resiliency Platform</title>
@@ -546,6 +461,7 @@
           <date year="2022"/>
         </front>
       </reference>
+
       <reference anchor="IANA-AF" target="https://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml">
         <front>
           <title>Address Family Numbers</title>
@@ -555,7 +471,7 @@
           <date/>
         </front>
       </reference>
-      <?rfc include="reference.RFC.4648.xml"?>
+
     </references>
 
     <section anchor="example">
