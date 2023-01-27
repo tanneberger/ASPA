@@ -1,5 +1,5 @@
-NAME1=draft-azimov-sidrops-aspa-verification
-NAME2=draft-azimov-sidrops-aspa-profile
+NAME1=draft-ietf-sidrops-aspa-verification
+NAME2=draft-ietf-sidrops-aspa-profile
 
 .PHONY: all
 all: drafts
