@@ -8,7 +8,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-sidrops-aspa-profile-11" ipr="trust200902" consensus="true" submissionType="IETF">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-sidrops-aspa-profile-12" ipr="trust200902" consensus="true" submissionType="IETF">
   <front>
     <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
     <author fullname="Alexander Azimov" initials="A" surname="Azimov">
