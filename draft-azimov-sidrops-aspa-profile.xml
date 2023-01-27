@@ -8,9 +8,19 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-sidrops-aspa-profile-12" ipr="trust200902" consensus="true" submissionType="IETF">
+
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+     category="std"
+     docName="draft-ietf-sidrops-aspa-profile-12"
+     ipr="trust200902"
+     consensus="true"
+     submissionType="IETF">
+
   <front>
-    <title abbrev="ASPA Profile"> A Profile for Autonomous System Provider Authorization </title>
+    <title abbrev="RPKI ASPA Profile">
+      A Profile for Autonomous System Provider Authorization
+    </title>
+
     <author fullname="Alexander Azimov" initials="A" surname="Azimov">
       <organization>Yandex</organization>
       <address>
@@ -75,6 +85,7 @@
                 An ASPA is a digitally signed object that provides a means of validating that a Customer Autonomous System (CAS) has authorized the members of a specified Provider AS set as its upstream provider(s) and/or connected Internet-exchange route server(s).
       </t>
     </abstract>
+
     <note title="Requirements Language">
       <t>
                 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -84,126 +95,135 @@
                 only when, they appear in all capitals, as shown here.
       </t>
     </note>
+
   </front>
+
   <middle>
     <section title="Introduction" anchor="intro">
       <t>
-                The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480"/>.
-                As part of this infrastructure, a mechanism is needed to facilitate holders of Autonomous System (AS) numbers in their capacity as Customer to authorize other ASes as their Provider(s).
-                A Provider AS (PAS) is a network that:
-                <list style="letters">
+        The primary purpose of the Resource Public Key Infrastructure (RPKI) is to improve routing security <xref target="RFC6480"/>.
+        As part of this infrastructure, a mechanism is needed to facilitate holders of Autonomous System (AS) numbers in their capacity as Customer to authorize other ASes as their Provider(s).
+        A Provider AS (PAS) is a network that:
+        <list style="letters">
           <t>offers its customers outbound (customer to Internet) data traffic connectivity and/or</t>
           <t>further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.</t>
         </list>
-                The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
+        The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
       </t>
       <t>
-                The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider.
-                When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS.
+        The ASPA object is a cryptographically signed attestation by a Customer AS (CAS) that another AS listed in the ASPA is a Provider.
+        When the CAS has multiple Providers, all Provider ASes are listed in the ASPA including any internet exchange point (IXP) route server (RS) AS that serves the CAS.
       </t>
       <t>
-                The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488"/>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
-                As ASPAs need to be validated with RPKI certificates issued by the current infrastructure, we assume the mandatory-to-implement algorithms in <xref target="RFC6485"/>, or its successor.
+        The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488"/>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
+        As ASPAs need to be validated with RPKI certificates issued by the current infrastructure, we assume the mandatory-to-implement algorithms in <xref target="RFC6485"/>, or its successor.
       </t>
       <t>To complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
-                <list style="numbers">
+        <list style="numbers">
           <t>
-                        The object identifier (OID) that identifies the ASPA signed object.
-                        This OID appears in the eContentType field of the encapContentInfo object as well as the content-type signed attribute within the signerInfo structure.
+            The object identifier (OID) that identifies the ASPA signed object.
+            This OID appears in the eContentType field of the encapContentInfo object as well as the content-type signed attribute within the signerInfo structure.
           </t>
           <t>
-                        The ASN.1 syntax for the ASPA content, which is the payload signed by the CAS.
-                        The ASPA content is encoded using the ASN.1 <xref target="X.680"/> Distinguished Encoding Rules (DER) <xref target="X.690"/>.
+            The ASN.1 syntax for the ASPA content, which is the payload signed by the CAS.
+            The ASPA content is encoded using the ASN.1 <xref target="X.680"/> Distinguished Encoding Rules (DER) <xref target="X.690"/>.
           </t>
           <t>
-                        The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488"/>.
+            The steps required to validate an ASPA beyond the validation steps specified in <xref target="RFC6488"/>.
           </t>
         </list>
       </t>
     </section>
+
     <section title="ASPA Content Type" anchor="content-type">
       <t>
-                The content-type for an ASPA is defined as id-ct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
-
-                This OID MUST appear both within the eContentType in the encapContentInfo structure as well as the content-type signed attribute within the signerInfo structure (see <xref target="RFC6488"/>).
+        The content-type for an ASPA is defined as id-ct-ASPA, which has the numerical value of 1.2.840.113549.1.9.16.1.49.
+        This OID MUST appear both within the eContentType in the encapContentInfo structure as well as the content-type signed attribute within the signerInfo structure (see <xref target="RFC6488"/>).
       </t>
     </section>
+
     <section title="ASPA eContent" anchor="content">
       <t>
 
                 The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
       </t>
       <t>
-                Not all route servers (RS) at internet exchange points are transparent, e.g., in some cases the AS number of the RS would be present in the AS_PATH.
-                In this case, the RS AS is acting as a provider AS, which propagates routes between its clients (i.e., customers).
-                Thus, a CAS MUST add both upstream providers and any connected non-transparent RS AS to its SPAS.
+	Not all route servers (RS) at internet exchange points are transparent, e.g., in some cases the AS number of the RS would be present in the AS_PATH.
+	In this case, the RS AS is acting as a provider AS, which propagates routes between its clients (i.e., customers).
+	Thus, a CAS MUST add both upstream providers and any connected non-transparent RS AS to its SPAS.
       </t>
       <t>
-                If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
-                This rule is important to avoid possible race conditions during updates of ASPAs.
+	If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
+	This rule is important to avoid possible race conditions during updates of ASPAs.
       </t>
       <t>
-                The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
+	The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
       </t>
 
       <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
 
       <t>
-                Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
+	Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
       </t>
+
       <section title="version">
         <t>
-                    The version number of the ASProviderAttestation MUST be v0.
+	  The version number of the ASProviderAttestation MUST be v0.
         </t>
       </section>
+
       <section title="customerASID">
         <t>
-                    The customerASID field contains the AS number of the Customer Autonomous System that is the authorizing entity.
+          The customerASID field contains the AS number of the Customer Autonomous System that is the authorizing entity.
         </t>
       </section>
+
       <section title="providers">
         <t>
-                    The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family.
+          The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family.
         </t>
         <t>
-                    Each element contained in the providers field is an instance of ProviderAS.
+          Each element contained in the providers field is an instance of ProviderAS.
         </t>
         <t>
-                    In addition to the constraints described by the formal ASN.1 definition, the contents of the providers field MUST satisfy the following constraints:
-                  <list style="symbols">
-            <t>
-                        The CustomerASID value MUST NOT appear in any providerASID field.
-            </t>
-            <t>
-                        The elements of providers MUST be ordered in ascending numerical order by the value of the providerASID field.
-            </t>
-            <t>
-                        Each value of providerASID MUST be unique (with respect to the other elements of providers).
-            </t>
+          In addition to the constraints described by the formal ASN.1 definition, the contents of the providers field MUST satisfy the following constraints:
+        <list style="symbols">
+          <t>
+            The CustomerASID value MUST NOT appear in any providerASID field.
+          </t>
+          <t>
+            The elements of providers MUST be ordered in ascending numerical order by the value of the providerASID field.
+          </t>
+          <t>
+            Each value of providerASID MUST be unique (with respect to the other elements of providers).
+          </t>
           </list>
         </t>
+
         <section title="ProviderAS">
           <section title="providerASID">
             <t>
-                            The providerASID field contains the AS number of an AS that has been authorized by the customer AS as its provider or RS in the specified address family.
+              The providerASID field contains the AS number of an AS that has been authorized by the customer AS as its provider or RS in the specified address family.
             </t>
           </section>
           <section title="afiLimit">
             <t>
-                            The afiLimit field optionally constrains the authorization given to the provider AS to a single address family.
+              The afiLimit field optionally constrains the authorization given to the provider AS to a single address family.
             </t>
             <t>
-                            If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
-                            This specification only supports IPv4 and IPv6.
-                            Therefore, the value MUST be either 0001 or 0002, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
+              If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
+              This specification only supports IPv4 and IPv6.
+              Therefore, the value MUST be either 0001 or 0002, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
             </t>
             <t>
-                            If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
+              If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
             </t>
           </section>
         </section>
+
       </section>
     </section>
+
     <section title="ASPA Validation" anchor="validation">
       <t>
         Before a relying party can use an ASPA to validate a routing announcement, the relying party MUST first validate the ASPA object itself.
@@ -223,43 +243,37 @@
     </section>
     <section anchor="IANA" title="IANA Considerations">
       <t>
-                Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)
-                registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
+        Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
       </t>
       <figure>
-        <artwork type="text">
+<artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
     TBD2      | id-mod-rpki-aspa-2022         | [RFC-to-be]
-                   </artwork>
+</artwork>
       </figure>
       <t>
-                Please add the ASPA to the SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) registry
-                (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-1) as follows:
+        Please add the ASPA to the SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-1) as follows:
       </t>
       <figure>
-        <artwork type="text">
+<artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
     49        | id-ct-ASPA                    | [RFC-to-be]
-                   </artwork>
+</artwork>
       </figure>
       <t>
-                Please add Autonomous System Provider Authorization to the RPKI Signed Object registry
-                (https://www.iana.org/assignments/rpki/rpki.xhtml#signed-objects)
-                as follows:
+        Please add Autonomous System Provider Authorization to the RPKI Signed Object registry (https://www.iana.org/assignments/rpki/rpki.xhtml#signed-objects) as follows:
       </t>
       <figure>
-        <artwork type="text">
+<artwork type="text">
     Name                                     | OID                         | Specification
     --------------------------------------------------------------------------------------
     Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.49  | [RFC-to-be]
-                   </artwork>
+</artwork>
       </figure>
       <t>
-               Please add an item for the Autonomous System Provider Authorization
-               file extension to the "RPKI Repository Name Scheme"
-               registry created by <xref target="RFC6481"/> as follows:
+        Please add an item for the Autonomous System Provider Authorization file extension to the "RPKI Repository Name Scheme" registry created by <xref target="RFC6481"/> as follows:
       </t>
       <figure>
         <artwork>
@@ -308,54 +322,56 @@
     </section>
     <section anchor="Security" title="Security Considerations">
       <t>
-                While it is not technically enforcable, it is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers/route servers.
-                Administrating all providers in a single object helps prevent race conditions during ASPA updates that might affect prefix propagation.
-                The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
-                In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
+        While it is not technically enforcable, it is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers/route servers.
+        Administrating all providers in a single object helps prevent race conditions during ASPA updates that might affect prefix propagation.
+        The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
+        In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
       </t>
     </section>
     <section removeInRFC="true">
       <name>Implementation status</name>
       <t>
-             This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in RFC 7942.
-             The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.
-             Please note that the listing of any individual implementation here does not imply endorsement by the IETF.
-             Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.
-             This is not intended as, and must not be construed to be, a catalog of available implementations or their features.
-             Readers are advised to note that other implementations may exist.
+        This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in RFC 7942.
+        The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.
+        Please note that the listing of any individual implementation here does not imply endorsement by the IETF.
+        Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.
+        This is not intended as, and must not be construed to be, a catalog of available implementations or their features.
+        Readers are advised to note that other implementations may exist.
       </t>
       <t>
-             According to RFC 7942, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
-             It is up to the individual working groups to use this information as they see fit".
+        According to RFC 7942, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
+        It is up to the individual working groups to use this information as they see fit".
       </t>
       <ul>
         <li>
-               A validator implementation <xref target="rpki-client"/> (version 8.0 and higher), written in C was provided by Job Snijders from Fastly.
-             </li>
+          A validator implementation <xref target="rpki-client"/> (version 8.0 and higher), written in C was provided by Job Snijders from Fastly.
+        </li>
         <li>
-               A signer and decoder implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
-             </li>
+          A signer and decoder implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
+        </li>
         <li>
-               A signer implementation <xref target="krill"/> written in Rust was provided by Tim Bruijnzeels from NLnetLabs.
-             </li>
+          A signer implementation <xref target="krill"/> written in Rust was provided by Tim Bruijnzeels from NLnetLabs.
+        </li>
         <li>
-               At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
-             </li>
+          At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
+        </li>
         <li>
-               Di Ma reported <xref target="rpstir2">success</xref> in RPSTIR2 validating objects produced by Tim Bruijnzeels.
-             </li>
+          Di Ma reported <xref target="rpstir2">success</xref> in RPSTIR2 validating objects produced by Tim Bruijnzeels.
+        </li>
         <li>
-               A signer <xref target="koenvh">implementation</xref> written in PHP based on OpenSSL was provided by Koen van Hove.
-             </li>
+          A signer <xref target="koenvh">implementation</xref> written in PHP based on OpenSSL was provided by Koen van Hove.
+        </li>
         <li>
-               A signer <xref target="aspa-demo">implementation</xref> written in Perl based on OpenSSL was provided by Tom Harrison from APNIC.
-             </li>
+          A signer <xref target="aspa-demo">implementation</xref> written in Perl based on OpenSSL was provided by Tom Harrison from APNIC.
+        </li>
       </ul>
     </section>
 
     <section anchor="Acknowledgments" title="Acknowledgments">
       <t>
-        The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project, Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form, and Kotikalapudi Sriram for review and several suggestions for improvements.
+        The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project,
+        Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form,
+        and Kotikalapudi Sriram for review and several suggestions for improvements.
       </t>
     </section>
 
