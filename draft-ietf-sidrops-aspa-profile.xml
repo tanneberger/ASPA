@@ -110,17 +110,19 @@
           <t>further propagates in all directions (towards providers, lateral peers, and customers) any BGP Updates that the customer may send.</t>
         </list>
         The digitally signed Autonomous System Provider Authorization (ASPA) object described in this document provides the above-mentioned authorization mechanism.
+        See <xref target="I-D.ietf-sidrops-aspa-verification"/> for a specification how to use Validated ASPA Payloads (VAPs) to filter BGP UPDATE messages.
       </t>
       <t>
         An ASPA object is a cryptographically verifiable attestation signed by the holder of an Autonomous System identifier (hereafter called the "Customer AS", or CAS).
         An ASPA contains lists one or more ASes, each listing meaning the listed AS is authorized to act as Provider network.
-        When the CAS has multiple Providers, all Provider ASes are listed in the ASPA, including any non-transparent Internet Exchange Point (IXP) route server (RS) AS that provide service to the CAS.
+        When the CAS has multiple Providers, all Provider ASes that provide service to the CAS are listed in the ASPA, including any non-transparent Internet Exchange Point (IXP) Route Server (RS) ASes.
+        The common case for Route Servers (RS) at Internet Exchange Points is to operate transparently (see Section 2.2.2.1 <xref target="RFC7947"/>), thus usually, the ASNs of IX Route Servers are not listed as PAS in ASPAs.
       </t>
       <t>
-        The ASPA uses the template for RPKI digitally signed objects <xref target="RFC6488"/>, which defines a Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> wrapper for the ASPA content as well as a generic validation procedure for RPKI signed objects.
-        As ASPAs need to be validated with RPKI certificates issued by the current infrastructure, we assume the mandatory-to-implement algorithms in <xref target="RFC6485"/>, or its successor.
+        The ASPA object profile definition conforms to the <xref target="RFC6488"/> template for RPKI signed objects.
       </t>
-      <t>To complete the specification of the ASPA (see Section 4 of <xref target="RFC6488"/>), this document defines:
+      <t>
+        In accordance with Section 4 of <xref target="RFC6488"/>, this document defines:
         <list style="numbers">
           <t>
             The object identifier (OID) that identifies the ASPA signed object.
@@ -146,13 +148,7 @@
 
     <section title="ASPA eContent" anchor="content">
       <t>
-
-                The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
-      </t>
-      <t>
-	Most Route Servers (RS) at Internet Exchange Points are transparent, however in some cases the RS AS number is visibly present in the AS_PATH attribute.
-	In these case, the RS AS is acting as a Provider AS, propagating BGP routes between its clients (i.e., customers).
-	Thus, a CAS MUST list both upstream providers and non-transparent RS AS in its ASPAs.
+        The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
       </t>
       <t>
 	If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
@@ -244,16 +240,19 @@
       </t>
     </section>
     <section anchor="IANA" title="IANA Considerations">
-      <t>
-        Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
-      </t>
-      <figure>
+      <section title="SMI Security for S/MIME Module Identifier registry">
+        <t>
+          Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
+        </t>
+        <figure>
 <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
     TBD2      | id-mod-rpki-aspa-2022         | [RFC-to-be]
 </artwork>
-      </figure>
+        </figure>
+    </section>
+    <section title="SMI Security for S/MIME CMS Content Type registry">
       <t>
         Please add the ASPA to the SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-1) as follows:
       </t>
@@ -264,6 +263,8 @@
     49        | id-ct-ASPA                    | [RFC-to-be]
 </artwork>
       </figure>
+    </section>
+    <section title="RPKI Signed Object registry">
       <t>
         Please add Autonomous System Provider Authorization to the RPKI Signed Object registry (https://www.iana.org/assignments/rpki/rpki.xhtml#signed-objects) as follows:
       </t>
@@ -274,6 +275,8 @@
     Autonomous System Provider Authorization | 1.2.840.113549.1.9.16.1.49  | [RFC-to-be]
 </artwork>
       </figure>
+    </section>
+    <section title="RPKI Repository Name Scheme registry">
       <t>
         Please add an item for the Autonomous System Provider Authorization file extension to the "RPKI Repository Name Scheme" registry created by <xref target="RFC6481"/> as follows:
       </t>
@@ -287,13 +290,12 @@
 ]]>
                 </artwork>
       </figure>
-
-      <section>
-        <name>Media Type</name>
-        <t>
-          The IANA is requested to register the media type application/rpki-aspa in the "Media Type" registry as follows:
-        </t>
-        <artwork>
+    </section>
+    <section title="Media Type registry">
+      <t>
+        The IANA is requested to register the media type application/rpki-aspa in the "Media Type" registry as follows:
+      </t>
+      <artwork>
 <![CDATA[
    Type name: application
    Subtype name: rpki-aspa
@@ -322,6 +324,7 @@
         </artwork>
       </section>
     </section>
+
     <section anchor="Security" title="Security Considerations">
       <t>
         While it is not technically enforcable, it is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers/route servers.
@@ -373,7 +376,7 @@
       <t>
         The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project,
         Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form,
-        and Kotikalapudi Sriram for review and several suggestions for improvements.
+        and Kotikalapudi Sriram &amp; Claudio Jeker for review and several suggestions for improvements.
       </t>
     </section>
 
@@ -393,22 +396,22 @@
 
       <reference anchor="X.680">
         <front>
-          <title>Information technology -- Abstract Syntax Notation One (ASN.1): Specification of basic notation</title>
+          <title>Information technology - Abstract Syntax Notation One (ASN.1): Specification of basic notation</title>
           <author>
             <organization>ITU-T</organization>
           </author>
-          <date year="2015"/>
+          <date year="2021"/>
         </front>
         <seriesInfo name="ITU-T" value="Recommendation X.680"/>
       </reference>
 
       <reference anchor="X.690">
         <front>
-          <title>Information Technology -- ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)</title>
+          <title>Information Technology - ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)</title>
           <author>
             <organization>ITU-T</organization>
           </author>
-          <date year="2015"/>
+          <date year="2021"/>
         </front>
         <seriesInfo name="ITU-T" value="Recommendation X.690"/>
       </reference>
@@ -419,6 +422,9 @@
 
       <?rfc include="reference.RFC.4648.xml"?>
       <?rfc include="reference.RFC.6480.xml"?>
+      <?rfc include="reference.RFC.7947.xml"?>
+
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-aspa-verification.xml"/>
 
       <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
         <front>
