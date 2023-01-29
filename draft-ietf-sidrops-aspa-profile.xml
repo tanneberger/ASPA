@@ -151,7 +151,7 @@
         The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
       </t>
       <t>
-	If a Customer AS is connected to multiple transit providers/non-transparent route servers, all Provider ASes MUST be registered in a single ASPA object.
+	If a Customer AS is connected to multiple providers, all Provider ASes MUST be registered in a single ASPA object.
 	This rule is important to avoid possible race conditions during updates of ASPAs.
       </t>
       <t>
@@ -178,7 +178,7 @@
 
       <section title="providers">
         <t>
-          The providers field contains the listing of ASes that are authorized as providers or route servers in the specified address family.
+          The providers field contains the listing of ASes that are authorized as providers.
         </t>
         <t>
           Each element contained in the providers field is an instance of ProviderAS.
@@ -327,7 +327,7 @@
 
     <section anchor="Security" title="Security Considerations">
       <t>
-        While it is not technically enforcable, it is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers/route servers.
+        While it is not technically enforcable, it is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers.
         Administrating all providers in a single object helps prevent race conditions during ASPA updates that might affect prefix propagation.
         The software that provides hosting for ASPA records SHOULD support enforcement of this rule.
         In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
