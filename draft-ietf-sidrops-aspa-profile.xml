@@ -116,7 +116,8 @@
         An ASPA object is a cryptographically verifiable attestation signed by the holder of an Autonomous System identifier (hereafter called the "Customer AS", or CAS).
         An ASPA contains a list of one or more ASes, each listing meaning the listed AS is authorized to act as Provider network.
         When the CAS has multiple Providers, all Provider ASes that provide service to the CAS are listed in the ASPA, including any non-transparent Internet Exchange Point (IXP) Route Server (RS) ASes.
-        The common case for Route Servers (RS) at Internet Exchange Points is to operate transparently (see Section 2.2.2.1 <xref target="RFC7947"/>), thus usually, the ASNs of IX Route Servers are not listed as PAS in ASPAs.
+        The common case for Route Servers (RS) at Internet Exchange Points is to operate transparently (see Section 2.2.2.1 <xref target="RFC7947"/>), thus usually, the ASNs of IXP Route Servers are not listed as PAS in ASPAs.
+	The detailed ASPA registration recommendations are provided in <xref target="I-D.ietf-sidrops-aspa-verification"/>. 
       </t>
       <t>
         The ASPA content type definition conforms to the <xref target="RFC6488"/> template for RPKI signed objects.
@@ -151,7 +152,7 @@
         The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
       </t>
       <t>
-	If a Customer AS is connected to multiple providers, all Provider ASes MUST be registered in a single ASPA object.
+	If a Customer AS is connected to multiple providers, all Provider ASes must be registered in a single ASPA object (see <xref target="I-D.ietf-sidrops-aspa-verification"/> for formal ASPA registration recommendations).
 	This rule is important to avoid possible race conditions during updates of ASPAs.
       </t>
       <t>
