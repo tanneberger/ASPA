@@ -33,16 +33,17 @@
         <email>a.e.azimov@gmail.com</email>
       </address>
     </author>
-    <author fullname="Eugene Bogomazov" initials="E." surname="Bogomazov">
-      <organization showOnFrontPage="true">Qrator Labs</organization>
+    <author fullname="Kotikalapudi Sriram" initials="K." surname="Sriram">
+      <organization abbrev="USA NIST" showOnFrontPage="true">USA National Institute of Standards and Technology</organization>
       <address>
         <postal>
-          <street>1-y Magistralnyy tupik 5A</street>
-          <city>Moscow</city>
-          <code>123290</code>
-          <country>Russian Federation</country>
+          <street>100 Bureau Drive</street>
+          <city>Gaithersburg</city>
+          <region>MD</region>
+          <code>20899</code>
+          <country>United States of America</country>
         </postal>
-        <email>eb@qrator.net</email>
+        <email>ksriram@nist.gov</email>
       </address>
     </author>
     <author fullname="Randy Bush" initials="R." surname="Bush">
@@ -84,20 +85,6 @@
         <email>job@fastly.com</email>
       </address>
     </author>
-    <author fullname="Kotikalapudi Sriram" initials="K." surname="Sriram">
-      <organization abbrev="USA NIST" showOnFrontPage="true">USA National Institute of Standards and Technology</organization>
-      <address>
-        <postal>
-          <street>100 Bureau Drive</street>
-          <city>Gaithersburg</city>
-          <region>MD</region>
-          <code>20899</code>
-          <country>United States of America</country>
-        </postal>
-        <email>ksriram@nist.gov</email>
-      </address>
-    </author>
-
     <date />
 
     <keyword>BGP</keyword>
@@ -639,6 +626,7 @@ ASPAs: {AS(1), [AS(2)]}, {AS(2), [AS(3)]}, {AS(5), [AS(4)]},
       <t>
         The authors wish to thank Claudio Jeker, Jakob Heitz, Ben Maddison, Russ Housley, Jeff Haas, Nan Geng, Nick Hilliard, Shunwan Zhuang, Doug Montgomery, Rich Compton, Andrei Robachevsky, and Iljitsch van Beijnum for comments, suggestions, and discussion on the path verification procedures or the text in the document. 
         For the implementation and testing of the procedures in the document, the authors wish to thank Claudio Jeker and Theo Buehler <xref target="bgpd"/> as well as Kyehwan Lee and Oliver Borchert <xref target="BGP-SRx"/>.
+        Special thanks to Eugene Bogomazov from Qrator for helping kick-start the ASPA project.
       </t>
     </section>
 
