@@ -11,7 +11,7 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std"
-     docName="draft-ietf-sidrops-aspa-verification-12"
+     docName="draft-ietf-sidrops-aspa-verification-13"
      submissionType="IETF"
      consensus="true"
      ipr="trust200902">
@@ -143,7 +143,7 @@
         ASPA-based path verification is an incrementally deployable technique and provides benefits to early adopters in the context of limited deployment.
       </t>
       <t>
-        The procedures described in this document are applicable only for BGP routes with {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1} <xref target="IANA-AF"/>
+        The procedures described in this document are applicable only for BGP routes with {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1} <xref target="IANA-AF"/>.
         SAFI 1 represents NLRI used for unicast forwarding <xref target="IANA-SAF"/>.
       </t>
       <t>
@@ -164,8 +164,9 @@
 
       <section title="BGP Roles" anchor="role">
         <t>
-         For path verification purposes in this document, the BGP roles an AS can have in relation to a neighbor AS are customer, provider, lateral peer, RS, RS-client <xref target="RFC9234"/>, and sibling.
-         Sibling ASes export everything (both customer and non-customer routes) to each other, i.e., consider each other as a customer.
+         For path verification purposes in this document, the BGP roles an AS can have in relation to a neighbor AS are customer, provider, lateral peer, RS, RS-client, and sibling.
+		 These relationships, except sibling, are defined in <xref target="RFC9234"/>. 
+         Sibling ASes MAY export everything (both customer and non-customer routes) to each other, i.e., consider each other as a customer.
          Thus, the customer-to-provider relationship applies in each direction.
        </t>
        <t> 
@@ -180,23 +181,25 @@
     <section title="Autonomous System Provider Authorization" anchor="ASPA">
       <t>
         An ASPA record is a digitally signed object that binds a set of Provider AS numbers to a Customer AS (CAS) number (in terms of BGP announcements) and is signed by the CAS <xref target="I-D.ietf-sidrops-aspa-profile"/>.
-    The CAS can choose to specify an AFI (i.e., afiLimit = 1 for IPv4 or 2 for IPv6) in the ASPA or it may omit it in which case the ASPA applies to both IPv4 and IPv6.
+		The CAS can choose to specify an AFI (i.e., afiLimit = 1 for IPv4 or 2 for IPv6) in the ASPA or it may omit it in which case the ASPA applies to both IPv4 and IPv6.
         The ASPA attests that the CAS has a Set of Provider ASes (SPAS) as specified in the ASPA.
-        The definition of Provider AS in given in Section 1 of <xref target="I-D.ietf-sidrops-aspa-profile"/>.
+        The definition of Provider AS is given in Section 1 of <xref target="I-D.ietf-sidrops-aspa-profile"/>.
         A function of a Provider AS is to propagate a CAS's route announcements onward, i.e., to the Provider's upstream providers, lateral peers, or customers.
         Another function is to offer outbound (customer to Internet) data traffic connectivity to the Customer.
         The ASPA object profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
       </t>
       <t>
-        In this document, the notation (AS1, [AS2,...], AFI), where the AFI (afiLimit) is optional, is used to represent the ASPA object for a CAS denoted as AS1.
-        In this example, AS2 and any other ASes listed in the square brackets represent the transit provider ASes attested by the CAS (i.e., AS1).
+        The notation (AS x, [{AS y1, afiLimit a1}, {AS y2, afiLimit a2}, ...]), is used to represent an ASPA object for a CAS denoted as AS x.
+        In this notation, the set {AS y1, AS y2, ...} represent the Set of Provider ASes (SPAS) of AS x and each Provider AS has an associated afiLimit (shown as a1, a2,... etc., respectively). 
+		The afiLimit may have a value either 1 or 2 (meaning AFI = 1 or AFI = 2). 
+		It may also be left unspecified, in which case the Provider AS applies for both AFI = 1 and AFI = 2. 
         A CAS is expected to register a single ASPA listing all its Provider ASes (see <xref target="rec1"/>).
         If a CAS has a single ASPA, then the SPAS for the CAS are the Provider ASes listed in that ASPA.
         In case a CAS has multiple ASPAs, then the SPAS is the union of the Provider ASes listed in all ASPAs of the CAS.
       </t>
       <t>
         Verified ASPA Payload (VAP) refers to the payload in a cryptographically verified (i.e., X.509 valid <xref target="RFC3779"/> <xref target="RFC5280"/>) ASPA object.
-        In the procedures for the AS path verification described in this document (<xref target="pair-validation"/>, <xref target="verif"/>), SPAS refers to the set of providers derived from the VAP(s) of the CAS in consideration.
+        In the procedures for the AS path verification described in this document (<xref target="pair-validation"/>, <xref target="verif"/>), VAP-SPAS refers to the set of provider ASes derived from the VAP(s) of the CAS in consideration.
       </t>
     </section>
 
@@ -205,24 +208,38 @@
           It is RECOMMENDED that the afiLimit parameter in the ASPA object be left unspecified (unless there is compelling reason to specify) so that the ASPA applies to both IPv4 and IPv6 prefixes.
           This gives the CAS significant flexibility, e.g., the need to scramble to modify the ASPA registrations can be averted when adding or moving IPv4 and IPv6 route announcements across different providers.
         </t>
+		<!--
         <t>
           In the specifications that follow, it is assumed that the entity registering the ASPA is mindful of the above recommendation regarding the afiLimit.
         </t>
+		-->
         <t>
           An ASPA object showing only AS 0 as a provider AS is referred to as an AS0 ASPA.
-          It is a statement by the registering AS that it has no transit providers.
-          An ASPA that is not an AS 0 ASPA is referred to as a normal ASPA.
-          As mentioned before, the set of provider ASes contained in the VAP(s) is referred to as the SPAS of the AS registering the ASPA(s).
-          Any AS, including a RS AS, MUST have an ASPA.
-          An AS SHOULD NOT have more than one ASPA.
+		  A non-transparent Route Server AS (RS AS) is one that includes its AS number in the AS_PATH. 
+		  Registering as AS0 ASPA is a statement by the registering AS that it has no transit providers and it is also not an RS-client at a non-transparent RS AS.
+		  If that satement is true for both AFIs (IPv4 and IPv6), then the AS MUST register an AS 0 ASPA including only AS 0 as a provider.
+		  If that satement is true for only one AFI, then the AS MUST include in its ASPA only AS 0 as a provider for that AFI and applicable other ASes as providers for the other AFI.
+		  In general, an AS MUST include in its ASPA, all its provider ASes and any non-transparent RS AS(es) at which it is an RS-client.
+		  A compliant AS, including a Route Server AS (RS AS), MUST have an ASPA.
+          An AS SHOULD NOT have more than one ASPA.		  
+          An RS AS SHOULD register an AS 0 ASPA without afiLimit.
+		</t>
+        <t>
+		 In spite of the above recommendations, if the ASPA(s) of a CAS includes SPAS for one AFI but not for the other AFI (not even an AS 0), that is negligence but still the ASPA SHALL NOT not be rejected just for that reason. However, such an ASPA(s) will be presumed to imply that the CAS has no providers (equivalent to AS 0 SPAS) for the AFI that they neglected to include. 
+		</t>
+        <t>
+
+		  As mentioned before, the set of provider ASes contained in the VAP(s) is referred to as the VAP-SPAS of the AS registering the ASPA(s).
+		<!--
+		  For the purposes of the procedures in <xref target="pair-validation"/>, <xref target="verif"/>, the VAP-SPAS is grouped into two subsets, VAP-SPAS(1) and VAP-SPAS(2), corresponding to AFI 1 and AFI 2, respectively.
+		  -->
+		  Normally, a VAP-SPAS is not expected to contain both an AS 0 and other Provider ASes for the same AFI.
+		  But if that is not so, then the presence of AS 0 has no influence on the AS path verification procedures (see <xref target="pair-validation"/>, <xref target="verif"/>).
+
         </t>
         <t>
-          If an AS does not have any transit providers and is also not a RS-client at a non-transparent Route Server AS (RS AS), then it MUST register an AS 0 ASPA.
-          Otherwise, the AS MUST include in its SPAS, all its provider ASes and any non-transparent RS AS(es) at which it is a RS-client.
-          An RS AS MUST register an AS 0 ASPA.
-        </t>
-        <t>
-          Each of the two ASes in a sibling pair MUST register its ASPA including the other AS in its SPAS.
+          Each of the two ASes in a sibling pair MUST register its ASPA including the other AS in its SPAS. 
+		  If one of the ASes in the pair does this registration but the other does not, that contributes to the risk of not getting the correct AS path verification result for routes that include the pair.     
         </t>
         <t>
           The ASes on the boundary of an AS Confederation MUST register ASPAs using the Confederation's global ASN as the CAS.
@@ -237,25 +254,33 @@
     <section title="Hop-Check Function" anchor="pair-validation">
       <t>
         Let AS(i) and AS(j) represent adjacent unique ASes in an AS_PATH, and thus (AS(i), AS(j)) represents an AS hop.
-        A hop-check function, hop(AS(i), AS(j), AFI), checks if the ordered pair of ASNs, (AS(i), AS(j)), has the property that AS(j) is an attested provider of AS(i) per SPAS corresponding to AS(i)'s ASPA for the specified AFI.
+        A hop-check function, hop(AS(i), AS(j), AFI), checks if the ordered pair of ASNs, (AS(i), AS(j)), has the property that AS(j) is an attested provider of AS(i) per VAP-SPAS of AS(i) for the specified AFI.
+		The VAP-SPAS table is assumed to be organized in such a way that it can be queried to check (1) if for a specified CAS = AS(i), there is an entry (i.e., SPAS listed), or (2) if for a given (AS(i), AS(j), AFI) tuple, AS(j) is listed in the VAP-SPAS as a provider associated with CAS = AS(i) for the specified AFI value.
+		A provider AS ID included in the SPAS can correspond to a Provider, RS, or Sibling.
+		An RS is effectively a Provider to its RS-client.		
+		Siblings regard each other as Provider (see Section 4).
+		The term "Provider+" in the definition of the hop-check function 
+		is meant to encompass all three possibilities: Provider, RS, or Sibling.
+		
+		
+
+		
         This function is specified as follows:
       </t>
       <t>
         <figure anchor="fig1" align="left" suppress-title="true" pn="figure-1">
-          <name slugifiedName="HFC-illustration">Hop Check Function.</name>
+          <name slugifiedName="HFC-illustration">Hop-check function.</name>
           <artwork align="left" name="" type="" alt="">
 <![CDATA[
 
                           /
-                          | "Provider" if AS(i)'s SPAS 
-                          |   includes AS(j) for mentioned AFI
+                          | "No Attestation" if there is no entry 
+                          |   in VAP-SPAS table for CAS = AS(i)
                           |                                              
-hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does   
-                          \   not include AS(j) for mentioned AFI
+hop(AS(i), AS(j), AFI) =  / Else, "Provider+" if VAP-SPAS entry for   
+                          \   CAS = AS(i) for the mentioned AFI includes AS(j)
                           |
-                          | "no Attestation" if AS(i) 
-                          |   does not have ASPA (i.e., VAP) 
-                          |   for mentioned AFI  
+                          | Else, "Not Provider+"                            |   
                           \
 ]]>
 </artwork>
@@ -300,7 +325,7 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
       <t>
         The basic principles of the upstream verification algorithm are stated here.  
         Let the sequence {AS(N), AS(N-1),..., AS(2), AS(1)} represent the AS_PATH in terms of unique ASNs, where AS(1) is the origin AS and AS(N) is the most-recently added AS and neighbor of the receiving/validating AS. 
-        For each hop AS(i-1) to AS(i)in this sequence, the hop-check function, hop(AS(i-1), AS(i)), must equal "Provider" (<xref target="pair-validation"/>) for the AS_PATH to be Valid . 
+        For each hop AS(i-1) to AS(i) in this sequence, the hop-check function, hop(AS(i-1), AS(i)), must equal "Provider+" (<xref target="pair-validation"/>) for the AS_PATH to be Valid . 
         If the hop-check function for at least one of those hops is "Not-Provider", then the AS_PATH would be Invalid. 
         If the AS_PATH verification outcome is neither Valid nor Invalid (per above principles), then it would be evaluated as Unknown.
       </t>
@@ -317,15 +342,15 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
             Let the resulting ordered sequence be represented by {AS(N), AS(N-1), ..., AS(2), AS(1)}, where AS(1) is the first-added (i.e., origin) AS and AS(N) is the last-added AS and neighbor to the receiving/validating AS.
           </t>
           <t>  
-            If N = 1, then then the procedure halts with the outcome "Valid". 
+            If N = 1, then the procedure halts with the outcome "Valid". 
             Else, continue. 
           </t>
           <t>  
-            At this step, N &ge; 2. For 2 &le; i &le; N, if there is an i for which hop(AS(i-1), AS(i)) = "not Provider", then the procedure halts with the outcome "Invalid". 
+            At this step, N &ge; 2. If there is an i such that 2 &le; i &le; N and hop(AS(i-1), AS(i)) = "Not Provider+", then the procedure halts with the outcome "Invalid". 
             Else, continue.
           </t>
           <t>  
-            For 2 &le; i &le; N, if there is an i for which hop(AS(i-1), AS(i)) = "no Attestation", then the procedure halts with the outcome "Unknown". 
+            If there is an i such that 2 &le; i &le; N and hop(AS(i-1), AS(i)) = "No Attestation", then the procedure halts with the outcome "Unknown". 
             Else, the procedure halts with the outcome "Valid". 
           </t>
         </list>
@@ -371,7 +396,7 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
         <strong>Determination of Invalid AS_PATH:</strong> 
       </t>
       <t>
-        Given the above ordered sequence, if there exist indices u and v such that (1) u &lt;= v, (2) hop(AS(u-1), AS(u)) = "not Provider", and (3) hop(AS(v+1), AS(v)) = "not Provider", then the AS_PATH is Invalid.   
+        Given the above ordered sequence, if there exist indices u and v such that (1) u &lt;= v, (2) hop(AS(u-1), AS(u)) = "Not Provider+", and (3) hop(AS(v+1), AS(v)) = "Not Provider+", then the AS_PATH is Invalid.   
       </t>
       <t>
         <strong>Determination of Valid AS_PATH:</strong> 
@@ -397,7 +422,7 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
                 /                                \
              AS(N)                               AS(1)
               /                                (Origin AS)
-    Receiving &amp; Validating AS                    
+    Receiving & Validating AS                    
                
         Each ramp has consecutive ASPA-attested 
         customer-to-provider hops in the bottom-to-top direction
@@ -410,13 +435,13 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
         The AS_PATH may have both an up-ramp (on the right starting at AS(1)) and a down-ramp (on the left starting at AS(N)).
         An explanation of what the ramps mean is as follows.
         The sequence of ASes in either of these ramps consists of consecutive customer-to-provider hops.
-        The up-ramp starts at AS(1) and each AS hop, (AS(i), AS(i+1)), in it has the property that hop(AS(i), AS(i+1)) = "Provider" for i = 1, 2,... , K-1. 
+        The up-ramp starts at AS(1) and each AS hop, (AS(i), AS(i+1)), in it has the property that hop(AS(i), AS(i+1)) = "Provider+" for i = 1, 2,... , K-1. 
         If such a K does not exist, then K is set to 1.
-        The up-ramp ends (reaches its apex) at AS(K) because hop(AS(K), AS(K+1)) = "Not Provider" or "no Attestation".
+        The up-ramp ends (reaches its apex) at AS(K) because hop(AS(K), AS(K+1)) = "Not Provider+" or "No Attestation".
         The down-ramp runs backwards from AS(N) to AS(L).
-        Each AS hop, (AS(j), AS(j-1)), in it has the property that hop(AS(j), AS(j-1)) = "Provider" for j = N, N-1,... , L+1. 
+        Each AS hop, (AS(j), AS(j-1)), in it has the property that hop(AS(j), AS(j-1)) = "Provider+" for j = N, N-1,... , L+1. 
         If such an L does not exist, then L is set to N.
-        The down-ramp ends at AS(L) because hop(AS(L), AS(L-1)) = "Not Provider" or "no Attestation".
+        The down-ramp ends at AS(L) because hop(AS(L), AS(L-1)) = "Not Provider+" or "No Attestation".
         Thus, the apex of the down-ramp is AS(L).  
       </t>
       <t>
@@ -453,17 +478,17 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
           </t>
           <t> 
             At this step, N &ge; 3.
-            Given the above ordered sequence, find the lowest value of v (2 &le; u &le; N) for which hop(AS(u-1), AS(u)) = "not Provider".
+            Given the above ordered sequence, find the lowest value of u (2 &le; u &le; N) for which hop(AS(u-1), AS(u)) = "Not Provider+".
             Call it u_min.
             If no such u_min exists, set u_min = N+1.
-            Find the highest value of v (N-1 &ge; v &ge; 1) for which hop(AS(v+1), AS(v)) = "not Provider".
+            Find the highest value of v (N-1 &ge; v &ge; 1) for which hop(AS(v+1), AS(v)) = "Not Provider+".
             Call it v_max.
             If no such v_max exists, then set v_max = 0.
             If u_min &le; v_max, then the procedure halts with the outcome "Invalid".
             Else, continue.
           </t>
           <t>
-            Up-ramp: For 2 &le; i &le; N, determine the largest K such that hop(AS(i-1), AS(i)) = "Provider" for each i in the range 2 &le; i &le; K.
+            Up-ramp: For 2 &le; i &le; N, determine the largest K such that hop(AS(i-1), AS(i)) = "Provider+" for each i in the range 2 &le; i &le; K.
             If such largest K does not exist, then set K = 1.
           </t>
 <!--
@@ -473,7 +498,7 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
             </t>
 -->
           <t>
-            Down-ramp: For N-1 &ge; j &ge; 1, determine the smallest L such that hop(AS(j+1), AS(j)) = "Provider" for each j in the range N-1 &ge; j &ge; L.
+            Down-ramp: For N-1 &ge; j &ge; 1, determine the smallest L such that hop(AS(j+1), AS(j)) = "Provider+" for each j in the range N-1 &ge; j &ge; L.
             If such smallest L does not exist, then set L = N. 
           </t>
           <t>
@@ -498,26 +523,50 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
       However, the procedures for ASPA-based AS_PATH verification in this document are NOT RECOMMENDED for use on eBGP links internal to the Confederation.
     </t>
     <t>
-      The procedures described in this document MUST be applied to BGP routes with {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1} <xref target="IANA-AF"/>
+      The procedures described in this document MUST be applied to BGP routes with {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1} <xref target="IANA-AF"/>.
       The procedures MUST NOT be applied to other address families by default. 
     </t>
   </section>
 
   <section title="Mitigation" anchor="mitig">
     <t>
-      If the AS_PATH is determined to be Invalid based on the verification procedures specified above (<xref target="verif"/>), then the route MUST be rejected.
+      If the AS_PATH is determined to be Invalid based on the verification procedures specified above (<xref target="verif"/>), then the route SHOULD be rejected.
     </t>
     <t>
       The ASPA-based path verification procedures are able to check routes received from customers, lateral peers, transit providers, RSes, RS-clients, and siblings.
-      These procedures combined with BGP Roles <xref target="RFC9234" /> and RPKI-ROV <xref target="RFC6811"/> <xref target="RFC9319"/> can provide a fully automated solution to detect and filter hijacks and route leaks, including malicious ones.
+      These procedures combined with BGP Roles <xref target="RFC9234" /> and RPKI-ROV <xref target="RFC6811"/> <xref target="RFC9319"/> can provide a fully automated solution to detect and filter many of the ordinary prefix hijacks, forged-origin prefix hijacks, and route leaks.
+	</t>
+    <t>
+		The ASPA-based path verification has the following properties (detection capabilities):
+	</t>
+    <t>
+	<list style="numbers">
+
+    <t>
+		Let AS A and AS B be any two ASes in the Internet doing ASPA (generation and verification) and no assumption is made about the deployment status of other ASes. Consider a route propagated from AS A to a customer or lateral peer and leaked by an offending AS in the AS path before being received at AS B from its customer or lateral peer. The ASPA-based path verification at AS B always detects such a route leak though it may not be able to identify the AS that originated the leak. This assertion is true even when the sender AS A (or receiver AS B) is an RS AS and the neighbor AS that AS A sent to (or AS B received from) is an RS-client.
+	</t>
+    <t>		
+		Again let AS A and AS B be any two ASes in the Internet doing ASPA (generation and verification) and no assumption is made about the deployment status of other ASes. Consider a route received at AS B from its customer or lateral peer that is a forged-origin prefix hijack <xref target="RFC9319"/> involving AS A as the forged-origin. The ASPA-based path verification at AS B always detects such a forged-origin prefix hijack.
+	</t>
+    <t>		
+		Consider an ASPA island (i.e., a connected set of ASPA capable ASes). Let AS A and AS B be any two ASes in the ASPA island. Consider a route propagated from AS A in any direction (i.e., to a neighbor AS with any of the BGP roles described in Section 2) and leaked by an offending AS in the AS path before being received at AS B from any direction. The ASPA-based path verification at AS B always detects such a route leak though it may not be able to identify the AS that originated the leak. 
+	</t>
+			</list>
+	</t>
+	<t>
+		An observation that follows from Property #1 above is that if any two ISP ASes register ASPAs and implement the detection and mitigation procedures, then any route received from one of them and leaked to the other by a common customer AS (ASPA compliant or not) will be automatically detected and mitigated. 
+		In effect, if most major ISPs are compliant, the propagation of route leaks in the Internet will be severely limited. 
+    </t> 
+    <t>	
+		The above properties show that the ASPA-based path verification offers significant benefits to early adopters; even more so when they are contiguous and form ASPA islands in the early stages of adoption.  Limitations of the method with regard to some forms of malicious AS path manipulations are discussed in Section 12. 
+
+    </t>
+	  <!--
       Malicious AS_PATH modifications are also detected but not all (see discussion and examples in <xref target="security"/>).
       The procedures also detect and mitigate a majority of forged-origin hijacks, especially those in UPDATEs received from customers and lateral peers. 
-      Forged-origin hijacks received from providers are detected and mitigated to a lesser degree (see <xref target="security"/>).  
-    </t>
-    <t>
-      If any two ISP ASes register ASPAs and implement the procedures, then any route received from one of them and leaked to the other by a common customer AS (ASPA compliant or not) will be detected and mitigated. 
-      In effect, if most major ISPs are compliant, the propagation of route leaks in the Internet will be severely limited. 
-    </t> 
+      Forged-origin hijacks received from providers are detected and mitigated to a lesser degree (see <xref target="security"/>). 
+	  -->
+
   </section>
 
   <section title="Operational Considerations">
@@ -534,6 +583,13 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
         Otherwise, for example, if a provider AS is left out of the Set of Provider ASes (SPAS) in the ASPA, then routes containing the CAS (in the ASPA) and said provider AS may be incorrectly labeled as route leaks and rejected.
       </t>
     </section>
+    <section title="Make Before Break">
+      <t>
+        ASPA issuers SHOULD apply the make-before-break principle while updating an ASPA registration.
+		For example, when adding new Provider AS(es) in the SPAS, if the new ASPA is meant to replace a previously created ASPA, the latter SHOULD be decommissioned only after allowing sufficient time for the new ASPA to propagate to Relying Parties (RP) through the global RPKI system.
+      </t>
+    </section>
+
   </section>
   <section title="Comparison to Other Technologies">
     <section title="BGPsec">
@@ -576,8 +632,8 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
       Since an upstream provider becomes a trusted point, in theory it might be able to propagate without detection some instances of forged-origin hijacked prefixes or routes with manipulated AS_PATHs.
       This can be illustrated with some examples.
       In <xref target="fig3"/>, normally the receiving/validating AS located at the lower left side should receive a route with AS_PATH {AS(5), AS(4), AS(3), AS(2), AS(1)} and it would be Valid (<xref target="Downflow"/>) given all the ASPAs that are shown in the figure.
-      However, if AS(5) which is a transit provider to the validating AS acts maliciously and sends the route with a shortened AS_PATH such as {{AS(5), AS(3), AS(2), AS(1)} or {AS(5), AS(2), AS(1)}, such path manipulation would be undetectable (i.e., the AS_PATH would be considered Valid).
-      Also, if AS(5) were to perform a forged-origin hijack by inserting an AS_PATH {{AS(5), AS(1)}, that would also be undetectable.
+      However, if AS(5) which is a transit provider to the validating AS acts maliciously and sends the route with a shortened AS_PATH such as {AS(5), AS(3), AS(2), AS(1)} or {AS(5), AS(2), AS(1)}, such path manipulation would be undetectable (i.e., the AS_PATH would be considered Valid).
+      Also, if AS(5) were to perform a forged-origin hijack by inserting an AS_PATH {AS(5), AS(1)}, that would also be undetectable.
     </t>
     <t>
       <figure anchor="fig3" align="left" suppress-title="false" pn="figure-3">
@@ -592,7 +648,7 @@ hop(AS(i), AS(j), AFI) =  / "Not Provider" if AS(i)'s SPAS does
                 /               \
                /               AS(1)
               /             (Origin AS)
- Receiving &amp; Validating AS 
+ Receiving & Validating AS 
 
 ASPAs: {AS(1), [AS(2)]}, {AS(2), [AS(3)]}, {AS(5), [AS(4)]}, 
        {AS(3), [AS 0]}, {AS(4), [AS 0]}
@@ -601,8 +657,12 @@ ASPAs: {AS(1), [AS(2)]}, {AS(2), [AS(3)]}, {AS(5), [AS(4)]},
       </figure>
     </t>
     <t>
-      While attacks like the examples above may happen in theory, it does not seem to be a realistic scenario.
+      While attacks like the examples above may happen, it does not seem to be a realistic scenario.
       Normally a customer and its transit provider would have a signed agreement, and a policy violation (of the above kind) should have legal consequences or the customer can just drop the relationship with such a provider and remove the corresponding ASPA record.
+    </t>
+    <t>
+		The key properties or strengths of the ASPA method were described in <xref target="mitig"/>.  
+		If detection any and all kinds of path manipulation attacks is the goal, then BGPsec <xref target="RFC8205"/> would need to be deployed complementary to the ASPA method. It may be noted that BGPsec in its current form lacks route leak detection capabilities.    
     </t>
   </section>
 
@@ -637,7 +697,7 @@ ASPAs: {AS(1), [AS(2)]}, {AS(2), [AS(3)]}, {AS(5), [AS(4)]},
 
     <section anchor="Acknowledgments" title="Acknowledgments">
       <t>
-        The authors wish to thank Claudio Jeker, Jakob Heitz, Ben Maddison, Russ Housley, Jeff Haas, Nan Geng, Nick Hilliard, Shunwan Zhuang, Doug Montgomery, Rich Compton, Andrei Robachevsky, and Iljitsch van Beijnum for comments, suggestions, and discussion on the path verification procedures or the text in the document. 
+        The authors wish to thank Claudio Jeker, Jakob Heitz, Ben Maddison, Russ Housley, Jeff Haas, Amir Herzberg, Igor Lubashev, Nan Geng, Nick Hilliard, Shunwan Zhuang, Yangyang Wang, Martin Hoffmann, Amreesh Phokeer, Aftab Siddiqui, Doug Montgomery, Rich Compton, Andrei Robachevsky, and Iljitsch van Beijnum for comments, suggestions, and discussion on the path verification procedures or the text in the document. 
         For the implementation and testing of the procedures in the document, the authors wish to thank Claudio Jeker and Theo Buehler <xref target="bgpd"/> as well as Kyehwan Lee and Oliver Borchert <xref target="BGP-SRx"/>.
       </t>
     </section>
