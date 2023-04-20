@@ -118,9 +118,9 @@
         The common case for RS ASes at IXPs is to operate transparently (see Section 2.2.2.1 <xref target="RFC7947"/>), and in those instances the ASNs of IXP Route Servers are not listed as PAS in ASPAs.
 	  </t>
       <t>
-		The BGP Roles that an Autonomous System (AS) may have in its peering relationships with eBGP neighbors are discussed in <xref target="I-D.ietf-sidrops-aspa-verification"/>.
-        The details of ASPA registration requirements for ASes in different scenarios are also specified in that document.  		
-		In addition, the procedures for verifying AS_PATHs in BGP UPDATE messages using Validated ASPA Payloads (VAPs) are described in that document. 
+        The BGP Roles that an Autonomous System (AS) may have in its peering relationships with eBGP neighbors are discussed in <xref target="I-D.ietf-sidrops-aspa-verification"/>.
+        The details of ASPA registration requirements for ASes in different scenarios are also specified in that document.
+        In addition, the procedures for verifying AS_PATHs in BGP UPDATE messages using Validated ASPA Payloads (VAPs) are described in that document.
       </t>
       <t>
         The ASPA content type definition conforms to the <xref target="RFC6488"/> template for RPKI signed objects.
@@ -153,27 +153,28 @@
         The content of an ASPA identifies the Customer AS (CAS) as well as the Set of Provider ASes (SPAS) that are authorized by the CAS to be its Providers.
       </t>
       <t>
-	  	A user registering ASPA(s) must be cognizant of Sections 2, 3, and 4 of <xref target="I-D.ietf-sidrops-aspa-verification"/> and the user (or their software tool) must comply with the ASPA registration recommendations in Section 4 of that document.
-	  </t>
-	  <t>
+        A user registering ASPA(s) must be cognizant of Sections 2, 3, and 4 of <xref target="I-D.ietf-sidrops-aspa-verification"/> and the user (or their software tool) must comply with the ASPA registration recommendations in Section 4 of that document.
+      </t>
+      <t>
         It is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers, including any non-transparent RS ASes.
-        Such a practice helps prevent race conditions during ASPA updates. Otherwise, said race conditions might affect route propagation.
+        Such a practice helps prevent race conditions during ASPA updates.
+        Otherwise, said race conditions might affect route propagation.
         The software that provides hosting for ASPA records SHOULD support enforcement of this recommendation.
         In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
       </t>
       <t>
-	    The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
+        The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
       </t>
       
       <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
       
       <t>
-	    Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
+        Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
       </t>
 
       <section title="version">
         <t>
-	    The version number of the ASProviderAttestation MUST be v0.
+          The version number of the ASProviderAttestation MUST be v0.
         </t>
       </section>
 
@@ -334,17 +335,10 @@
 
     <section anchor="Security" title="Security Considerations">
       <t>
-	    The security considerations of <xref target="RFC6481"/>, <xref target="RFC6485"/>, and <xref target="RFC6488"/> also apply to ASPAs.  
-	  </t>
-	  <!-- This paragraph was repeated here and in Section 3. So removed it from this section. 
-	  	<t>
-        It is highly recommended that for a given Customer AS, a single ASPA object be maintained which contains all providers, including any non-transparent RS ASes.
-        Such a practice helps prevent race conditions during ASPA updates. Otherwise, said race conditions might affect route propagation.
-        The software that provides hosting for ASPA records SHOULD support enforcement of this recommendation.
-        In the case of the transition process between different CA registries, the ASPA records SHOULD be kept identical in all registries in terms of their authorization contents.
+        The security considerations of <xref target="RFC6481"/>, <xref target="RFC6485"/>, and <xref target="RFC6488"/> also apply to ASPAs.
       </t>
-	  -->
     </section>
+
     <section removeInRFC="true">
       <name>Implementation status</name>
       <t>
@@ -388,25 +382,23 @@
       <t>
         The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project,
         Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form,
-        and Kotikalapudi Sriram &amp; Claudio Jeker for review and several suggestions for improvements.
+        and Claudio Jeker for review and several suggestions for improvements.
       </t>
     </section>
 	
-	    <!--
-	    [subject to current authors' consideration]
-	<section title="Contributors" numbered="no">
+    <section title="Contributors" numbered="no">
       <t>
-        The following people made significant contributions to this document and should be considered co-authors:
+        The following people made significant contributions to this document:
       </t>
 
-      <figure><artwork><![CDATA[
+      <figure><artwork>
+<![CDATA[
         Kotikalapudi Sriram
         USA National Institute of Standards and Technology
         Email: ksriram@nist.gov
-      ]]></artwork></figure>
+]]>
+      </artwork></figure>
     </section>
-	    -->
-
 
   </middle>
 
