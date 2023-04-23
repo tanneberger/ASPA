@@ -123,7 +123,7 @@
         In addition, the procedures for verifying AS_PATHs in BGP UPDATE messages using Validated ASPA Payloads (VAPs) are described in that document.
       </t>
       <t>
-        The ASPA content type definition conforms to the <xref target="RFC6488"/> template for RPKI signed objects.
+        This CMS <xref target="RFC5652"/> protected content type definition conforms to the <xref target="RFC6488"/> template for RPKI signed objects.
         In accordance with Section 4 of <xref target="RFC6488"/>, this document defines:
         <list style="numbers">
           <t>
@@ -165,9 +165,9 @@
       <t>
         The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
       </t>
-      
+
       <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
-      
+
       <t>
         Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
       </t>
@@ -413,8 +413,9 @@
       <?rfc include="reference.RFC.6485.xml"?>
       <?rfc include="reference.RFC.6488.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
-	  
-	  <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-aspa-verification.xml"/>
+
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-aspa-verification.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-8210bis.xml"/>
 
       <reference anchor="X.680">
         <front>
@@ -603,5 +604,133 @@ ASPA eContent:
 ]]>
       </artwork>
     </section>
+
+    <section anchor="transform">
+      <name>Transforming ASPA eContent Payloads to RTR ASPA PDUs</name>
+      <t>
+        Below are a number of examples to demonstrate how one (or more) ASPA eContent Payloads are to be transformed into RTR ASPA PDUs.
+        See section 5.12 of <xref target="I-D.ietf-sidrops-8210bis"/> for the specification of ASPA PDUs.
+      </t>
+      <t>
+        Note that two PDUs are always generated per Customer ASID: one with AFI Flags = IPv4 and one with AFI Flags = IPv6.
+      </t>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Base64 DER-encoded eContent(s)</th>
+            <th>RTR PDU (AFI flag = IPv4)</th>
+            <th>RTR PDU (AFI flag = IPv6)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <artwork>
+MCMGCyqGSIb3DQEJEAEx
+oBQEEjAQAgMA/mMwCTAH
+AgUA+lbqAQ==
+</artwork>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <artwork>
+MCcGCyqGSIb3DQEJEAEx
+oBgEFjAUAgMA/mMwDTAL
+AgUA+lbqAQQCAAI=
+</artwork>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 0</t>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <artwork>
+MDQGCyqGSIb3DQEJEAEx
+oCUEIzAhAgMA/mMwGjAL
+AgUA+lbqAQQCAAEwCwIF
+APpW6gIEAgAC
+</artwork>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000002</t>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <artwork>
+MCMGCyqGSIb3DQEJEAEx
+oBQEEjAQAgMA/mMwCTAH
+AgUA+lbqAQ==
+
+plus
+
+MCcGCyqGSIb3DQEJEAEx
+oBgEFjAUAgMA/mMwDTAL
+AgUA+lbqAQQCAAI=
+</artwork>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <artwork>
+MDAGCyqGSIb3DQEJEAEx
+oCEEHzAdAgMA/mMwFjAH
+AgUA+lbqATALAgUA+lbq
+AgQCAAI=
+</artwork>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 1</t>
+              <t>Provider ASes: 4200000001</t>
+            </td>
+            <td>
+              <t>Customer AS: 65123</t>
+              <t>Provider AS Count: 2</t>
+              <t>Provider ASes: 4200000001, 4200000002</t>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
   </back>
 </rfc>
