@@ -174,7 +174,7 @@
 
       <section title="version">
         <t>
-          The version number of the ASProviderAttestation MUST be 1 and MUST be explicitly encoded.
+          The version number of the ASProviderAttestation MUST be 1.
         </t>
       </section>
 
