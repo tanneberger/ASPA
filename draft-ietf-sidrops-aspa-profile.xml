@@ -190,7 +190,7 @@
         </t>
         <t>
           Each element contained in the providers field is an instance of ASID.
-          The ASID field contains the AS number of an AS that has been authorized by the customer AS as its provider or RS.
+          Each ASID element contains the AS number of an AS that has been authorized by the customer AS as its provider or RS.
         </t>
         <t>
           In addition to the constraints described by the formal ASN.1 definition, the contents of the providers field MUST satisfy the following constraints:
@@ -199,7 +199,7 @@
             The CustomerASID value MUST NOT appear in any ASID in the providers field.
           </t>
           <t>
-            The elements of providers MUST be ordered in ascending numerical order by the value of the ASID field.
+            The elements of providers MUST be ordered in ascending numerical order.
           </t>
           <t>
             Each value of ASID MUST be unique (with respect to the other elements of providers).

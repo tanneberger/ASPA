@@ -19,7 +19,7 @@ ct-ASPA CONTENT-TYPE ::=
   { TYPE ASProviderAttestation IDENTIFIED BY id-ct-ASPA }
 
 ASProviderAttestation ::= SEQUENCE {
-  version [0]   INTEGER 1,
+  version [0]   INTEGER DEFAULT 0,
   customerASID  ASID,
   providers     ProviderASSet }
 
