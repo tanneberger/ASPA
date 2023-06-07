@@ -376,7 +376,6 @@
       <?rfc include="reference.RFC.8174.xml"?>
 
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-aspa-verification.xml"/>
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-8210bis.xml"/>
 
       <reference anchor="X.680">
         <front>
@@ -408,63 +407,13 @@
       <?rfc include="reference.RFC.6480.xml"?>
       <?rfc include="reference.RFC.7947.xml"?>
 
-      <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
-        <front>
-          <title>rpkimancer-aspa</title>
-          <author initials="B." surname="Maddison">
-            <organization>Workonline</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="rpki-client" target="https://www.rpki-client.org/">
+      <reference anchor="rpki-client" target="https://marc.info/?l=openbsd-tech&amp;m=168614057916956&amp;w=2">
         <front>
           <title>rpki-client</title>
           <author initials="J." surname="Snijders">
             <organization>Fastly</organization>
           </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="krill" target="https://github.com/NLnetLabs/krill">
-        <front>
-          <title>Krill</title>
-          <author initials="T." surname="Bruijnzeels">
-            <organization>NLnetLabs</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="rpstir2" target="https://mailarchive.ietf.org/arch/msg/sidrops/pxqAGPmR0MA3NMe-NxYyiEZ7RXw">
-        <front>
-          <title>RPSTIR2</title>
-          <author initials="D." surname="Ma">
-            <organization>ZDNS</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
-        <front>
-          <title>RPKI ASPA Demo</title>
-          <author initials="T." surname="Harrison">
-            <organization>APNIC</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/">
-        <front>
-          <title>Relying Party Resiliency Platform</title>
-          <author initials="K." surname="van Hove">
-            <organization>Independent</organization>
-          </author>
-          <date year="2022"/>
+          <date year="2023"/>
         </front>
       </reference>
 
