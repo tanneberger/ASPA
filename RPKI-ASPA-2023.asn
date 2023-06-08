@@ -1,6 +1,6 @@
-RPKI-ASPA-2022
+RPKI-ASPA-2023
   { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-     pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2022(TBD) }
+     pkcs-9(9) smime(16) modules(0) id-mod-rpki-aspa-2023(TBD) }
 
 DEFINITIONS IMPLICIT TAGS ::=
 BEGIN
@@ -23,14 +23,8 @@ ASProviderAttestation ::= SEQUENCE {
   customerASID  ASID,
   providers     ProviderASSet }
 
-ProviderASSet ::= SEQUENCE (SIZE(1..MAX)) OF ProviderAS
-
-ProviderAS ::= SEQUENCE {
-  providerASID  ASID,
-  afiLimit      AddressFamilyIdentifier OPTIONAL }
+ProviderASSet ::= SEQUENCE (SIZE(1..MAX)) OF ASID
 
 ASID ::= INTEGER (0..4294967295)
-
-AddressFamilyIdentifier ::= OCTET STRING (SIZE (2))
 
 END

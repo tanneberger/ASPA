@@ -11,7 +11,7 @@
 
 <rfc xmlns:xi="http://www.w3.org/2001/XInclude"
      category="std"
-     docName="draft-ietf-sidrops-aspa-profile-13"
+     docName="draft-ietf-sidrops-aspa-profile-14"
      ipr="trust200902"
      consensus="true"
      submissionType="IETF">
@@ -166,7 +166,7 @@
         The eContent of an ASPA is an instance of ASProviderAttestation, formally defined by the following ASN.1 <xref target="X.680"/> module:
       </t>
 
-      <sourcecode type="asn.1" src="RPKI-ASPA-2022.asn"/>
+      <sourcecode type="asn.1" src="RPKI-ASPA-2023.asn"/>
 
       <t>
         Note that this content appears as the eContent within the encapContentInfo as specified in <xref target="RFC6488"/>.
@@ -174,7 +174,7 @@
 
       <section title="version">
         <t>
-          The version number of the ASProviderAttestation MUST be v0.
+          The version number of the ASProviderAttestation MUST be 1.
         </t>
       </section>
 
@@ -189,44 +189,23 @@
           The providers field contains the listing of ASes that are authorized as providers.
         </t>
         <t>
-          Each element contained in the providers field is an instance of ProviderAS.
+          Each element contained in the providers field is an instance of ASID.
+          Each ASID element contains the AS number of an AS that has been authorized by the customer AS as its provider or RS.
         </t>
         <t>
           In addition to the constraints described by the formal ASN.1 definition, the contents of the providers field MUST satisfy the following constraints:
         <list style="symbols">
           <t>
-            The CustomerASID value MUST NOT appear in any providerASID field.
+            The CustomerASID value MUST NOT appear in any ASID in the providers field.
           </t>
           <t>
-            The elements of providers MUST be ordered in ascending numerical order by the value of the providerASID field.
+            The elements of providers MUST be ordered in ascending numerical order.
           </t>
           <t>
-            Each value of providerASID MUST be unique (with respect to the other elements of providers).
+            Each value of ASID MUST be unique (with respect to the other elements of providers).
           </t>
           </list>
         </t>
-
-        <section title="ProviderAS">
-          <section title="providerASID">
-            <t>
-              The providerASID field contains the AS number of an AS that has been authorized by the customer AS as its provider or RS in the specified address family.
-            </t>
-          </section>
-          <section title="afiLimit">
-            <t>
-              The afiLimit field optionally constrains the authorization given to the provider AS to a single address family.
-            </t>
-            <t>
-              If present, it contains the two-octet Address Family Identifier (AFI) for which the relation between the customer and provider is authorized.
-              This specification only supports IPv4 and IPv6.
-              Therefore, the value MUST be either 0001 or 0002, as specified in the Address Family Numbers registry <xref target="IANA-AF"/> maintained by IANA.
-            </t>
-            <t>
-              If omitted, the authorization is valid for both IPv4 and IPv6 announcements.
-            </t>
-          </section>
-        </section>
-
       </section>
     </section>
 
@@ -250,13 +229,13 @@
     <section anchor="IANA" title="IANA Considerations">
       <section title="SMI Security for S/MIME Module Identifier registry">
         <t>
-          Please add the id-mod-rpki-aspa-2022 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
+          Please add the id-mod-rpki-aspa-2023 to the SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0) registry (https://www.iana.org/assignments/smi-numbers/smi-numbers.xml#security-smime-0) as follows:
         </t>
         <figure>
 <artwork type="text">
     Decimal   | Description                   | Specification
     -----------------------------------------------------------
-    TBD2      | id-mod-rpki-aspa-2022         | [RFC-to-be]
+    TBD2      | id-mod-rpki-aspa-2023         | [RFC-to-be]
 </artwork>
         </figure>
     </section>
@@ -355,25 +334,7 @@
       </t>
       <ul>
         <li>
-          A validator implementation <xref target="rpki-client"/> (version 8.0 and higher), written in C was provided by Job Snijders from Fastly.
-        </li>
-        <li>
-          A signer and decoder implementation <xref target="rpkimancer"/> written in Python was provided by Ben Maddison from Workonline.
-        </li>
-        <li>
-          A signer implementation <xref target="krill"/> written in Rust was provided by Tim Bruijnzeels from NLnetLabs.
-        </li>
-        <li>
-          At IETF114 Ties de Kock from RIPE NCC shared a signer implementation had been developed internally.
-        </li>
-        <li>
-          Di Ma reported <xref target="rpstir2">success</xref> in RPSTIR2 validating objects produced by Tim Bruijnzeels.
-        </li>
-        <li>
-          A signer <xref target="koenvh">implementation</xref> written in PHP based on OpenSSL was provided by Koen van Hove.
-        </li>
-        <li>
-          A signer <xref target="aspa-demo">implementation</xref> written in Perl based on OpenSSL was provided by Tom Harrison from APNIC.
+          A validator implementation <xref target="rpki-client"/> (version 8.5 and higher), written in C was provided by Job Snijders from Fastly.
         </li>
       </ul>
     </section>
@@ -382,7 +343,7 @@
       <t>
         The authors would like to thank Keyur Patel for helping kick-start the ASPA profile project,
         Ties de Kock &amp; Tim Bruijnzeels for suggesting that the ProviderASSet be in a canonical form,
-        and Claudio Jeker for review and several suggestions for improvements.
+        and Claudio Jeker &amp; Martin Hoffman for review and several suggestions for improvements.
       </t>
     </section>
 	
@@ -415,7 +376,6 @@
       <?rfc include="reference.RFC.8174.xml"?>
 
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-aspa-verification.xml"/>
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-8210bis.xml"/>
 
       <reference anchor="X.680">
         <front>
@@ -447,73 +407,13 @@
       <?rfc include="reference.RFC.6480.xml"?>
       <?rfc include="reference.RFC.7947.xml"?>
 
-      <reference anchor="rpkimancer" target="https://github.com/benmaddison/rpkimancer-aspa">
-        <front>
-          <title>rpkimancer-aspa</title>
-          <author initials="B." surname="Maddison">
-            <organization>Workonline</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="rpki-client" target="https://www.rpki-client.org/">
+      <reference anchor="rpki-client" target="https://marc.info/?l=openbsd-tech&amp;m=168614057916956&amp;w=2">
         <front>
           <title>rpki-client</title>
           <author initials="J." surname="Snijders">
             <organization>Fastly</organization>
           </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="krill" target="https://github.com/NLnetLabs/krill">
-        <front>
-          <title>Krill</title>
-          <author initials="T." surname="Bruijnzeels">
-            <organization>NLnetLabs</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="rpstir2" target="https://mailarchive.ietf.org/arch/msg/sidrops/pxqAGPmR0MA3NMe-NxYyiEZ7RXw">
-        <front>
-          <title>RPSTIR2</title>
-          <author initials="D." surname="Ma">
-            <organization>ZDNS</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
-        <front>
-          <title>RPKI ASPA Demo</title>
-          <author initials="T." surname="Harrison">
-            <organization>APNIC</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="koenvh" target="https://gitlab.com/Koenvh/relying-party-resiliency-platform/">
-        <front>
-          <title>Relying Party Resiliency Platform</title>
-          <author initials="K." surname="van Hove">
-            <organization>Independent</organization>
-          </author>
-          <date year="2022"/>
-        </front>
-      </reference>
-
-      <reference anchor="IANA-AF" target="https://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml">
-        <front>
-          <title>Address Family Numbers</title>
-          <author>
-            <organization>IANA</organization>
-          </author>
-          <date/>
+          <date year="2023"/>
         </front>
       </reference>
 
@@ -526,20 +426,17 @@
       </t>
       <artwork>
 <![CDATA[
-$ echo 302002023cca301a300402020b6230040202205b3005020300c7903005020303259e \
-  | xxd -r -ps \
-  | openssl asn1parse -inform DER -i -dump
-    0:d=0  hl=2 l=  32 cons: SEQUENCE
-    2:d=1  hl=2 l=   2 prim:  INTEGER      :3CCA    # Customer ASID 15562
-    6:d=1  hl=2 l=  26 cons:  SEQUENCE              # ProviderASSet
-    8:d=2  hl=2 l=   4 cons:   SEQUENCE             #  ProviderAS
-   10:d=3  hl=2 l=   2 prim:    INTEGER     :0B62   #   ASID 2914
-   14:d=2  hl=2 l=   4 cons:   SEQUENCE             #  ProviderAS
-   16:d=3  hl=2 l=   2 prim:    INTEGER     :205B   #   ASID 8283
-   20:d=2  hl=2 l=   5 cons:   SEQUENCE             #  ProviderAS
-   22:d=3  hl=2 l=   3 prim:    INTEGER     :C790   #   ASID 51088
-   27:d=2  hl=2 l=   5 cons:   SEQUENCE             #  ProviderAS
-   29:d=3  hl=2 l=   3 prim:    INTEGER     :03259E #   ASID 206238
+$ echo 301da00302010102023cca301202020b620202205b020300c790020303259e \
+  | xxd -r -ps | openssl asn1parse -inform DER -dump -i
+    0:d=0  hl=2 l=  29 cons: SEQUENCE
+    2:d=1  hl=2 l=   3 cons:  cont [ 0 ]
+    4:d=2  hl=2 l=   1 prim:   INTEGER           :01
+    7:d=1  hl=2 l=   2 prim:  INTEGER           :3CCA    # Customer ASID 15562
+   11:d=1  hl=2 l=  18 cons:  SEQUENCE
+   13:d=2  hl=2 l=   2 prim:   INTEGER           :0B62   # ProviderAS 2914
+   17:d=2  hl=2 l=   2 prim:   INTEGER           :205B   # ProviderAS 8283
+   21:d=2  hl=2 l=   3 prim:   INTEGER           :C790   # ProviderAS 51088
+   26:d=2  hl=2 l=   3 prim:   INTEGER           :03259E # ProviderAS 206238
 ]]>
       </artwork>
 
@@ -548,38 +445,38 @@ $ echo 302002023cca301a300402020b6230040202205b3005020300c7903005020303259e \
       </t>
       <artwork>
 <![CDATA[
-MIIGpAYJKoZIhvcNAQcCoIIGlTCCBpECAQMxDTALBglghkgBZQMEAgEwMwYLKoZIhvcNAQkQ
-ATGgJAQiMCACAjzKMBowBAICC2IwBAICIFswBQIDAMeQMAUCAwMlnqCCBJgwggSUMIIDfKAD
-AgECAgoAocd1L/ix0uAdMA0GCSqGSIb3DQEBCwUAMDMxMTAvBgNVBAMTKGNhYTgwNWRiYWMz
-NjQ3NDliOWIxMTU1OTBhYjZlZjBmOTcwY2RiZDgwHhcNMjIxMjE2MTIyOTU3WhcNMjMxMjE2
-MTIyOTU3WjAVMRMwEQYDVQQDDAoxNjcxMTkzNTkxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAsL/HdNkIhbYMis9xNfwvRYd3nqvlUQuzexfuX/HCLGIODNfbTqWaDeUcREyS
-w+8cBP3gu1LwOjBSOdjDPFu9ceC1/EDHNXLhLG+CuOH/OePFFxwzdBb4yNKCFvoKd+F9JP57
-55CDk8QusbJtWhRNL2lKHQevPAQpSqTkSF1SdFyzyBiEJE21CfOHBuDysLAj21c89gJst+lN
-n2P9jBwaMqYibT2qbX9Chh3susjZk2M/etiIIxyRKBWLZT8V85KFghdf++mDc099ZP+JQnVn
-q8SzZgkekn5pvsPWff5eB5ZvUe8Sn3XwfDSG4WgQP7Q0CX1l4X+g0fx7dEX7lmZbZwIDAQAB
-o4IBxjCCAcIwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBQWNJ/mFfUaYaEoy70AbtZUiXyb
-UzAfBgNVHSMEGDAWgBTKqAXbrDZHSbmxFVkKtu8Plwzb2DAYBgNVHSABAf8EDjAMMAoGCCsG
-AQUFBw4CMBkGCCsGAQUFBwEIAQH/BAowCKAGMAQCAjzKMGQGCCsGAQUFBwEBBFgwVjBUBggr
-BgEFBQcwAoZIcnN5bmM6Ly9ycGtpLnJpcGUubmV0L3JlcG9zaXRvcnkvREVGQVVMVC95cWdG
-MjZ3MlIwbTVzUlZaQ3JidkQ1Y00yOWcuY2VyMGQGA1UdHwRdMFswWaBXoFWGU3JzeW5jOi8v
-Y2hsb2Uuc29ib3Jub3N0Lm5ldC9ycGtpL1JJUEUtbmxqb2JzbmlqZGVycy95cWdGMjZ3MlIw
-bTVzUlZaQ3JidkQ1Y00yOWcuY3JsMG8GCCsGAQUFBwELBGMwYTBfBggrBgEFBQcwC4ZTcnN5
-bmM6Ly9jaGxvZS5zb2Jvcm5vc3QubmV0L3Jwa2kvUklQRS1ubGpvYnNuaWpkZXJzL0ZqU2Y1
-aFgxR21HaEtNdTlBRzdXVklsOG0xTS5hc2EwDQYJKoZIhvcNAQELBQADggEBAHdOVNM2GrQc
-TBQebdi2iKgC92XlGF9AlZcX4ZCQBL7gfQLfGEm6cIT73/Qo5PPsZ6kldQrPrERGeTntSEcV
-LceFPihm54aAAbmQ0YQ3aZMdwvsbsLFMWBhbNiGwH6HdxyX63q94Did8IxE0HwOjJGfg02uN
-xO9DseGSRGNzc9iZmLDFIn2wP1cmTKqntfxjNqc9T3zFWZT/m1BmXKylwpCIxxHbYYaOBnQi
-xtJJ8HZlular3fwFQuVDuMxQ6Wg1jW3k6UBm06YwnyD3Nzck+4cIcGRnbQYDKBH/n3AyDGWr
-UNnLSgFQzVV/Eu8rP2BXKHeLUCMw0/tB7f6vj+9LZS4xggGqMIIBpgIBA4AUFjSf5hX1GmGh
-KMu9AG7WVIl8m1MwCwYJYIZIAWUDBAIBoGswGgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEx
-MBwGCSqGSIb3DQEJBTEPFw0yMjEyMTYxMjMwMDJaMC8GCSqGSIb3DQEJBDEiBCDncgAuReFz
-5lNB3nCNIY9N+TPcUjXeL3A8kGdpwI1JwTANBgkqhkiG9w0BAQEFAASCAQCaB43YGSkCOO/I
-X26d9xC5vqGcZYNjAQe76VHDFJqa5x7RpthJC1cPe3fdKLazu6ywcuo6vvElT2OH0s/K0mCa
-xFwfnZOn3cNUDJPtFYUynfQKyVGZjtyP8HLzxmgy2mSUzdcfEWVPSHc/u9CaIHdSNbeW7rBD
-lWnf3j4MOVr5z4yf9BU2oBodpongR7dR1fvl7N/RymOdaLdqFYaj82plECZh9XqWqmHReBQG
-c+EfXh7mw9aGQdFhBnprjRKd/oiBI1PVmystPv+XvunT8y8AxQ3XG1GL6Nca7OnfxNqGuyhs
-0nbcbcd92GJwF3SBkdestmXZgxkl0HV7ZPH1xlvh
+MIIGoQYJKoZIhvcNAQcCoIIGkjCCBo4CAQMxDTALBglghkgBZQMEAgEwMAYLKoZIhvcNAQkQ
+ATGgIQQfMB2gAwIBAQICPMowEgICC2ICAiBbAgMAx5ACAwMlnqCCBJgwggSUMIIDfKADAgEC
+AgoAocd1L/ix0uAfMA0GCSqGSIb3DQEBCwUAMDMxMTAvBgNVBAMTKGNhYTgwNWRiYWMzNjQ3
+NDliOWIxMTU1OTBhYjZlZjBmOTcwY2RiZDgwHhcNMjMwNjA3MDkwODE0WhcNMjQwNjA2MDkw
+ODE0WjAVMRMwEQYDVQQDDAoxNjg2MTI4MDAzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEA9YsEEF6Mb6Rhj7W35W9F8vT9OnGpMopJDL9y05Tms49iQ5hnZKXiabmwPKEn9Uat
+QU4Klff/2XkFXrjnmGcA/jb5C/22JlM1WRZcFfKwJXGWBf9HW2qlz9KTKT07vkFFp8+H6NTu
+MPX/nuEFFMlgWVV/dS5x5gjFuGmhBpXiKhIiNAhTqFdXQwJoI3BCngt4G4rLhu0zHsAH9/El
+s4XWk57HoKScj2mKAoHMWrLJxC9BRiqVXfZ7xAbuYDnrHFuGpZKp+BCB4mVJIT/a5LnUH/kp
+6Dih5833FbWZ0Au9pKqUBYD7J0QT/LGqvHSTX0zS9xGr5z3vg8glCecoAOIylQIDAQABo4IB
+xjCCAcIwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBTmbzR/BjCz/cWIUPsmJCMCpnVFhDAf
+BgNVHSMEGDAWgBTKqAXbrDZHSbmxFVkKtu8Plwzb2DAYBgNVHSABAf8EDjAMMAoGCCsGAQUF
+Bw4CMBkGCCsGAQUFBwEIAQH/BAowCKAGMAQCAjzKMGQGCCsGAQUFBwEBBFgwVjBUBggrBgEF
+BQcwAoZIcnN5bmM6Ly9ycGtpLnJpcGUubmV0L3JlcG9zaXRvcnkvREVGQVVMVC95cWdGMjZ3
+MlIwbTVzUlZaQ3JidkQ1Y00yOWcuY2VyMGQGA1UdHwRdMFswWaBXoFWGU3JzeW5jOi8vY2hs
+b2Uuc29ib3Jub3N0Lm5ldC9ycGtpL1JJUEUtbmxqb2JzbmlqZGVycy95cWdGMjZ3MlIwbTVz
+UlZaQ3JidkQ1Y00yOWcuY3JsMG8GCCsGAQUFBwELBGMwYTBfBggrBgEFBQcwC4ZTcnN5bmM6
+Ly9jaGxvZS5zb2Jvcm5vc3QubmV0L3Jwa2kvUklQRS1ubGpvYnNuaWpkZXJzLzVtODBmd1l3
+c18zRmlGRDdKaVFqQXFaMVJZUS5hc2EwDQYJKoZIhvcNAQELBQADggEBADMA9gmyYb+tw623
+Y0hiwMkfh8UIWBLl8TzuE/oV1+lV1vMmoZN2DZvS0DTBGHyDJosSxCfFIVgiBxyZ4Hz+5Kz3
+p+SCiv+W4Xm4/2IR9KZpd4XFldvz0m82rtjadiD9pP2pEoQ7hpv/QjJwWA2Lo8BgSUTF6x/E
+1nIhvLqmQTNyW/McSIyT3zctekg2lJVYUhIgMdO7HI0gzDKY8iPcTTGa9hzQBt5r0j1ukfgy
+9mRnLB6u1v6qa1VKIgxsCO5r4X4ClvQeFdhgx1XqZ2YAB0fhfK+ouIk52gIXnfDD6T3O1wU7
+3bNDRqNBPb3B6fGV+XtAszI4lzQcgmWz1Vel7EExggGqMIIBpgIBA4AU5m80fwYws/3FiFD7
+JiQjAqZ1RYQwCwYJYIZIAWUDBAIBoGswGgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAExMBwG
+CSqGSIb3DQEJBTEPFw0yMzA2MDcwOTA4NDFaMC8GCSqGSIb3DQEJBDEiBCAJcXvBATD7chRb
+oBj7Kghjf+uaiuybzdAcFPCzBXweYDANBgkqhkiG9w0BAQEFAASCAQDRbk4QaP0AdYgtgxds
+3T/qgz0+m0RT2ue/5vqnhqCIqJBUjjrVOi2kgR3xhXFJfwz0pMuvUD6ikMdb9OsjvkpGqprN
+xepbslSGf2OrrYHa36qF38KsXrPNASslNDCn7eN/TBoOV+8tacOFcPEyC7stuFw5GtvL37RS
+/ZvyDm8NMo06JynhZ2me3sTJVpqTopv0vqVQi0VLCNEq+CQiDPEdqGEVDT9y2dVIVZ3J54Lq
+v76sXvhswso7CpMzTJyEx2VcIXwADMKZF/nWciTrkNzLfahVsL6UzflvMqNo3nVYJIsnF6U3
+O3Niq7vO05r1PyS/pZqe+uwbV2gGQMcXwrvt
 ]]>
       </artwork>
     <t>
@@ -587,14 +484,17 @@ c+EfXh7mw9aGQdFhBnprjRKd/oiBI1PVmystPv+XvunT8y8AxQ3XG1GL6Nca7OnfxNqGuyhs
     </t>
     <artwork>
 <![CDATA[
-Object SHA256 hash:          wsCvp2J+eZeizU8nrXHkLPhcjyqZ5euDlwLssA/nlwg=
-EE Subject key identifier:   16:34:9F:E6:15:F5:1A:61:A1:28:CB:BD:00:6E:D6:54:89:7C:9B:53
+Object SHA256 hash:          s25yLaks3OXBzJcW3ZgvlLDiPUpyZbQk2jDHaPDgn1w=
+EE Subject key identifier:   E6:6F:34:7F:06:30:B3:FD:C5:88:50:FB:26:24:23:02:A6:75:45:84
 EE Certificate issuer:       /CN=caa805dbac364749b9b115590ab6ef0f970cdbd8
-EE Certificate serial:       A1C7752FF8B1D2E01D
+EE Certificate serial:       A1C7752FF8B1D2E01F
 EE Authority key identifier: CA:A8:05:DB:AC:36:47:49:B9:B1:15:59:0A:B6:EF:0F:97:0C:DB:D8
 EE Authority info access:    rsync://rpki.ripe.net/repository/DEFAULT/yqgF26w2R0m5sRVZCrbvD5cM29g.cer
-EE Subject info access:      rsync://chloe.sobornost.net/rpki/RIPE-nljobsnijders/FjSf5hX1GmGhKMu9AG7WVIl8m1M.asa
-EE NotAfter:                 Sat 16 Dec 2023 12:29:57 +0000
+EE Subject info access:      rsync://chloe.sobornost.net/rpki/RIPE-nljobsnijders/5m80fwYws_3FiFD7JiQjAqZ1RYQ.asa
+CMS Signing time:            Wed 07 Jun 2023 09:08:41 +0000
+EE notBefore:                Wed 07 Jun 2023 09:08:14 +0000
+EE notAfter:                 Thu 06 Jun 2024 09:08:14 +0000
+
 ASPA eContent:
   Customer AS:               15562
   Provider Set:              1: AS: 2914
@@ -604,133 +504,5 @@ ASPA eContent:
 ]]>
       </artwork>
     </section>
-
-    <section anchor="transform">
-      <name>Transforming ASPA eContent Payloads to RTR ASPA PDUs</name>
-      <t>
-        Below are a number of examples to demonstrate how one (or more) ASPA eContent Payloads are to be transformed into RTR ASPA PDUs.
-        See section 5.12 of <xref target="I-D.ietf-sidrops-8210bis"/> for the specification of ASPA PDUs.
-      </t>
-      <t>
-        Note that two PDUs are always generated per Customer ASID: one with AFI Flags = IPv4 and one with AFI Flags = IPv6.
-      </t>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Base64 DER-encoded eContent(s)</th>
-            <th>RTR PDU (AFI flag = IPv4)</th>
-            <th>RTR PDU (AFI flag = IPv6)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <artwork>
-MCMGCyqGSIb3DQEJEAEx
-oBQEEjAQAgMA/mMwCTAH
-AgUA+lbqAQ==
-</artwork>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <artwork>
-MCcGCyqGSIb3DQEJEAEx
-oBgEFjAUAgMA/mMwDTAL
-AgUA+lbqAQQCAAI=
-</artwork>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 0</t>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <artwork>
-MDQGCyqGSIb3DQEJEAEx
-oCUEIzAhAgMA/mMwGjAL
-AgUA+lbqAQQCAAEwCwIF
-APpW6gIEAgAC
-</artwork>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000002</t>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <artwork>
-MCMGCyqGSIb3DQEJEAEx
-oBQEEjAQAgMA/mMwCTAH
-AgUA+lbqAQ==
-
-plus
-
-MCcGCyqGSIb3DQEJEAEx
-oBgEFjAUAgMA/mMwDTAL
-AgUA+lbqAQQCAAI=
-</artwork>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <artwork>
-MDAGCyqGSIb3DQEJEAEx
-oCEEHzAdAgMA/mMwFjAH
-AgUA+lbqATALAgUA+lbq
-AgQCAAI=
-</artwork>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 1</t>
-              <t>Provider ASes: 4200000001</t>
-            </td>
-            <td>
-              <t>Customer AS: 65123</t>
-              <t>Provider AS Count: 2</t>
-              <t>Provider ASes: 4200000001, 4200000002</t>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-    </section>
-
   </back>
 </rfc>
