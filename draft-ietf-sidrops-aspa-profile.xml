@@ -336,6 +336,12 @@
         <li>
           A validator implementation <xref target="rpki-client"/> (version 8.5 and higher), written in C was provided by Job Snijders from Fastly.
         </li>
+        <li>
+          A Signer implementation <xref target="rpki-aspa-demo"/> in Perl was reported on Tom Harrison from APNIC.
+        </li>
+        <li>
+          A signer implementation <xref target="rpki-commons"/> in Java was reported on by Ties de Kock from RIPE NCC.
+        </li>
       </ul>
     </section>
 
@@ -412,6 +418,26 @@
           <title>rpki-client</title>
           <author initials="J." surname="Snijders">
             <organization>Fastly</organization>
+          </author>
+          <date year="2023"/>
+        </front>
+      </reference>
+
+      <reference anchor="rpki-aspa-demo" target="https://github.com/APNIC-net/rpki-aspa-demo">
+        <front>
+          <title>rpki-aspa-demo</title>
+          <author initials="T." surname="Harrison">
+            <organization>APNIC</organization>
+          </author>
+          <date year="2023"/>
+        </front>
+      </reference>
+
+      <reference anchor="rpki-commons" target="https://mailarchive.ietf.org/arch/msg/sidrops/nNAmZMrr7t9NMzm12jRXU03ABN4/">
+        <front>
+          <title>rpki-commons</title>
+          <author initials="T." surname="de Kock">
+            <organization>RIPE NCC</organization>
           </author>
           <date year="2023"/>
         </front>
