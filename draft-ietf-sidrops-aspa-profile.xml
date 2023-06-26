@@ -337,6 +337,9 @@
           A validator implementation <xref target="rpki-client"/> (version 8.5 and higher), written in C was provided by Job Snijders from Fastly.
         </li>
         <li>
+          A validator implementation <xref target="routinator"/>, written in Rust was provided by Martin Hoffman from NLnet Labs.
+        </li>
+        <li>
           A Signer implementation <xref target="rpki-aspa-demo"/> in Perl was reported on Tom Harrison from APNIC.
         </li>
         <li>
@@ -438,6 +441,16 @@
           <title>rpki-commons</title>
           <author initials="T." surname="de Kock">
             <organization>RIPE NCC</organization>
+          </author>
+          <date year="2023"/>
+        </front>
+      </reference>
+
+      <reference anchor="routinator" target="https://github.com/NLnetLabs/rpki-rs/pull/264">
+        <front>
+          <title>routinator</title>
+          <author initials="M." surname="Hoffman">
+            <organization>NLnet Labs</organization>
           </author>
           <date year="2023"/>
         </front>
