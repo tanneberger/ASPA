@@ -11,7 +11,7 @@
 
 <rfc xmlns:xi="http://www.w3.org/2001/XInclude"
      category="std"
-     docName="draft-ietf-sidrops-aspa-profile-15"
+     docName="draft-ietf-sidrops-aspa-profile-16"
      ipr="trust200902"
      consensus="true"
      submissionType="IETF">
@@ -174,7 +174,7 @@
 
       <section title="version">
         <t>
-          The version number of the ASProviderAttestation MUST be 1.
+          The version number of the ASProviderAttestation that complies with this specification MUST be 1 and MUST be explicitly encoded.
         </t>
       </section>
 
