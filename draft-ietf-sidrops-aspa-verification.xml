@@ -183,8 +183,6 @@
          All roles are configured locally and used for the registration of ASPA objects (<xref target="ASPA"/>, <xref target="rec1"/>) and/or for path verification (<xref target="verif"/>).
          The procedures for local BGP Role announcement in the BGP OPEN message and neighbor role cross-check specified in <xref target="RFC9234"/> are RECOMMENDED.
          The procedures are not applied for cross-checking a mutual-transit role since this role is not specified in <xref target="RFC9234"/>.
-         However, there is little concern about not being able to cross-check (in BGP OPEN) a pair of mutual-transit ASes, since they have a trusted relationship.   
-         In fact, they are typically managed by a single entity. 
        </t>
     </section>
 
