@@ -127,11 +127,12 @@
         RFC9319 includes some recommendations for reducing the attack surface for forged-origin prefix hijacks.   
       </t>
       <t>
-        This document describes procedures that make use of Autonomous System Provider Authorization (ASPA) objects <xref target="I-D.ietf-sidrops-aspa-profile"/> in the RPKI to verify the BGP AS_PATH attribute of advertised routes. 
-        These new ASPA-based procedures automatically detect invalid AS_PATHs in announcements that are received from customers, lateral peers (defined in <xref target="RFC7908"/>), transit providers, IXP Route Servers (RS), RS-clients, and mutual-transits.
-        This type of AS_PATH verification provides detection and mitigation of route leaks and improbable AS paths.
-        It also to some degree provides protection against prefix hijacks with forged-origin or forged-path-segment (<xref target="property"/>).    
-        The protections provided by these procedures (together with RPKI-ROV) are based on cryptographic techniques, and they are effective against a majority of accidental and malicious actions.
+        This document describes procedures that make use of Autonomous System Provider Authorization (ASPA) objects <xref target="I-D.ietf-sidrops-aspa-profile"/> in the RPKI to verify properties of the BGP AS_PATH attribute of advertised routes.
+        ASPA-based AS_PATH verification provides detection and mitigation of route leaks and improbable AS paths.
+        It also to some degree provides protection against prefix hijacks with forged-origin or forged-path-segment (<xref target="property"/>).   		
+        These new ASPA-based procedures automatically detect such anomalous AS_PATHs in announcements that are received from customers, lateral peers (defined in <xref target="RFC7908"/>), transit providers, IXP Route Servers (RS), RS-clients, and mutual-transits.
+         
+        The protections provided by these procedures (together with RPKI-ROV) are based on cryptographic techniques, and they are effective against many accidental and malicious actions.
       </t>
       <t>
         ASPA objects are cryptographically signed registrations of customer-to-provider relationships and stored in a distributed database <xref target="I-D.ietf-sidrops-aspa-profile"/>. 
@@ -140,9 +141,6 @@
       <t>
         The procedures described in this document are applicable only for BGP routes with {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1} <xref target="IANA-AF"/>.
         SAFI 1 represents NLRI used for unicast forwarding <xref target="IANA-SAF"/>.
-      </t>
-      <t>
-        For brevity, the term "provider" is often used instead of "transit provider" in this document; they mean the same.   
       </t>
 
     <section title="Anomaly Propagation" anchor="propagation">
@@ -159,6 +157,9 @@
       <t>
         The use of the term "route is ineligible" in this document has the same meaning as in <xref target="RFC4271"/>, i.e., "route is ineligible to be installed in Loc-RIB and will be excluded from the next phase of route selection."
       </t>
+	  <t>
+        For brevity, the term "provider" is often used instead of "transit provider" in this document; they mean the same.   
+      </t>
     </section>
 	<section title="Requirements Language" anchor="req">
         <t>
@@ -173,16 +174,16 @@
 
       <section title="BGP Roles" anchor="role">
         <t>
-         For path verification purposes in this document, the BGP roles an AS can have in relation to a neighbor AS are customer, provider, lateral peer, RS, RS-client, and mutual-transit.
+         For path verification purposes in this document, the BGP roles an AS can have in relation to a neighbor AS are customer, provider, lateral peer, Route Server (RS), RS-client, and mutual-transit.
 		 These relationships, except mutual-transit, are defined in <xref target="RFC9234"/>. 
          Mutual-transit ASes MAY export everything (both customer and non-customer routes) to each other, i.e., consider each other as a customer.
          For mutual-transit ASes, the customer-to-provider relationship applies in each direction.
        </t>
        <t> 
          All roles are configured locally and used for the registration of ASPA objects (<xref target="ASPA"/>, <xref target="rec1"/>) and/or for path verification (<xref target="verif"/>).
-         The procedure of BGP Role capability <xref target="RFC9234"/> in the BGP OPEN message to verify the role with a neighbor is RECOMMENDED.
-         The procedure is not applied for verifying a mutual-transit role since it is not specified in <xref target="RFC9234"/>.
-         However, there is little concern about a pair of mutual-transit ASes, since they have a trusted relationship.   
+         The procedures for local BGP Role announcement in the BGP OPEN message and neighbor role cross-check specified in <xref target="RFC9234"/> are RECOMMENDED.
+         The procedures are not applied for cross-checking a mutual-transit role since this role is not specified in <xref target="RFC9234"/>.
+         However, there is little concern about not being able to cross-check (in BGP OPEN) a pair of mutual-transit ASes, since they have a trusted relationship.   
          In fact, they are typically managed by a single entity. 
        </t>
     </section>
@@ -192,10 +193,9 @@
         An ASPA record is a digitally signed object that binds a set of Provider AS numbers to a Customer AS (CAS) number (in terms of BGP announcements) and is signed by the CAS <xref target="I-D.ietf-sidrops-aspa-profile"/>.
         The ASPA attests that the CAS has a Set of Provider ASes (SPAS) as specified in the ASPA,
 		and the SPAS applies to both {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1}.
-        The definition of Provider AS is given in Section 1 of <xref target="I-D.ietf-sidrops-aspa-profile"/>.
+        The definition of Provider AS is given in Section 1 of the ASPA profile object document <xref target="I-D.ietf-sidrops-aspa-profile"/>.
         A function of a Provider AS is to propagate a CAS's route announcements onward, i.e., to the Provider's upstream providers, lateral peers, or customers.
         Another function is to offer outbound (customer to Internet) data traffic connectivity to the CAS.
-        The ASPA object profile is described in <xref target="I-D.ietf-sidrops-aspa-profile"/>.
       </t>
       <t>
         The notation (AS x, {AS y1, AS y2, ...}), is used to represent an ASPA object for a CAS denoted as AS x.
@@ -215,7 +215,7 @@
           An ASPA object showing only AS 0 as a provider AS is referred to as an AS0 ASPA.
 		  A non-transparent Route Server AS (RS AS) is one that includes its AS number in the AS_PATH. 
 		  Registering as AS0 ASPA is a statement by the registering AS that it has no transit providers, and it is also not an RS-client at a non-transparent RS AS. 
-		  If that statement is true, then the AS MUST register an AS 0 ASPA including only AS 0 as a provider.
+		  If that statement is true, then the AS MUST register an AS 0 ASPA.
 		</t>		  
         <t>
 		  Normally, the Provider ASes of a CAS would be congruent for the address family combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1}.
@@ -235,7 +235,7 @@
         </t>
         <t>
           Each of the two ASes in a mutual-transit pair MUST register its ASPA including the other AS in its SPAS. 
-		  If one of the ASes in the pair does this registration but the other does not, that contributes to the risk of not getting the correct AS path verification result for routes that include the pair.     
+		  If one of the ASes in the pair does this registration but the other does not, it increases the risk of incorrect AS path verification results for routes that include the pair.     
         </t>
         <t>
           The ASes on the boundary of an AS Confederation MUST register ASPAs using the Confederation's global ASN as the CAS.
@@ -537,8 +537,10 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
       <strong>Mitigation:</strong> Mitigation recommendations are provided here with the understanding that the deployed mitigation policy is set by network operator discretion. 
 	  If the AS_PATH is determined to be Invalid, then the route SHOULD be considered ineligible for route selection 
 	  (see <xref target="terminology"/>) and MUST be kept in the Adj-RIB-In for potential future re-evaluation (see <xref target="RFC9324"/>). 
-	  Also, for any route with an Invalid AS_PATH, the cause of the invalidity SHOULD be logged for monitoring and diagnostic purposes.
-      For any route with an Unknown AS_PATH, the cause of the Unknown state SHOULD be logged for monitoring and diagnostic purposes.
+	  Also, for any route with an Invalid AS_PATH, the cause of the Invalid state SHOULD be logged for monitoring and diagnostic purposes. 
+	  The cause of the Invalid state can be in the form of listing the AS hops which were evaluated by the hop-check function to be "Not Provider+".  
+      For any route with an Unknown AS_PATH, the cause of the Unknown state SHOULD be logged for monitoring and diagnostic purposes. 
+	  The cause of the Unknown state can be in the form of listing the AS hops which were evaluated by the hop-check function to be "No Attestation". 
     </t>
   </section>
   	<section title="Verification and Mitigation at Egress eBGP Router" anchor="egress">
@@ -635,7 +637,7 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
 	<section title="DoS/DDoS Mitigation Service Provider">
       <t>
         An AS may have a mitigation service provider (MSP) for protection from Denial of Service (DoS)/Distributed DoS (DDoS) attacks targeting servers with IP addresses in the prefixes the AS originates. 
-		Such an AS MAY include the MSP's AS in the SPAS of its ASPA. With such an ASPA in place, in the event of an attack, the AS (customer of the MSP) can announce more specific prefixes (over a BGP connection) to the MSP's AS for mitigation purposes, 
+		Such an AS MAY include the MSP's AS in the SPAS of its ASPA. With such an ASPA in place, in the event of an attack, the AS (customer of the MSP) can announce more specific prefixes (over a BGP session) to the MSP's AS for mitigation purposes, 
 		and such announcements would be able to pass the ASPA-based path verification. It is assumed that appropriate ROAs are registered in advance so that the announcements can pass RPKI-ROV as well. 
       </t>
     </section>
@@ -877,7 +879,7 @@ ASPAs: {AS(1), [AS(2)]}, {AS(2), [AS(3)]}, {AS(5), [AS(4)]},
 
       <figure><artwork><![CDATA[
         Claudio Jeker
-        OpenBSD Foundation
+        OpenBSD
         Email: cjeker@diehard.n-r-g.com
       ]]></artwork></figure>
     </section>
