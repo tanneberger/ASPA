@@ -189,8 +189,7 @@
     <section title="Autonomous System Provider Authorization" anchor="ASPA">
       <t>
         An ASPA record is a digitally signed object that binds a set of Provider AS numbers to a Customer AS (CAS) number (in terms of BGP announcements) and is signed by the CAS <xref target="I-D.ietf-sidrops-aspa-profile"/>.
-        The ASPA attests that the CAS has a Set of Provider ASes (SPAS) as specified in the ASPA,
-		and the SPAS applies to both {AFI, SAFI} combinations {AFI 1 (IPv4), SAFI 1} and {AFI 2 (IPv6), SAFI 1}.
+        The ASPA attests that the CAS indicated a Set of Provider ASes (SPAS), which applies only to the IPv4 and IPv6 AFI and only to Network Layer Reachability Information used for unicast forwarding.
         The definition of Provider AS is given in Section 1 of the ASPA profile object document <xref target="I-D.ietf-sidrops-aspa-profile"/>.
         A function of a Provider AS is to propagate a CAS's route announcements onward, i.e., to the Provider's upstream providers, lateral peers, or customers.
         Another function is to offer outbound (customer to Internet) data traffic connectivity to the CAS.
