@@ -11,7 +11,7 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std"
-     docName="draft-ietf-sidrops-aspa-verification-15"
+     docName="draft-ietf-sidrops-aspa-verification-16"
      submissionType="IETF"
      consensus="true"
      ipr="trust200902">
@@ -106,10 +106,10 @@
 
     <abstract>
       <t>
-        This document describes procedures that make use of Autonomous System Provider.
-        Authorization (ASPA) objects in the Resource Public Key Infrastructure (RPKI) to verify the Border Gateway Protocol (BGP) AS_PATH attribute of advertised routes.
+        This document describes procedures that make use of Autonomous System Provider Authorization (ASPA) objects in the 
+		Resource Public Key Infrastructure (RPKI) to verify the Border Gateway Protocol (BGP) AS_PATH attribute of advertised routes.
         This type of AS_PATH verification provides detection and mitigation of route leaks and improbable AS paths.
-        It also to some degree provides protection against prefix hijacks with forged-origin or forged-path-segment.
+        It also provides protection, to some degree, against prefix hijacks with forged-origin or forged-path-segment.
       </t>
     </abstract>
 
@@ -129,7 +129,7 @@
       <t>
         This document describes procedures that make use of Autonomous System Provider Authorization (ASPA) objects <xref target="I-D.ietf-sidrops-aspa-profile"/> in the RPKI to verify properties of the BGP AS_PATH attribute of advertised routes.
         ASPA-based AS_PATH verification provides detection and mitigation of route leaks and improbable AS paths.
-        It also to some degree provides protection against prefix hijacks with forged-origin or forged-path-segment (<xref target="property"/>).
+        It also provides protection, to some degree, against prefix hijacks with forged-origin or forged-path-segment (<xref target="property"/>).
         These new ASPA-based procedures automatically detect such anomalous AS_PATHs in announcements that are received from customers, lateral peers (defined in <xref target="RFC7908"/>), transit providers, IXP Route Servers (RS), RS-clients, and mutual-transits.
         The protections provided by these procedures (together with RPKI-ROV) are based on cryptographic techniques, and they are effective against many accidental and malicious actions.
       </t>
@@ -188,7 +188,7 @@
     <section title="Autonomous System Provider Authorization" anchor="ASPA">
       <t>
         An ASPA record is a digitally signed object that binds a set of Provider AS numbers to a Customer AS (CAS) number (in terms of BGP announcements) and is signed by the CAS <xref target="I-D.ietf-sidrops-aspa-profile"/>.
-        The ASPA attests that the CAS indicated a Set of Provider ASes (SPAS), which applies only to the IPv4 and IPv6 AFI and only to Network Layer Reachability Information used for unicast forwarding.
+        The ASPA attests that the CAS indicated a Set of Provider ASes (SPAS), which applies only to the IPv4 and IPv6 address families (i.e., AFI = 1 and AFI = 2) and only to Network Layer Reachability Information used for unicast forwarding (SAFI = 1).
         The definition of Provider AS is given in Section 1 of the ASPA profile object document <xref target="I-D.ietf-sidrops-aspa-profile"/>.
         A function of a Provider AS is to propagate a CAS's route announcements onward, i.e., to the Provider's upstream providers, lateral peers, or customers.
         Another function is to offer outbound (customer to Internet) data traffic connectivity to the CAS.
@@ -406,7 +406,7 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
                  AS(L+1)                  AS(K-1)
                     .                       .
                    .                         .
-    (down-ramp)   .                           .(up-ramp)
+    (down-ramp)   .                           .  (up-ramp)
                  .                             .
                 .                               .
               AS(N-1)                          AS(2)
@@ -511,9 +511,7 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
 
   <section title="AS_PATH Verification and Anomaly Mitigation Recommendations" anchor="mitig">
     <t>
-      AS_PATH verification and anomaly mitigation recommendations for ingress and egress eBGP routers are specified in this section.
-    </t>
-    <t>
+      AS_PATH verification and anomaly mitigation recommendations for eBGP routers are specified in this section.
       The recommendations apply to eBGP routers in general, including those on the boundary of an AS Confederation facing external ASes.
       However, the procedures for ASPA-based AS_PATH verification in this document are NOT RECOMMENDED for use on eBGP links internal to the Confederation.
     </t>
@@ -533,9 +531,10 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
       Also, for any route with an Invalid AS_PATH, the cause of the Invalid state SHOULD be logged for monitoring and diagnostic purposes.
       The cause of the Invalid state can be in the form of listing the AS hops which were evaluated by the hop-check function to be "Not Provider+".
       For any route with an Unknown AS_PATH, the cause of the Unknown state SHOULD be logged for monitoring and diagnostic purposes.
-      The cause of the Unknown state can be in the form of listing the AS hops which were evaluated by the hop-check function to be "No Attestation".
+      The cause of the Unknown state can be in the form of listing the AS hops which were evaluated by the hop-check function to be "No Attestation" or "Not Provider+".
     </t>
   </section>
+  <!--
   <section title="Verification and Mitigation at Egress eBGP Router" anchor="egress">
     <t>	
       <strong>Verification:</strong> The procedures for AS_PATH verification (<xref target="verif"/>) are also applicable at egress eBGP routers for preventing an AS from sending routes with Invalid AS_PATH to its eBGP neighbors (see <xref target="RFC8893"/> for a comparable idea for the RPKI-ROV case).
@@ -549,6 +548,15 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
      If the outcome of applying the downstream algorithm (<xref target="Downflow"/>) is Invalid, then the route SHOULD NOT be propagated to an eBGP neighbor regardless of its BGP role (<xref target="role"/>).
    </t>
   </section>
+  -->
+   <section title="Only to Customer (OTC) Attribute" anchor="otc">
+   <t>
+     While the ASPA-based AS path verification method (<xref target="ingress"/>) detects and mitigates route leaks that were created by preceding ASes listed in the AS_PATH, 
+	 it lacks the ability to prevent route leaks created by the local AS. 
+	 The use of the Only to Customer (OTC) Attribute <xref target="RFC9234"/> fills in that gap. 
+	 An ASPA-compliant implementation MUST also include the procedures utilizing the OTC Attribute as specified in Section 5 of <xref target="RFC9234"/>.
+   </t>
+   </section>
   </section>
 <!--
 	<t>
@@ -559,7 +567,7 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
   <section title="Properties of ASPA-based Path Verification" anchor="property">
     <t>
       The ASPA-based path verification procedures are able to check routes received from customers, lateral peers, transit providers, RSes, RS-clients, and mutual-transits.
-      These procedures combined with BGP Roles <xref target="RFC9234" /> and RPKI-ROV <xref target="RFC6811"/> <xref target="RFC9319"/> can provide a fully automated solution to detect and filter many of the ordinary prefix hijacks, route leaks, and prefix hijacks with forged-origin or forged-path-segment (see Property 3 below).
+      These procedures combined with BGP Roles and the OTC Attribute <xref target="RFC9234" /> and RPKI-ROV <xref target="RFC6811"/> <xref target="RFC9319"/> can provide a fully automated solution to detect and filter many of the ordinary prefix hijacks, route leaks, and prefix hijacks with forged-origin or forged-path-segment (see Property 3 below).
     </t>
     <t>
       The ASPA-based path verification at ingress eBGP routers (<xref target="verif" />, <xref target="ingress" />) has the following properties (detection capabilities):
