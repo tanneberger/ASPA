@@ -181,7 +181,7 @@
        <t>
          All roles are configured locally and used for the registration of ASPA objects (<xref target="ASPA"/>, <xref target="rec1"/>) and/or for path verification (<xref target="verif"/>).
          The procedures for local BGP Role announcement in the BGP OPEN message and neighbor role cross-check specified in <xref target="RFC9234"/> are RECOMMENDED.
-         These procedures are not applied for cross-checking a mutual-transit role since this role is not specified in <xref target="RFC9234"/>.
+         Those procedures are not applied for cross-checking a mutual-transit role since this role is not specified in <xref target="RFC9234"/>.
        </t>
     </section>
 
@@ -552,10 +552,10 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
    <section title="Only to Customer (OTC) Attribute" anchor="otc">
    <t>
      While the ASPA-based AS_PATH verification method (<xref target="ingress"/>) detects and mitigates route leaks that were created by preceding ASes listed in the AS_PATH, 
-	 it lacks the ability to prevent route leaks created by the local AS. 
+	 it lacks the ability to prevent route leaks from occuring at the local AS. 
 	 The use of the Only to Customer (OTC) Attribute <xref target="RFC9234"/> fills in that gap. 
-	 The procedures utilizing the OTC Attribute set out in Section 5 of <xref target="RFC9234"/> complement those described in this document. 
-	 Implementation of these procedures in addition to ASPA-based AS_PATH verification is encouraged.
+	 The procedures utilizing the OTC Attribute set out in <xref target="RFC9234"/> complement those described in this document. 
+	 Implementation of those procedures in addition to ASPA-based AS_PATH verification is encouraged.
    </t>
    </section>
   </section>
