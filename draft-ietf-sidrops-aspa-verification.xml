@@ -201,7 +201,7 @@
         In case a CAS has multiple ASPAs, then the SPAS is the union of the Provider ASes listed in all ASPAs of the CAS.
       </t>
       <t>
-        Verified ASPA Payload (VAP) refers to the payload in a cryptographically verified (i.e., X.509 valid <xref target="RFC3779"/> <xref target="RFC5280"/>) ASPA object.
+        Validated ASPA Payload (VAP) refers to the payload in a cryptographically verified (i.e., X.509 valid <xref target="RFC3779"/> <xref target="RFC5280"/>) ASPA object.
         In the procedures for the AS path verification described in this document (<xref target="pair-validation"/>, <xref target="verif"/>), VAP-SPAS refers to the set of provider ASes derived from the VAP(s) of the CAS in consideration.
       </t>
     </section>
