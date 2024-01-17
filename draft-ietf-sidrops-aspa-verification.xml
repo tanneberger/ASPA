@@ -131,7 +131,6 @@
         ASPA-based AS_PATH verification provides detection and mitigation of route leaks and improbable AS paths.
         It also provides protection, to some degree, against prefix hijacks with forged-origin or forged-path-segment (<xref target="property"/>).
         These new ASPA-based procedures automatically detect such anomalous AS_PATHs in announcements that are received from customers, lateral peers (defined in <xref target="RFC7908"/>), transit providers, IXP Route Servers (RS), RS-clients, and mutual-transits.
-        The protections provided by these procedures (together with RPKI-ROV) are based on cryptographic techniques, and they are effective against many accidental and malicious actions.
       </t>
       <t>
         ASPA objects are cryptographically signed registrations of customer-to-provider relationships and stored in a distributed database <xref target="I-D.ietf-sidrops-aspa-profile"/>.
@@ -212,8 +211,9 @@
          For mutual-transit ASes, the customer-to-provider relationship applies in each direction.
        </t>
        <t>
-         All roles are configured locally and used for the registration of ASPA objects (<xref target="ASPA"/>, <xref target="rec1"/>) and/or for path verification (<xref target="verif"/>).
+         All roles are defined locally and used for the registration of ASPA objects (<xref target="ASPA"/>, <xref target="rec1"/>) and/or for path verification (<xref target="verif"/>).
          The procedures for local BGP Role announcement in the BGP OPEN message and neighbor role cross-check specified in <xref target="RFC9234"/> are RECOMMENDED.
+         The configured BGP Roles SHOULD be used to automate the use of described bellow verification procedures.
          Those procedures are not applied for cross-checking a mutual-transit role since this role is not specified in <xref target="RFC9234"/>.
        </t>
     </section>
@@ -254,8 +254,11 @@
         </t>
         <t>
           A compliant AS, including a Route Server AS (RS AS), MUST have an ASPA.
-          An AS SHOULD NOT have more than one ASPA.
           An RS AS SHOULD register an AS 0 ASPA.
+          An AS SHOULD NOT have more than one ASPA.
+          Such a practice helps prevent race conditions during ASPA updates that might affect prefix propagation.
+          The software that provides hosting for ASPA records SHOULD support enforcement of this practice.
+          During a transition process between different certificate authority (CA) registries, the ASPA records SHOULD be kept identical in all relevant registries.
         </t>
         <t>
           As mentioned in <xref target="ASPA"/>, the set of provider ASes contained in the VAP(s) is referred to as the VAP-SPAS of the AS registering the ASPA(s).
@@ -264,41 +267,31 @@
         </t>
         <t>
           Each of the two ASes in a mutual-transit pair MUST register its ASPA including the other AS in its SPAS.
-          If one of the ASes in the pair does this registration but the other does not, it increases the risk of incorrect AS path verification results for routes that include the pair.
         </t>
         <t>
           The ASes on the boundary of an AS Confederation MUST register ASPAs using the Confederation's global ASN as the CAS.
         </t>
-        <t>
-          As specified earlier, a compliant AS should maintain a single ASPA object that includes all its provider ASes, including any non-transparent RS ASes.
-          Such a practice helps prevent race conditions during ASPA updates that might affect prefix propagation.
-          The software that provides hosting for ASPA records SHOULD support enforcement of this practice.
-          During a transition process between different certificate authority (CA) registries, the ASPA records SHOULD be kept identical in all relevant registries.
-        </t>
       </section>
-    <section title="Hop-Check Function" anchor="pair-validation">
+    <section title="Provider Authorization Function" anchor="pair-validation">
       <t>
-          Let AS(i) and AS(j) represent adjacent unique ASes in an AS_PATH, and thus (AS(i), AS(j)) represents an AS hop.
-          A hop-check function, hop(AS(i), AS(j)), checks if the ordered pair of ASNs, (AS(i), AS(j)), has the property that AS(j) is an attested provider of AS(i) per VAP-SPAS of AS(i).
-          The VAP-SPAS table is assumed to be organized in such a way that it can be queried to check (1) if a specified CAS = AS(i) has an entry (i.e., SPAS listed), or (2) if for a given (AS(i), AS(j)) tuple, AS(j) is listed in the VAP-SPAS as a provider associated with CAS = AS(i).
-          A provider AS ID included in the SPAS can correspond to a Provider, a non-transparent RS, or a mutual-transit neighbor.
-          A non-transparent RS is effectively a Provider to its RS-client.		
-          Mutual-transit neighbors regard each other as a Provider (see <xref target="rec1"/>).
-          The term "Provider+" in the definition of the hop-check function is meant to encompass all three possibilities: Provider, non-transparent RS, or mutual-transit neighbor.
+          Let AS x and AS y represent two unique ASes.
+          A provider authorization function, auth(AS x, AS y), checks if the ordered pair of ASNs, (AS x, AS y), has the property that AS x is an attested provider of AS y per VAP-SPAS of AS x.
+          The VAP-SPAS table is assumed to be organized in such a way that it can be queried to check (1) if a specified CAS = AS x has an entry (i.e., SPAS listed), or (2) if for a given (AS x, AS y) tuple, AS x is listed in the VAP-SPAS as a provider associated with CAS = AS y.
+          By term "Provider+" the function should signal if AS y plays role of Provider, non-transparent RS, or mutual-transit neighbor.
           This function is specified as follows:
       </t>
       <t>
         <figure anchor="fig1" align="left" suppress-title="true" pn="figure-1">
-          <name slugifiedName="HFC-illustration">Hop-check function.</name>
+          <name slugifiedName="HFC-illustration">provider authorization function.</name>
           <artwork align="left" name="" type="" alt="">
 <![CDATA[
 
                      /
                      | "No Attestation" if there is no entry
-                     |   in VAP-SPAS table for CAS = AS(i)
+                     |   in VAP-SPAS table for CAS = AS x
                      |
-hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
-                     \   for CAS = AS(i) includes AS(j)
+auth(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
+                     \   for CAS = AS x includes AS y
                      |
                      | Else, "Not Provider+"
                      \
@@ -307,11 +300,8 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
         </figure>
        </t>
       <t>
-        To be clear, this function checks if AS(j) is included in the VAP-SPAS of AS(i), and in doing so it does not need to distinguish between Provider, non-transparent RS, and mutual-transit neighbor.
-      </t>
-      <t>
-        The "No Attestation" result is returned only when the CAS = AS(i) has no entry in the VAP-SPAS table, which occurs when no ASPA is registered for the CAS or none of its ASPAs are cryptographically valid.
-        The hop-check function is used in the ASPA-based AS_PATH verification algorithms described in <xref target="Upflow"/> and <xref target="Downflow"/>.
+        The "No Attestation" result is returned only when the CAS = AS x has no entry in the VAP-SPAS table, which occurs when no ASPA is retrieved for the CAS or none of its ASPAs are cryptographically valid.
+        The provider authorization function is used in the ASPA-based AS_PATH verification algorithms described in <xref target="Upflow"/> and <xref target="Downflow"/>.
       </t>
 
     </section>
@@ -336,97 +326,13 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
         See <xref target="mitigation"/> for how routes with Invalid AS_PATH are handled.
       </t>
       <t>
-        In <xref target="Upflow"/> and <xref target="Downflow"/> below, the terms "upstream path" and "downstream path" generally refer to AS paths received in the upstream direction (from a customer or a lateral peer) and in the downstream direction (from a provider or a mutual-transit neighbor), respectively.
-        An RS-client receiving a route from its RS is a special case where the algorithm for upstream paths is applied (<xref target="Upflow"/>).
+        In <xref target="Upflow"/> and <xref target="Downflow"/> below, the terms "upstream path" and "downstream path" generally refer to AS paths received in the upstream direction (from a customer, lateral peer, RS-client, RS) and in the downstream direction (provider), respectively.
       </t>
-    <section title="Algorithm for Upstream Paths" anchor="Upflow">
+
+	<section title="Principles" anchor="principles">
       <t>
-        The upstream verification algorithm described here is applied when a route is received from a customer or lateral peer, or is received by an RS from an RS-client, or is received by an RS-client from an RS.
-        In all these cases, the receiving/validating eBGP router expects the AS_PATH to consist of only customer-to-provider hops successively from the origin AS to the neighbor AS (most recently added).
-      </t>
-      <t>
-        The basic principles of the upstream verification algorithm are stated here.
         Let the sequence {AS(N), AS(N-1),..., AS(2), AS(1)} represent the AS_PATH in terms of unique ASNs, where AS(1) is the origin AS and AS(N) is the most recently added AS and neighbor of the receiving/validating AS.
-        For each hop AS(i-1) to AS(i) in this sequence, the hop-check function, hop(AS(i-1), AS(i)), must equal "Provider+" (<xref target="pair-validation"/>) for the AS_PATH to be Valid.
-        If the hop-check function for at least one of those hops is "Not Provider+", then the AS_PATH is deemed Invalid.
-        If the AS_PATH verification outcome is neither Valid nor Invalid (per the above principles), then it is evaluated as Unknown.
-      </t>
-      <t>
-        The upstream path verification procedure is specified as follows:
-      </t>
-      <t>
-        <list style="numbers">
-          <t>
-            If the AS_PATH has an AS_SET, then the procedure halts with the outcome "Invalid".
-          </t>
-          <t>
-            Collapse prepends in the AS_SEQUENCE(s) in the AS_PATH (i.e., keep only the unique AS numbers).
-            Let the resulting ordered sequence be represented by {AS(N), AS(N-1), ..., AS(2), AS(1)}, where AS(1) is the first-added (i.e., origin) AS and AS(N) is the last-added AS and neighbor to the receiving/validating AS.
-          </t>
-          <t>
-            If N = 1, then the procedure halts with the outcome "Valid".
-            Else, continue.
-          </t>
-          <t>
-            At this step, N &ge; 2. If there is an i such that 2 &le; i &le; N and hop(AS(i-1), AS(i)) = "Not Provider+", then the procedure halts with the outcome "Invalid".
-            Else, continue.
-          </t>
-          <t>
-            If there is an i such that 2 &le; i &le; N and hop(AS(i-1), AS(i)) = "No Attestation", then the procedure halts with the outcome "Unknown".
-            Else, the procedure halts with the outcome "Valid".
-          </t>
-        </list>
-      </t>
-<!--    
-      <section title="About Path verification at IXP RS AS and RS-Client" anchor="RS-client">
-	<t>
-	As stated above (top of <xref target="Upflow"/>), the algorithm for upstream paths is applied for path verification at IXP RS AS and RS-clients. 
-	The justifications are as follow. 
-	The RS-client to RS AS relationship is effectively a customer-to-provider relationship.
-	The RS AS propagates the routes of an RS-client and its customers to other RS-clients. 
-	An RS-client at a transparent RS effectively has a lateral peer relationship with other RS-clients that it connects to via the RS. 
-	So, the algorithm for upstream paths clearly applies at an RS AS and at RS-clients of a transparent RS.
-        </t>
-        <t>
-	Since an RS AS (transparent or non-transparent) does not have providers or lateral peers, an RS-client of a non-transparent RS expects an AS_PATH it receives to be consisting of only customer-to-provider hops successively from AS(1) (origin) the AS(N) (neighbor which is the RS AS). 
-	This expectation is identical to what is expected when the UPDATE is received from a customer or lateral peer. 
-	Hence, the algorithm for upstream paths applies also at an RS-client of a non-transparent RS.  
-	</t>
-      </section>
--->
-    </section>
-    <section title="Algorithm for Downstream Paths" anchor="Downflow">
-      <t>
-        The downstream verification algorithm described here is applied when a route is received from a transit provider or mutual-transit neighbor.
-        As described in <xref target="rec1"/>, a sending mutual-transit AS acts towards its receiving mutual-transit AS in a manner similar to that of a provider towards its customer.
-      </t>
-      <t>
-        It is not essential, but the reader may take a look at the illustrations and formal proof in <xref target="sriram1"/> to develop a clearer understanding of the algorithm described here.
-      </t>
-      <t>
-        Here again (as in <xref target="Upflow"/>), let the AS_PATH be simplified and represented by the ordered sequence of unique ASNs as {AS(N), AS(N-1),..., AS(2), AS(1)}.
-      </t>
-      <t>
-        If 1 &lt;= N &lt;= 2, then the AS_PATH is trivially Valid.
-      </t>
-      <t>
-        <xref target="principles"/> below assumes that the AS_PATH contains 3 or more unique ASNs (N >= 3).
-      </t>
-	<section title="Principles for Determination of Invalid, Valid, and Unknown in Downstream Path Verification (for N >= 3)" anchor="principles">
-      <t>
-        <strong>Determination of Invalid AS_PATH:</strong>
-      </t>
-      <t>
-        Given the above-mentioned ordered sequence, if there exist indices u and v such that (1) u &lt;= v, (2) hop(AS(u-1), AS(u)) = "Not Provider+", and (3) hop(AS(v+1), AS(v)) = "Not Provider+", then the AS_PATH is Invalid.
-      </t>
-      <t>
-        ------------
-      </t>
-      <t>
-        <strong>Determination of Valid AS_PATH:</strong>
-      </t>
-      <t>
-        As shown in <xref target="fig2"/>, assume that the ASes in the AS_PATH are in the same physical (locational) order as in the sequence representation {AS(N), AS(N-1),..., AS(2), AS(1)}, i.e., AS(N) is the left-most and AS(1) the right-most.
+        Such sequence can be described with the following diagram.
       </t>
       <t>
         <figure anchor="fig2" align="left" suppress-title="false" pn="figure-2">
@@ -448,48 +354,80 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
               /                                (Origin AS)
     Receiving & Validating AS
 
-        Each ramp has consecutive ASPA-attested
-        customer-to-provider hops in the bottom-to-top direction
+        Each ramp has consecutive customer-to-provider hops in the bottom-to-top direction
 ]]>
-</artwork>
+          </artwork>
         </figure>
       </t>
+
       <t>
-        Looking at <xref target="fig2"/>, the UPDATE is received from a provider or a mutual-transit neighbor (i.e., AS(N) has that role in relation to the receiver).
-        The AS_PATH may have both an up-ramp (on the right starting at AS(1)) and a down-ramp (on the left starting at AS(N)).
-        The ramps are described as a sequence of ASes that consists of consecutive customer-to-provider hops.
-        The up-ramp starts at AS(1) and each AS hop, (AS(i), AS(i+1)), in it has the property that hop(AS(i), AS(i+1)) = "Provider+" for i = 1, 2,... , K-1.
-        If such a K does not exist, then K is set to 1.
-        The up-ramp ends (reaches its apex) at AS(K) because hop(AS(K), AS(K+1)) = "Not Provider+" or "No Attestation".
-        The down-ramp runs backward from AS(N) to AS(L).
-        Each AS hop, (AS(j), AS(j-1)), in it has the property that hop(AS(j), AS(j-1)) = "Provider+" for j = N, N-1,... , L+1.
-        If such an L does not exist, then L is set to N.
-        The down-ramp ends at AS(L) because hop(AS(L), AS(L-1)) = "Not Provider+" or "No Attestation".
-        Thus, the apex of the down-ramp is AS(L).
+        The K defines the length of the up-rump.
+        The N - L + 1 defines the length of down-rump.
+        A valid path may have a one horizontal hop that represents peering relation.
       </t>
       <t>
-        If there is an up-ramp that runs across all ASes in the AS_PATH (i.e., K = N), then clearly the AS_PATH is Valid.
-        Similarly, if there is a down-ramp that runs across all ASes in the AS_PATH (i.e., L = 1), then also the AS_PATH is Valid.
-        However, if both ramps exist in an AS_PATH with K &lt; N and L > 1, then the AS_PATH is Valid if and only if L-K &lt;= 1.
-        Note that K could be greater than L (i.e., L-K has a negative value), which means that the up-ramp and down-ramp overlap, and that could happen when some adjacent ASes in the AS_PATH have mutual-transit relationship between them (i.e., include each other in their respective SPAS) (see <xref target="rec1"/>).
-        If L-K = 0, it means that the apexes of the up-ramp and down-ramp are at the same AS.
-        If L-K = 1, it means that the apexes are at adjacent ASes.
-        In summary, the AS_PATH is Valid if L-K is 0 or 1 or has a negative value.
+        <strong>Determination of Invalid AS_PATH:</strong>
       </t>
       <t>
-        ------------
+        If the sum of lengths of up-rump and down-rump is less than N, it is Invalid.
+      </t>
+
+      <t>
+        With ASPA we can't measure exact length of the rumps, but we can measure it's minimum and maximum boundaries.
       </t>
       <t>
-        <strong>Determination of Unknown AS_PATH:</strong>
+        The maximum up-rump length can be defined as I, where I is the minimum index for which auth(A(I), A(I+1)) returns 'Not Provider'. If there is no such I, the maximum is equal to AS_PATH length, or N. We define this parameter as max_up_rump. The minimum up-rump length can be defined as I, where I is minimum index for which auth(A(I), A(I+1)) returns "No Attestation" or "Not Provider". If there is no such I, the AS_APATH consists only of "Provider+" pairs only, so the minimum up-rump length equals to AS_PATH length, or N. We define this parameter as min_up_rump.
       </t>
       <t>
-        If L-K >= 2, then the AS_PATH is either Invalid (route leak) or Unknown (see illustrations and proof in <xref target="sriram1"/>).
-        However, if L-K >= 2 and an Invalid outcome was not found by the process described earlier in this section, then the AS_PATH is determined to be Unknown.
+        Similar the maximum down-rump length can be defined as N - J + 1 where J is maximum index for which auth(A(J), A(J-1)) returns "Not Provider". If there is no such J, the maximum is equal to AS_PATH length, or N. We define this parameter as max_down_rump. The minimum down-rump length can be defined as N - J + 1 where J is maximum index for which auth(A(J), A(J-1)) returns "No Attestation" or "Not Provider". If there is no such J, the minimum equals to AS_PATH length, or N. We define this parameter as min_down_rump.
+      </t>
+
+      <t>
+        If sum of maximum estimations of up-rump and down-rump is less than N, the path is Invalid.
+        If sum of minimum estimations of up-rump and down-rump is less than N, it is Unknown. Otherwise, it is Valid.
+      </t>
+
+      <t>
+        Below are formal procedures for path verification depending on the role between receiving AS and neighbour.
+        These procedures are using compressed sequence representation of AS_PATH {AS(N), AS(N-1),..., AS(2), AS(1)} and defined above parameters max_up_rump, min_up_rump, max_down_rump and min_up_rump
       </t>
     </section>
-    <section title="Formal Procedure for Verification of Downstream Paths" anchor="down-procedure">
+
+    <section title="Algorithm for Upstream Paths" anchor="Upflow">
       <t>
-        The downstream path verification procedure is formally specified as follows:
+        The upstream verification algorithm described here is applied when a route is received from a customer or lateral peer, or is received by an RS from an RS-client, or is received by an RS-client from an RS.
+        In all these cases, the receiving/validating eBGP router expects the AS_PATH does not have a down-rump, only up-rump.
+        Thus max_down_rump and min_up_rump are set to 0.
+      </t>
+      <t>
+        The upstream path verification procedure is specified as follows:
+      </t>
+      <t>
+        <list style="numbers">
+          <t>
+            If the AS_PATH has an AS_SET, then the procedure halts with the outcome "Invalid".
+          </t>
+          <t>
+            If N = 1, then the procedure halts with the outcome "Valid".
+            Else, continue.
+          </t>
+          <t>
+            At this step, N &ge; 2. If max_up_rump is less than N the procedure halts with the outcome 'Invalid'.
+            Else, continue.
+          </t>
+          <t>
+            If min_up_rump is less than N the procedure halts with the outcome 'Unknown'.
+            Else, the procedure halts with the outcome "Valid".
+          </t>
+        </list>
+      </t>
+    </section>
+
+    <section title="Algorithm for Downstream Paths" anchor="Downflow">
+      <t>
+        #TODO: move mutual transit in the above section. It is incorrect to speak about it as provider. It and should be processed at the prefix based level upon its policy.
+
+        The downstream verification algorithm described here is applied when a route is received from a transit provider.
       </t>
       <t>
         <list style="numbers">
@@ -506,42 +444,16 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
           </t>
           <t>
             At this step, N &ge; 3.
-            Given the above-mentioned ordered sequence, find the lowest value of u (2 &le; u &le; N) for which hop(AS(u-1), AS(u)) = "Not Provider+".
-            Call it u_min.
-            If no such u_min exists, set u_min = N+1.
-            Find the highest value of v (N-1 &ge; v &ge; 1) for which hop(AS(v+1), AS(v)) = "Not Provider+".
-            Call it v_max.
-            If no such v_max exists, then set v_max = 0.
-            If u_min &le; v_max, then the procedure halts with the outcome "Invalid".
-            Else, continue.
+            If the sum of max_up_rump and max_down_rump is less than N the procedure halts with the outcome 'Invalid'.
           </t>
           <t>
-            Up-ramp: For 2 &le; i &le; N, determine the largest K such that hop(AS(i-1), AS(i)) = "Provider+" for each i in the range 2 &le; i &le; K.
-            If such a largest K does not exist, then set K = 1.
-          </t>
-<!--
-            <t>
-	If K = N, then the procedure halts with the outcome "Valid".
-	Else, continue.
-            </t>
--->
-          <t>
-            Down-ramp: For N-1 &ge; j &ge; 1, determine the smallest L such that hop(AS(j+1), AS(j)) = "Provider+" for each j in the range N-1 &ge; j &ge; L.
-            If such smallest L does not exist, then set L = N.
-          </t>
-          <t>
-            If L-K &le; 1, then the procedure halts with the outcome "Valid".
-            Else, the procedure halts with the outcome "Unknown".
+            If the sum of min_up_rump and min_down_rump is less than N the procedure halts with the outcome 'Unknown'.
           </t>
         </list>
       </t>
-      <t>
-        In the above procedure, the computations in Steps 4, 5, and 6 can be done at the same time.
-      </t>
       </section>
-    </section>
   </section>
-  <section title="Deployment Recommendations"> 
+  <section title="Deployment Recommendations">
     <t>This section describes practical deployment recommendations related to implemenation and operation of ASPA.</t>
 
     <section anchor="ingress" title="Running ASPA on Inter-AS Border Routers">
@@ -582,26 +494,21 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
     <section title="Logging" anchor="logging">
       <t>
 	For any route with an Invalid AS_PATH, the cause of the Invalid state SHOULD be logged for monitoring and diagnostic purposes. 
-	The cause of the Invalid state can be in the form of listing the AS hops which were evaluated by the hop-check function to be &quot;Not Provider+&quot;.
+	The cause of the Invalid state can be in the form of listing the AS hops which were evaluated by the provider authorization function to be &quot;Not Provider+&quot;.
 	The logging router, however, cannot necessarily determine the origin of the route leak.
       </t>
     </section>
 
     <section title="Only to Customer (OTC) Attribute" anchor="otc">
       <t>
-        While the ASPA-based AS_PATH verification method (<xref target="ingress"/>) detects and mitigates route leaks that were created by preceding ASes listed in the AS_PATH, 
+        While the ASPA-based AS_PATH verification method (<xref target="ingress"/>) detects and mitigates route leaks that were created by preceding ASes listed in the AS_PATH,
 	it lacks the ability to prevent route leaks from occuring at the local AS. 
-	The use of the Only to Customer (OTC) Attribute <xref target="RFC9234"/> fills in that gap. 
-	The procedures utilizing the OTC Attribute set out in <xref target="RFC9234"/> complement those described in this document. 
-	Implementation of those procedures in addition to ASPA-based AS_PATH verification is encouraged.
+	    The use of the Only to Customer (OTC) Attribute <xref target="RFC9234"/> fills in that gap.
+	    The procedures utilizing the OTC Attribute set out in <xref target="RFC9234"/> complement those described in this document.
+        Implementation of those procedures in addition to ASPA-based AS_PATH verification is encouraged.
       </t>
     </section>
   </section>
-<!--
-	<t>
-      The procedures specified in this document may be used in scenarios that use private AS numbers behind an Internet-facing ASN (e.g., a data-center network <xref target="RFC7938"/> or stub customer), but any details are outside the scope of this document.
-	</t>
--->
 
   <section title="Properties of ASPA-based Path Verification" anchor="property">
     <t>
@@ -647,12 +554,6 @@ hop(AS(i), AS(j)) =  / Else, "Provider+" if the VAP-SPAS entry
       No assumption is made about the ASPA compliance of the ASes in the intervening path from AS B to AS C.
       The ASPA-based path verification at AS C always detects such received route as a leak regardless of the direction (type of peer) it was received from.
     </t>
-<!--  Unused text - will be deleted
-    <t>
-		Property 5: Consider an ASPA island (i.e., a connected set of ASPA capable ASes). If any route is leaked by an AS that is a part of an ASPA island, and ASes immediately before and after it in BGP AS_PATH are also a part of the ASPA island, then ASPA-based path verification always detects such a route leak, no matter where it is received from (though it may not be able to identify the AS that originated the leak).
-		
-		Property 5: Consider an ASPA island (i.e., a connected set of ASPA capable ASes). Let AS A and AS B be any two ASes in the ASPA island. Consider a route propagated from AS A in any direction (i.e., to a neighbor AS with any of the BGP roles described in <xref target="role"). The route is subsequently leaked by an offending AS in the AS path before being received at AS B from any direction. The ASPA-based path verification at AS B always detects such a route leak though it may not be able to identify the AS that originated the leak.
--->	
     </list>
   </t>
   <t>
