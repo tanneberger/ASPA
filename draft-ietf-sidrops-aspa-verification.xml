@@ -269,7 +269,7 @@
     <section title="Provider Authorization Function" anchor="pair-validation">
       <t>
           Let AS x and AS y represent two unique ASes.
-          A provider authorization function, auth(AS x, AS y), checks if the ordered pair of ASNs, (AS x, AS y), has the property that AS y is an attested provider of AS x per VAP-SPAS of AS x.
+          A provider authorization function, authorized(AS x, AS y), checks if the ordered pair of ASNs, (AS x, AS y), has the property that AS y is an attested provider of AS x per VAP-SPAS of AS x.
           The VAP-SPAS table is assumed to be organized in such a way that it can be queried to check (1) if a specified CAS = AS x has an entry (i.e., SPAS listed), or (2) if for a given (AS x, AS y) tuple, AS x is listed in the VAP-SPAS as a provider associated with CAS = AS y.
           By term "Provider+" the function should signal if AS y plays role of Provider, non-transparent RS, or mutual-transit neighbor.
           This function is specified as follows:
@@ -284,7 +284,7 @@
                      | "No Attestation" if there is no entry
                      |   in VAP-SPAS table for CAS = AS x
                      |
-auth(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
+authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
                      \   for CAS = AS x includes AS y
                      |
                      | Else, "Not Provider+"
@@ -355,43 +355,43 @@ auth(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
       </t>
 
       <t>
-        The K defines the length of the up-rump.
-        The N - L + 1 defines the length of down-rump.
+        The K defines the length of the up-ramp.
+        The N - L + 1 defines the length of down-ramp.
         A valid path may have a one horizontal hop that represents peering relation.
       </t>
       <t>
         <strong>Determination of Invalid AS_PATH:</strong>
       </t>
       <t>
-        If the sum of lengths of up-rump and down-rump is less than N, it is Invalid.
+        If the sum of lengths of up-ramp and down-ramp is less than N, it is Invalid.
       </t>
 
       <t>
-        With ASPA we can't measure exact length of the rumps, but we can measure it's minimum and maximum boundaries.
+        With ASPA we can't measure exact length of the ramps, but we can measure it's minimum and maximum boundaries.
       </t>
       <t>
-        The maximum up-rump length can be defined as I, where I is the minimum index for which auth(A(I), A(I+1)) returns 'Not Provider'. If there is no such I, the maximum is equal to AS_PATH length, or N. We define this parameter as max_up_rump. The minimum up-rump length can be defined as I, where I is minimum index for which auth(A(I), A(I+1)) returns "No Attestation" or "Not Provider". If there is no such I, the AS_APATH consists only of "Provider+" pairs only, so the minimum up-rump length equals to AS_PATH length, or N. We define this parameter as min_up_rump.
+        The maximum up-ramp length can be defined as I, where I is the minimum index for which authorized(A(I), A(I+1)) returns 'Not Provider'. If there is no such I, the maximum is equal to AS_PATH length, or N. We define this parameter as max_up_ramp. The minimum up-ramp length can be defined as I, where I is minimum index for which authorized(A(I), A(I+1)) returns "No Attestation" or "Not Provider". If there is no such I, the AS_APATH consists only of "Provider+" pairs only, so the minimum up-ramp length equals to AS_PATH length, or N. We define this parameter as min_up_ramp.
       </t>
       <t>
-        Similar the maximum down-rump length can be defined as N - J + 1 where J is maximum index for which auth(A(J), A(J-1)) returns "Not Provider". If there is no such J, the maximum is equal to AS_PATH length, or N. We define this parameter as max_down_rump. The minimum down-rump length can be defined as N - J + 1 where J is maximum index for which auth(A(J), A(J-1)) returns "No Attestation" or "Not Provider". If there is no such J, the minimum equals to AS_PATH length, or N. We define this parameter as min_down_rump.
+        Similar the maximum down-ramp length can be defined as N - J + 1 where J is maximum index for which authorized(A(J), A(J-1)) returns "Not Provider". If there is no such J, the maximum is equal to AS_PATH length, or N. We define this parameter as max_down_ramp. The minimum down-ramp length can be defined as N - J + 1 where J is maximum index for which authorized(A(J), A(J-1)) returns "No Attestation" or "Not Provider". If there is no such J, the minimum equals to AS_PATH length, or N. We define this parameter as min_down_ramp.
       </t>
 
       <t>
-        If sum of maximum estimations of up-rump and down-rump is less than N, the path is Invalid.
-        If sum of minimum estimations of up-rump and down-rump is less than N, the path is Unknown. Otherwise, it is Valid.
+        If sum of maximum estimations of up-ramp and down-ramp is less than N, the path is Invalid.
+        If sum of minimum estimations of up-ramp and down-ramp is less than N, the path is Unknown. Otherwise, it is Valid.
       </t>
 
       <t>
         Below are formal procedures for path verification depending on the role between receiving AS and its neighbour.
-        These procedures are using compressed sequence representation of AS_PATH {AS(N), AS(N-1),..., AS(2), AS(1)} and defined above parameters max_up_rump, min_up_rump, max_down_rump and min_up_rump
+        These procedures are using compressed sequence representation of AS_PATH {AS(N), AS(N-1),..., AS(2), AS(1)} and defined above parameters max_up_ramp, min_up_ramp, max_down_ramp and min_up_ramp
       </t>
     </section>
 
     <section title="Algorithm for Upstream Paths" anchor="Upflow">
       <t>
         The upstream verification algorithm described here is applied when a route is received from a customer or lateral peer, or is received by an RS from an RS-client, or is received by an RS-client from an RS.
-        In all these cases, the receiving/validating eBGP router expects the AS_PATH does not have a down-rump, only up-rump.
-        Thus max_down_rump and min_up_rump are set to 0.
+        In all these cases, the receiving/validating eBGP router expects the AS_PATH does not have a down-ramp, only up-ramp.
+        Thus max_down_ramp and min_up_ramp are set to 0.
       </t>
       <t>
         The upstream path verification procedure is specified as follows:
@@ -406,11 +406,11 @@ auth(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
             Else, continue.
           </t>
           <t>
-            At this step, N &ge; 2. If max_up_rump is less than N the procedure halts with the outcome 'Invalid'.
+            At this step, N &ge; 2. If max_up_ramp is less than N the procedure halts with the outcome 'Invalid'.
             Else, continue.
           </t>
           <t>
-            If min_up_rump is less than N the procedure halts with the outcome 'Unknown'.
+            If min_up_ramp is less than N the procedure halts with the outcome 'Unknown'.
             Else, the procedure halts with the outcome "Valid".
           </t>
         </list>
@@ -438,10 +438,10 @@ auth(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
           </t>
           <t>
             At this step, N &ge; 3.
-            If the sum of max_up_rump and max_down_rump is less than N the procedure halts with the outcome 'Invalid'.
+            If the sum of max_up_ramp and max_down_ramp is less than N the procedure halts with the outcome 'Invalid'.
           </t>
           <t>
-            If the sum of min_up_rump and min_down_rump is less than N the procedure halts with the outcome 'Unknown'.
+            If the sum of min_up_ramp and min_down_ramp is less than N the procedure halts with the outcome 'Unknown'.
           </t>
         </list>
       </t>
