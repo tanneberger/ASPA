@@ -162,55 +162,55 @@
     </section>
   </section>
 
-      <section title="Terminology" anchor="terminology">
-         <t>
-           The following terms are used with special meanings.
-         </t>
-         <t>
-           <list style="hanging">
-                <t hangText="Provider:">
-                   The term "provider" is synonymously with "transit provider", see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
-                </t>
+    <section title="Terminology" anchor="terminology">
+       <t>
+         The following terms are used with special meanings.
+       </t>
+       <t>
+         <list style="hanging">
+              <t hangText="Provider:">
+                 The term "provider" is synonymously with "transit provider", see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
+              </t>
 
-                <t hangText="Customer:">
-                   An autonomous system uses a provider for transit, see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
-                </t>
+              <t hangText="Customer:">
+                 An autonomous system uses a provider for transit, see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
+              </t>
 
-                <t hangText="CAS:">
-                  A Customer AS, see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
-                </t>
+              <t hangText="CAS:">
+                A Customer AS, see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
+              </t>
 
-                <t hangText="PAS:">
-                  A Provider AS, see  <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
-                </t>
+              <t hangText="PAS:">
+                A Provider AS, see  <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="1"/>.
+              </t>
 
-                <t hangText="Route is ineligible:">
-                   The term has the same meaning as in <xref target="RFC4271"/>, i.e., "route is ineligible to be installed in Loc-RIB and will be excluded from the next phase of route selection."
-                </t>
+              <t hangText="Route is ineligible:">
+                 The term has the same meaning as in <xref target="RFC4271"/>, i.e., "route is ineligible to be installed in Loc-RIB and will be excluded from the next phase of route selection."
+              </t>
 
-                <t hangText="SPAS:">
-		   A Set of Provider ASes, see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="3"/>.
-                </t>
+              <t hangText="SPAS:">
+                A Set of Provider ASes, see <xref target="I-D.ietf-sidrops-aspa-profile" sectionFormat="comma" section="3"/>.
+              </t>
 
-                <t hangText="VAP:">
-		   A Validated ASPA Payload, see <xref target="ASPA"/>.
-                </t>
+              <t hangText="VAP:">
+                A Validated ASPA Payload, see <xref target="ASPA"/>.
+              </t>
 
-                <t hangText="VAP-SPAS:">
-		   A Validated ASPA Payload of a set of provider ASes, see <xref target="ASPA"/>.
-                </t>
-           </list>
-         </t>
-      </section>
-
-      <section title="Peering Relationships" anchor="peering">
-        <t>
-         For path verification purposes in this document, the BGP roles an AS can have in relation to a neighbor AS are customer, provider, lateral peer, Route Server (RS), RS-client, and complex.
-         These relationships are defined in <xref target="RFC9234"/>.
-         A special case of complex relation is mutual-transit when ASes MAY export everything (both customer and non-customer routes) to each other, i.e., customer-to-provider relationship applies in each direction.
-          All roles are defined locally.
+              <t hangText="VAP-SPAS:">
+                A Validated ASPA Payload of a set of provider ASes, see <xref target="ASPA"/>.
+              </t>
+         </list>
        </t>
     </section>
+
+    <section title="Peering Relationships" anchor="peering">
+      <t>
+       For path verification purposes in this document, the BGP roles an AS can have in relation to a neighbor AS are customer, provider, lateral peer, Route Server (RS), RS-client, and complex.
+       These relationships are defined in <xref target="RFC9234"/>.
+       A special case of complex relation is mutual-transit when ASes MAY export everything (both customer and non-customer routes) to each other, i.e., customer-to-provider relationship applies in each direction.
+        All roles are defined locally.
+     </t>
+  </section>
 
     <section title="Autonomous System Provider Authorization" anchor="ASPA">
       <t>
@@ -268,11 +268,11 @@
     </section>
     <section title="Provider Authorization Function" anchor="pair-validation">
       <t>
-          Let AS x and AS y represent two unique ASes.
-          A provider authorization function, authorized(AS x, AS y), checks if the ordered pair of ASNs, (AS x, AS y), has the property that AS y is an attested provider of AS x per VAP-SPAS of AS x.
-          The VAP-SPAS table is assumed to be organized in such a way that it can be queried to check (1) if a specified CAS = AS x has an entry (i.e., SPAS listed), or (2) if for a given (AS x, AS y) tuple, AS x is listed in the VAP-SPAS as a provider associated with CAS = AS y.
-          By term "Provider+" the function should signal if AS y plays role of Provider, non-transparent RS, or mutual-transit neighbor.
-          This function is specified as follows:
+        Let AS x and AS y represent two unique ASes.
+        A provider authorization function, authorized(AS x, AS y), checks if the ordered pair of ASNs, (AS x, AS y), has the property that AS y is an attested provider of AS x per VAP-SPAS of AS x.
+        The VAP-SPAS table is assumed to be organized in such a way that it can be queried to check (1) if a specified CAS = AS x has an entry (i.e., SPAS listed), or (2) if for a given (AS x, AS y) tuple, AS x is listed in the VAP-SPAS as a provider associated with CAS = AS y.
+        By term "Provider+" the function should signal if AS y plays role of Provider, non-transparent RS, or mutual-transit neighbor.
+        This function is specified as follows:
       </t>
       <t>
         <figure anchor="fig1" align="left" suppress-title="true" pn="figure-1">
@@ -419,8 +419,6 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
 
     <section title="Algorithm for Downstream Paths" anchor="Downflow">
       <t>
-        #TODO: move mutual transit in the above section. It is incorrect to speak about it as provider. It and should be processed at the prefix based level upon its policy.
-
         The downstream verification algorithm described here is applied when a route is received from a transit provider.
       </t>
       <t>
@@ -484,6 +482,10 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
       <t>
         The procedures for local BGP Role announcement in the BGP OPEN message and neighbor role cross-check specified in <xref target="RFC9234"/> are RECOMMENDED.
         The configured BGP Roles SHOULD be used to automate the use of described above verification procedures helping to distinguish whether upstream or downstream procedures should be applied.
+      </t>
+
+      <t>
+        In case of Complex peering relations that can't be segregated in multiple eBGP sessions, an operator may want to achieve an equivalent outcome by configuring policies with corresponding verification procedures on a per-prefix basis.
       </t>
     </section>
 
@@ -691,28 +693,28 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
         <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
       </reference>
 
-        <reference anchor="IANA-SAF" target="https://www.iana.org/assignments/safi-namespace/safi-namespace.xhtml" quote-title="true">
-          <front>
-            <title>Subsequent Address Family Identifiers (SAFI) Parameters</title>
-            <author>
-              <organization>IANA</organization>
-            </author>
-            <date/>
-          </front>
-        <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
-        </reference>
+      <reference anchor="IANA-SAF" target="https://www.iana.org/assignments/safi-namespace/safi-namespace.xhtml" quote-title="true">
+        <front>
+          <title>Subsequent Address Family Identifiers (SAFI) Parameters</title>
+          <author>
+            <organization>IANA</organization>
+          </author>
+          <date/>
+        </front>
+      <!-- <seriesInfo name="Reachable from" value="http://www.iana.org/numbers.html"/> -->
+      </reference>
 
-        <reference anchor="bgpd" target="http://www.openbgpd.org/">
-          <front>
-            <title>OpenBGPD</title>
-            <author initials="C." surname="Jeker">
-              <organization>OpenBSD</organization>
-            </author>
-            <date/>
-          </front>
-        </reference>
+      <reference anchor="bgpd" target="http://www.openbgpd.org/">
+        <front>
+          <title>OpenBGPD</title>
+          <author initials="C." surname="Jeker">
+            <organization>OpenBSD</organization>
+          </author>
+          <date/>
+        </front>
+      </reference>
 
-        <reference anchor="BGP-SRx" target="https://www.nist.gov/services-resources/software/bgp-secure-routing-extension-bgp-srx-software-suite">
+      <reference anchor="BGP-SRx" target="https://www.nist.gov/services-resources/software/bgp-secure-routing-extension-bgp-srx-software-suite">
           <front>
             <title>BGP Secure Routing Extension (BGP-SRx) Software Suite</title>
             <author>
@@ -747,51 +749,50 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
             The route is subsequently leaked by an offending AS in the AS path before being received at AS B on a customer or lateral peer interface.
             The ASPA-based path verification at AS B always detects such a route leak though it may not be able to identify the AS that originated the leak.
             This assertion is true even when the sender AS A (or receiver AS B) is an RS AS and the neighbor AS that AS A sent to (or AS B received from) is an RS-client.
+          </t>
+          <t>
+            Property 2: Again, let AS A and AS B be any two ASes in the Internet doing ASPA (registration and path verification) and no assumption is made about the ASPA deployment status of other ASes.
+            Consider a route received at AS B on a customer or lateral peer interface that is a forged-origin prefix hijack involving AS A as the forged-origin.
+            The ASPA-based path verification at AS B always detects such a forged-origin prefix hijack.
+          </t>
+          <t>
+           Property 3: This is an extension of Property 2 above to the case of prefix hijacking with a forged-path-segment.
+           Such hijacking refers to the forging of multiple contiguous ASes in an AS path beginning with the origin AS.
+           Again, let AS A and AS B be any two ASes in the Internet doing ASPA (registration and path verification).
+           Let AS A's providers, AS P and AS Q, also be registering ASPA.
+           No assumption is made about the ASPA deployment status of any other ASes in the Internet.
+           Consider a route received at AS B on a customer or lateral peer interface that is a prefix hijack with a forged-path-segment {AS P, AS A} or {AS Q, AS A}.
+           That is, the hijacker attaches this path-segment at the beginning of their route announcement.
+           The ASPA-based path verification at AS B always detects such a forged-path-segment prefix hijack.
+           For a chance to be successful (remain undetected by AS B), the hijacker may resort to a forged-path-segment with three ASes including a provider AS of AS P (or AS Q).
+           But even that can be foiled (detected) if the providers of AS P and AS Q also register ASPA.
+           Having to use a longer forged-path-segment to avoid detection by AS B diminishes the ability of the hijacked route to compete with the corresponding legitimate route in route selection.
+          </t>
+          <t>
+            Property 4: Let AS A, AS B, and AS C be any three ASes in the Internet doing ASPA (registration and path verification).
+            Consider a route propagated from AS A in any direction (i.e., to a neighbor AS with any of the BGP roles described in <xref target="peering"/>).
+            Let the route be received at AS B from any direction and detected to be a route leak (facilitated due to a sufficient set of ASes doing ASPA in the AS path from AS A to AS B).
+            Assume that AS B's local policy is such that it only lowers the route's LOCAL_PREF <xref target="RFC4271"/>.
+            Let such a route, selected and forwarded by AS B, be subsequently received at AS C.
+            No assumption is made about the ASPA compliance of the ASes in the intervening path from AS B to AS C.
+            The ASPA-based path verification at AS C always detects such received route as a leak regardless of the direction (type of peer) it was received from.
+          </t>
+        </list>
       </t>
       <t>
-        Property 2: Again, let AS A and AS B be any two ASes in the Internet doing ASPA (registration and path verification) and no assumption is made about the ASPA deployment status of other ASes.
-        Consider a route received at AS B on a customer or lateral peer interface that is a forged-origin prefix hijack involving AS A as the forged-origin.
-        The ASPA-based path verification at AS B always detects such a forged-origin prefix hijack.
-       </t>
-       <t>
-         Property 3: This is an extension of Property 2 above to the case of prefix hijacking with a forged-path-segment.
-         Such hijacking refers to the forging of multiple contiguous ASes in an AS path beginning with the origin AS.
-         Again, let AS A and AS B be any two ASes in the Internet doing ASPA (registration and path verification).
-         Let AS A's providers, AS P and AS Q, also be registering ASPA.
-         No assumption is made about the ASPA deployment status of any other ASes in the Internet.
-         Consider a route received at AS B on a customer or lateral peer interface that is a prefix hijack with a forged-path-segment {AS P, AS A} or {AS Q, AS A}.
-         That is, the hijacker attaches this path-segment at the beginning of their route announcement.
-         The ASPA-based path verification at AS B always detects such a forged-path-segment prefix hijack.
-         For a chance to be successful (remain undetected by AS B), the hijacker may resort to a forged-path-segment with three ASes including a provider AS of AS P (or AS Q).
-         But even that can be foiled (detected) if the providers of AS P and AS Q also register ASPA.
-         Having to use a longer forged-path-segment to avoid detection by AS B diminishes the ability of the hijacked route to compete with the corresponding legitimate route in route selection.
-      </t>
-      <t>
-        Property 4: Let AS A, AS B, and AS C be any three ASes in the Internet doing ASPA (registration and path verification).
-        Consider a route propagated from AS A in any direction (i.e., to a neighbor AS with any of the BGP roles described in <xref target="peering"/>).
-        Let the route be received at AS B from any direction and detected to be a route leak (facilitated due to a sufficient set of ASes doing ASPA in the AS path from AS A to AS B).
-        Assume that AS B's local policy is such that it only lowers the route's LOCAL_PREF <xref target="RFC4271"/>.
-        Let such a route, selected and forwarded by AS B, be subsequently received at AS C.
-        No assumption is made about the ASPA compliance of the ASes in the intervening path from AS B to AS C.
-        The ASPA-based path verification at AS C always detects such received route as a leak regardless of the direction (type of peer) it was received from.
-      </t>
-      </list>
-    </t>
-    <t>
         In the description of the properties listed above, the term "customer" can be replaced with "RS-client".
-    </t>
-    <t>
-      An observation that follows from Property #1 above is that if any two ISP ASes register ASPAs and implement the detection
-      and mitigation procedures, then any route received from one of them and leaked to the other by a common customer AS
-      (ASPA compliant or not) will be automatically detected and mitigated.
-      In effect, if most major ISPs are compliant, the propagation of route leaks in the Internet will be severely limited.
-     </t>
-    <t>
-      The above properties show that ASPA-based path verification offers significant benefits to early adopters.
-      Limitations of the method with regard to some forms of malicious AS path manipulations are discussed in <xref target="security"/>.
       </t>
-      </section>
-
+      <t>
+        An observation that follows from Property #1 above is that if any two ISP ASes register ASPAs and implement the detection
+        and mitigation procedures, then any route received from one of them and leaked to the other by a common customer AS
+        (ASPA compliant or not) will be automatically detected and mitigated.
+        In effect, if most major ISPs are compliant, the propagation of route leaks in the Internet will be severely limited.
+      </t>
+      <t>
+        The above properties show that ASPA-based path verification offers significant benefits to early adopters.
+        Limitations of the method with regard to some forms of malicious AS path manipulations are discussed in <xref target="security"/>.
+      </t>
+    </section>
   </back>
 </rfc>
 
