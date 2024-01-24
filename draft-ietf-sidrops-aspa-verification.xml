@@ -440,8 +440,9 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
         </list>
       </t>
     </section>
-      
-    <section anchor="mitigation" title="Configuration of a Mitigation Policy">
+  </section>
+
+  <section anchor="mitigation" title="Configuration of a Mitigation Policy">
       <t>
         The specific configuration of mitigation policies based on AS_PATH verification using ASPA is at the discretion of the network operator.
         The following policies are highly recommended, though.
@@ -456,7 +457,6 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
         Any Valid or Unknown AS_PATH SHOULD not be distinguished in the route selection process because of the ASPA validation outcome, but prefered over an Invalid AS_PATH.
       </t>
     </section>
-  </section>
 
   <section title="Deployment Recommendations">
     <t>This section describes practical deployment recommendations related to implementation and operation of ASPA.</t>
