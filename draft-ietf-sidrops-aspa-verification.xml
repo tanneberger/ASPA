@@ -552,7 +552,7 @@ authorized(AS x, AS y) =  / Else, "Provider+" if the VAP-SPAS entry
 
     <section title="Peerlock">
       <t>
-        The Peerlock mechanism <xref target="Peerlock"/> <xref target="Flexsealing"/> has a similar objective as the APSA-based route leak protection mechanism described in this document.
+        The Peerlock mechanism <xref target="Peerlock"/> <xref target="Flexsealing"/> has a similar objective as the ASPA-based route leak protection mechanism described in this document.
         It is commonly deployed by large Internet carriers to protect each other from route leaks.
         Peerlock depends on a laborious manual process in which operators coordinate the distribution of unstructured Provider Authorizations through out-of-band means in a many-to-many fashion.
         On the other hand, ASPA's use of the RPKI allows for automated, scalable, and ubiquitous deployment, making the protection mechanism available to a wider range of network operators.
